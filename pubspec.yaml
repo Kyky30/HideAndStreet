@@ -39,6 +39,7 @@ dependencies:
   material_symbols_icons: ^4.2713.0
   figma_squircle: ^0.5.3
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
