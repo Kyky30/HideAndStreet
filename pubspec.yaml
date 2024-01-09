@@ -37,6 +37,9 @@ dependencies:
   cupertino_icons: ^1.0.2
   material_symbols_icons: ^4.2713.0
   figma_squircle: ^0.5.3
+  flutter_map: ^6.1.0
+  latlong2: ^0.9.0
+  flutter_map_cancellable_tile_provider: ^2.0.0
 
 dev_dependencies:
   flutter_test:
