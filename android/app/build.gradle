@@ -24,7 +24,8 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.furrball.hide_and_street"
-    compileSdkVersion flutter.compileSdkVersion
+    compileSdkVersion 34
+    buildToolsVersion "34.0.0"
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -45,8 +46,8 @@ android {
         applicationId "com.furrball.hide_and_street"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion flutter.minSdkVersion
-        targetSdkVersion flutter.targetSdkVersion
+        minSdkVersion 29
+        targetSdkVersion 34
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
