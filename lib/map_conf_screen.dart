@@ -1,17 +1,52 @@
-// map_conf_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:flutter_map_dragmarker/flutter_map_dragmarker.dart';
+import 'package:flutter_map_line_editor/flutter_map_line_editor.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:geolocator/geolocator.dart';
 
-class MapConfScreen extends StatelessWidget {
+class MapConfScreen extends StatefulWidget {
   const MapConfScreen({super.key});
 
+  @override
+  State<MapConfScreen> createState() => _MapConfScreen();
+}
 
-  /// Determine the current position of the device.
-  ///
-  /// When the location services are not enabled or permissions
-  /// are denied the `Future` will return an error.
+
+class _MapConfScreen extends State<MapConfScreen> {
+  late PolyEditor polyEditor;
+  late Position currentPosition;
+  bool isLoading = true; // Track loading state
+
+  final polygons = <Polygon>[];
+  final testPolygon = Polygon(
+    color: Colors.red.withOpacity(0.5),
+    borderColor: Colors.black,
+    isFilled: true,
+    points: [],
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _determinePosition().then((position) {
+      setState(() {
+        currentPosition = position;
+        isLoading = false; // Set loading state to false when the position is determined
+      });
+    });
+
+    polyEditor = PolyEditor(
+      addClosePathMarker: true,
+      points: testPolygon.points,
+      pointIcon: const Icon(Icons.crop_square, size: 23),
+      intermediateIcon: const Icon(Icons.lens, size: 15, color: Colors.grey),
+      callbackRefresh: () => {setState(() {})},
+    );
+
+    polygons.add(testPolygon);
+  }
+
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -51,68 +86,38 @@ class MapConfScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      // Utilisez FutureBuilder pour obtenir la position asynchrone.
-      future: _determinePosition(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          // Affichez un indicateur de chargement pendant que la position est récupérée.
-          return const Center(child : CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          // Gérez les erreurs liées à la récupération de la position.
-          return Center(child: Text('Erreur: ${snapshot.error}'));
-        } else {
-          // Si la position est récupérée avec succès, mettez à jour les options de la carte.
-          Position currentPosition = snapshot.data as Position;
-
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text('Map Configuration'),
+    if (isLoading) {
+      return Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    } else {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Map Configuration')),
+        body: FlutterMap(
+          options: MapOptions(
+            onTap: (_, ll) {
+              polyEditor.add(testPolygon.points, ll);
+            },
+            initialCenter: LatLng(currentPosition.latitude, currentPosition.longitude),
+            initialZoom: 15,
+          ),
+          children: [
+            TileLayer(
+              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             ),
-            body:
-              Stack(
-                children: [
-                  FlutterMap(
-                    options: MapOptions(
-                      initialCenter: LatLng(currentPosition.latitude, currentPosition.longitude), // Mise à jour du centre de la carte.
-                      initialZoom: 15,
-                    ),
-                    children: [
-                      TileLayer(
-                        urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                        userAgentPackageName: 'com.hideandstreet.app',
-                      ),
-                      const RichAttributionWidget(
-                        attributions: [
-                          TextSourceAttribution(
-                            'OpenStreetMap contributors',
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-/*
-                  Center(
-                    child: Container(
-                      width: 250.0,
-                      height: 250.0,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.blue.withOpacity(0.3),
-                        border: Border.all(
-                          color: Colors.blue,
-                          width: 2.0,
-                        ),
-                      ),
-                    ),
-                  ),
-*/
-
-                ],
-              )
-          );
-        }
-      },
-    );
+            PolygonLayer(polygons: polygons),
+            DragMarkers(markers: polyEditor.edit()),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.replay),
+          onPressed: () {
+            setState(() {
+              testPolygon.points.clear();
+            });
+          },
+        ),
+      );
+    }
   }
 }
