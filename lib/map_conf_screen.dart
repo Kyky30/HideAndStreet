@@ -69,25 +69,47 @@ class MapConfScreen extends StatelessWidget {
             appBar: AppBar(
               title: const Text('Map Configuration'),
             ),
-            body: FlutterMap(
-              options: MapOptions(
-                initialCenter: LatLng(currentPosition.latitude, currentPosition.longitude), // Mise à jour du centre de la carte.
-                initialZoom: 15,
-              ),
-              children: [
-                TileLayer(
-                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  userAgentPackageName: 'com.hideandstreet.app',
-                ),
-                const RichAttributionWidget(
-                  attributions: [
-                    TextSourceAttribution(
-                      'OpenStreetMap contributors',
+            body:
+              Stack(
+                children: [
+                  FlutterMap(
+                    options: MapOptions(
+                      initialCenter: LatLng(currentPosition.latitude, currentPosition.longitude), // Mise à jour du centre de la carte.
+                      initialZoom: 15,
                     ),
-                  ],
-                ),
-              ],
-            ),
+                    children: [
+                      TileLayer(
+                        urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        userAgentPackageName: 'com.hideandstreet.app',
+                      ),
+                      const RichAttributionWidget(
+                        attributions: [
+                          TextSourceAttribution(
+                            'OpenStreetMap contributors',
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+/*
+                  Center(
+                    child: Container(
+                      width: 250.0,
+                      height: 250.0,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.blue.withOpacity(0.3),
+                        border: Border.all(
+                          color: Colors.blue,
+                          width: 2.0,
+                        ),
+                      ),
+                    ),
+                  ),
+*/
+
+                ],
+              )
           );
         }
       },
