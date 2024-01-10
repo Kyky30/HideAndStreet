@@ -27,7 +27,7 @@ class _MapConfScreen extends State<MapConfScreen> {
             LatLng(currentPosition.latitude, currentPosition.longitude);
         isLoading =
         false; // Set loading state to false when the position is determined
-        radius = 10;
+        radius = 150;
       });
     });
   }
