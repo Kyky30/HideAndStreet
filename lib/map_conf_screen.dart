@@ -5,6 +5,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
 class MapConfScreen extends StatelessWidget {
+  const MapConfScreen({super.key});
+
 
   /// Determine the current position of the device.
   ///
@@ -55,7 +57,7 @@ class MapConfScreen extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           // Affichez un indicateur de chargement pendant que la position est récupérée.
-          return CircularProgressIndicator();
+          return const Center(child : CircularProgressIndicator());
         } else if (snapshot.hasError) {
           // Gérez les erreurs liées à la récupération de la position.
           return Center(child: Text('Erreur: ${snapshot.error}'));
@@ -70,12 +72,12 @@ class MapConfScreen extends StatelessWidget {
             body: FlutterMap(
               options: MapOptions(
                 initialCenter: LatLng(currentPosition.latitude, currentPosition.longitude), // Mise à jour du centre de la carte.
-                initialZoom: 9.2,
+                initialZoom: 15,
               ),
               children: [
                 TileLayer(
                   urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  userAgentPackageName: 'com.example.app',
+                  userAgentPackageName: 'com.hideandstreet.app',
                 ),
                 const RichAttributionWidget(
                   attributions: [
