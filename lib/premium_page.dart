@@ -6,6 +6,8 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 
 
 class PremiumPage extends StatelessWidget {
+  const PremiumPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,10 +28,6 @@ class PremiumPage extends StatelessWidget {
               onPressed: () async {
                 await Purchases.purchaseProduct('premium_subscription');
               },
-              child: Text(
-                "Acheter Premium",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
-              ),
               style: ElevatedButton.styleFrom(
                 shape: SmoothRectangleBorder(
                   borderRadius: SmoothBorderRadius(
@@ -40,6 +38,10 @@ class PremiumPage extends StatelessWidget {
                 minimumSize: const Size(double.infinity, 80),
                 backgroundColor: const Color(0xFF373967),
                 foregroundColor: const Color(0xFF212348),
+              ),
+              child: Text(
+                AppLocalizations.of(context)!.acheterpremium,
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
               ),
             ),
           ],

@@ -87,7 +87,7 @@
     "@espacevide": {
         "description": "Bouton d'espace vide"
     },
-    "infospremium": "Informations sur le premium",
+    "infospremium": "Acheter le premium",
     "@infospremium": {
         "description": "Bouton d'informations premium"
     },
