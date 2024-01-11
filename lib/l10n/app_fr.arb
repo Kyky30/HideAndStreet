@@ -1,0 +1,96 @@
+{
+    "connexion": "Connexion",
+    "@connexion": {
+      "description": "Bouton de connexion"
+    },
+    "deconnexion": "Déconnexion",
+    "@deconnexion": {
+        "description": "Bouton de déconnexion"
+    },
+    "accueil": "Accueil",
+    "@accueil": {
+        "description": "Bouton d'accueil"
+    },
+    "profil": "Profil",
+    "@profil": {
+        "description": "Bouton de profil"
+    },
+    "inscription": "Inscription",
+    "@inscription": {
+        "description": "Bouton d'inscription"
+    },
+    "boutique": "Boutique",
+    "@boutique": {
+        "description": "Bouton de boutique"
+    },
+    "mail": "Mail",
+    "@mail": {
+        "description": "Bouton de mail"
+    },
+    "mdp": "Mot de passe",
+    "@mdp": {
+        "description": "Bouton de mot de passe"
+    },
+    "mdpoublie": "Mot de passe oublié ?",
+    "@mdpOublie": {
+        "description": "Bouton de mot de passe oublié"
+    },
+    "creerpartie": "Créer une partie",
+    "@creerpartie": {
+        "description": "Bouton de création de partie"
+    },
+    "rejoindrepartie": "Rejoindre une partie",
+    "@rejoindrepartie": {
+        "description": "Bouton de rejoindre une partie"
+    },
+    "nbparties": "- Le nombre de parties est illimité (contre 3 parties par semaine pour les non-premiums)",
+    "@nbparties": {
+        "description": "Bouton de nombre de parties"
+    },
+    "publicite": "- Les publicités sont supprimées",
+    "@publicite": {
+        "description": "Bouton de publicité"
+    },
+    "modesdejeu": "Modes de jeu",
+    "@modesdejeu": {
+        "description": "Bouton de modes de jeu"
+    },
+    "modesdejeutabprem": "- Tous les modes de jeu sont débloqués",
+    "@modesdejeutableaupremium": {
+        "description": "Bouton de modes de jeu tableau premium"
+    },
+    "reglagessupptabprem": "- Tous les paramètres de personnalisation de parties sont débloqués",
+    "@reglagessupptabprem": {
+        "description": "Bouton de règles supplémentaires tableau premium"
+    },
+    "cosmetiquesuppmoistabprem": "- Un cosmétique exclusif est distribué chaque mois",
+    "@cosmetiquesupptabprem": {
+        "description": "Bouton de cosmétiques supplémentaires tableau premium"
+    },
+    "cosmetiquesupptabprem": "- Deux cosmétiques exclusifs sont donnés au démarrage de l'abonnement",
+    "@cosmetiquesupptabprem": {
+        "description": "Bouton de cosmétiques supplémentaires tableau premium"
+    },
+    "illimite": "Illimité",
+    "@illimite": {
+        "description": "Bouton d'illimité"
+    },
+    "acheterpremium": "Acheter Premium",
+    "@acheterpremium": {
+        "description": "Bouton d'achat premium"
+    },
+    "avantagespremium": "Avantages du premium",
+    "@avantagespremium": {
+        "description": "Bouton d'avantages premium"
+    },
+    "espacevide": " ",
+    "@espacevide": {
+        "description": "Bouton d'espace vide"
+    },
+    "infospremium": "Informations sur le premium",
+    "@infospremium": {
+        "description": "Bouton d'informations premium"
+    }
+
+
+}

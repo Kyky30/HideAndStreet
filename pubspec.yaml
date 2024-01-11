@@ -41,6 +41,10 @@ dependencies:
   latlong2: ^0.9.0
   flutter_map_cancellable_tile_provider: ^2.0.0
   geolocator: ^10.1.0
+  url_launcher: ^6.2.3
+  flutter_localization:
+  intl: ^0.18.1
+  purchases_flutter: ^6.6.0
 
 
 dev_dependencies:
@@ -59,10 +63,7 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
+  generate: true
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:

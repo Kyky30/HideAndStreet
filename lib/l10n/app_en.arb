@@ -1,0 +1,15 @@
+{
+  "connexion": "Login",
+  "deconnexion": "Unlog",
+  "accueil": "Home",
+  "profil": "Profile",
+  "inscription": "Register",
+  "boutique": "Shop",
+  "mail": "Mail",
+  "mdp": "Password",
+  "mdpoublie": "Forgot password ?",
+  "creerpartie": "Create a game",
+  "rejoindrepartie": "Join a game"
+
+
+}
