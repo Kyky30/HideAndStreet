@@ -144,8 +144,23 @@ class _MyHomePageState extends State<MyHomePage> {
                 final message = messages[index];
 
                 if (message.imageBytes != null) {
-                  return ListTile(
-                    title: Image.memory(message.imageBytes!),
+                  // Utilisez le widget GestureDetector pour détecter les clics sur l'image
+                  return GestureDetector(
+                    onTap: () {
+                      // Affichez l'image en plein écran
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FullScreenImage(
+                            imageBytes: message.imageBytes!,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Hero(
+                      tag: 'imageHero$index',
+                      child: Image.memory(message.imageBytes!),
+                    ),
                   );
                 } else {
                   return ListTile(
@@ -192,6 +207,28 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class FullScreenImage extends StatelessWidget {
+  final Uint8List imageBytes;
+
+  const FullScreenImage({Key? key, required this.imageBytes}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: GestureDetector(
+          // Fermez l'image en plein écran lorsqu'on clique dessus
+          onTap: () => Navigator.pop(context),
+          child: Hero(
+            tag: 'imageHero', // Utilisez le même tag qu'à l'écran principal
+            child: Image.memory(imageBytes),
+          ),
+        ),
       ),
     );
   }
