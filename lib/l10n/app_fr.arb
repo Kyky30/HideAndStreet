@@ -90,7 +90,25 @@
     "infospremium": "Informations sur le premium",
     "@infospremium": {
         "description": "Bouton d'informations premium"
+    },
+    "confirmer": "Confirmer",
+    "@confirmer": {
+        "description": "Bouton de confirmation"
+    },
+    "centrer": "Centrer",
+    "@centrer": {
+        "description": "Bouton de centrage"
+    },
+    "configmaptitle": "Configuration de la carte",
+    "@configmaptitle": {
+        "description": "Titre de la configuration de la carte"
+    },
+    "creerpatietitle": "Créer une partie",
+    "@creerpartietitle": {
+        "description": "Titre de création de partie"
+    },
+    "rejoindrepartietitle": "Rejoindre une partie",
+    "@rejoindrepartietitle": {
+        "description": "Titre de rejoindre une partie"
     }
-
-
 }

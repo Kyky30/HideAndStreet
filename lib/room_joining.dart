@@ -8,7 +8,7 @@ class RoomJoiningPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Rejoindre une partie'),
+        title: Text(AppLocalizations.of(context)!.rejoindrepartie),
       ),
       body: Center(
         child: Text('Contenu de la page de rejoindre la partie'),

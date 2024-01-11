@@ -1,7 +1,10 @@
+import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class MapConfScreen extends StatefulWidget {
   const MapConfScreen({super.key});
@@ -77,7 +80,7 @@ class _MapConfScreen extends State<MapConfScreen> {
       );
     } else {
       return Scaffold(
-        appBar: AppBar(title: const Text('Map Configuration')),
+        appBar: AppBar(title: Text(AppLocalizations.of(context)!.configmaptitle)),
         body: Column(
           children: [
             Expanded(
@@ -119,6 +122,58 @@ class _MapConfScreen extends State<MapConfScreen> {
               min: 15,
               max: 1000,
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: SmoothRectangleBorder(
+                      borderRadius: SmoothBorderRadius(
+                        cornerRadius: 20,
+                        cornerSmoothing: 1,
+                      ),
+                    ),
+                    // minimumSize: const Size(double.infinity, 80),
+
+                    backgroundColor: const Color(0xFF373967),
+                    foregroundColor: const Color(0xFF212348),
+                    fixedSize: Size(MediaQuery.of(context).size.width / 2 - 20, 80),
+                  ),
+                  child: Text(
+                    AppLocalizations.of(context)!.confirmer,
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      tapPosition = LatLng(currentPosition.latitude, currentPosition.longitude);
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: SmoothRectangleBorder(
+                      borderRadius: SmoothBorderRadius(
+                        cornerRadius: 20,
+                        cornerSmoothing: 1,
+                      ),
+                    ),
+                    // minimumSize: const Size(double.infinity, 80),
+
+                    backgroundColor: const Color(0xFF373967),
+                    foregroundColor: const Color(0xFF212348),
+                    fixedSize: Size(MediaQuery.of(context).size.width / 2 - 20, 80),
+                  ),
+                  child: Text(
+                    AppLocalizations.of(context)!.centrer,
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20), //margin entre les boutons et le bas de l'écran
           ],
         ),
       );

@@ -8,7 +8,7 @@ class RoomCreationPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Créer une partie'),
+        title: Text(AppLocalizations.of(context)!.creerpartie),
       ),
       body: Center(
         child: Text('Contenu de la création de la partie'),
