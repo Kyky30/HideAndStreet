@@ -103,7 +103,7 @@ class _MapConfScreen extends State<MapConfScreen> {
                       borderColor: Colors.black,
                       borderStrokeWidth: 2,
                       useRadiusInMeter: true,
-                      radius: radius,
+                      radius: radius, //in meters
                     ),
                   ]),
                 ],
@@ -116,7 +116,7 @@ class _MapConfScreen extends State<MapConfScreen> {
                   radius = newRadius;
                 });
               },
-              min: 10,
+              min: 15,
               max: 1000,
             ),
           ],
