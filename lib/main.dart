@@ -6,6 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:intl/intl.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -19,10 +21,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter WebSocket Chat',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Chat en Direct'),
+      home: const MyHomePage(title: 'Chat de la Partie'),
     );
   }
 }
@@ -93,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
       list,
       minHeight: 1920,
       minWidth: 1080,
-      quality: 96,
+      quality: 30,
     );
     print(list.length);
     print(result.length);
@@ -153,6 +155,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         MaterialPageRoute(
                           builder: (context) => FullScreenImage(
                             imageBytes: message.imageBytes!,
+                            timestamp: message.timestamp,
                           ),
                         ),
                       );
@@ -164,18 +167,30 @@ class _MyHomePageState extends State<MyHomePage> {
                   );
                 } else {
                   return ListTile(
-                    title: Container(
-                      padding: const EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                        color: message.isUser ? Colors.blue : Colors.grey[200],
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: Text(
-                        message.text!,
-                        style: TextStyle(
-                          color: message.isUser ? Colors.white : Colors.black,
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            color: message.isUser ? Colors.blue : Colors.grey[200],
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: Text(
+                            message.text!,
+                            style: TextStyle(
+                              color: message.isUser ? Colors.white : Colors.black,
+                            ),
+                          ),
                         ),
-                      ),
+                        Text(
+                          DateFormat.Hm().format(message.timestamp),
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12.0,
+                          ),
+                        ),
+                      ],
                     ),
                   );
                 }
@@ -214,20 +229,34 @@ class _MyHomePageState extends State<MyHomePage> {
 
 class FullScreenImage extends StatelessWidget {
   final Uint8List imageBytes;
+  final DateTime timestamp;
 
-  const FullScreenImage({Key? key, required this.imageBytes}) : super(key: key);
+  const FullScreenImage({Key? key, required this.imageBytes, required this.timestamp}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: GestureDetector(
-          // Fermez l'image en plein écran lorsqu'on clique dessus
-          onTap: () => Navigator.pop(context),
-          child: Hero(
-            tag: 'imageHero', // Utilisez le même tag qu'à l'écran principal
-            child: Image.memory(imageBytes),
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            GestureDetector(
+              // Fermez l'image en plein écran lorsqu'on clique dessus
+              onTap: () => Navigator.pop(context),
+              child: Hero(
+                tag: 'imageHero', // Utilisez le même tag qu'à l'écran principal
+                child: Image.memory(imageBytes),
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            Text(
+              DateFormat.Hm().format(timestamp),
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 16.0,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -238,6 +267,8 @@ class Message {
   final String? text;
   final Uint8List? imageBytes;
   final bool isUser;
+  final DateTime timestamp;
 
-  Message({this.text, required this.isUser, this.imageBytes});
+  Message({this.text, required this.isUser, this.imageBytes})
+      : timestamp = DateTime.now();
 }
