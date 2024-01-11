@@ -6,6 +6,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -45,19 +48,15 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    // Écoute les messages WebSocket du serveur
     channel.stream.listen((dynamic message) {
       setState(() {
         if (message is String) {
-          // Message texte
           messages.add(Message(text: message, isUser: false));
         } else if (message is Uint8List) {
-          // Message image
           messages.add(Message(imageBytes: message, isUser: false));
         }
       });
 
-      // Fait défiler les messages vers le bas
       _scrollController.animateTo(
         _scrollController.position.maxScrollExtent,
         duration: const Duration(milliseconds: 300),
@@ -79,7 +78,6 @@ class _MyHomePageState extends State<MyHomePage> {
         messages.add(userPhotoMessage);
       });
 
-      // Fait défiler les messages vers le bas
       _scrollController.animateTo(
         _scrollController.position.maxScrollExtent,
         duration: const Duration(milliseconds: 300),
@@ -93,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
       list,
       minHeight: 1920,
       minWidth: 1080,
-      quality: 96,
+      quality: 30,
     );
     print(list.length);
     print(result.length);
@@ -101,7 +99,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _sendMessage() {
-    // Envoye le message au serveur WebSocket
     final userMessage = Message(text: _messageController.text, isUser: true);
     channel.sink.add(utf8.encode(userMessage.text!));
 
@@ -109,7 +106,6 @@ class _MyHomePageState extends State<MyHomePage> {
       messages.add(userMessage);
     });
 
-    // Fait défiler la liste vers le bas
     _scrollController.animateTo(
       _scrollController.position.maxScrollExtent,
       duration: const Duration(milliseconds: 300),
@@ -121,7 +117,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void dispose() {
-    // Ferme la connexion WebSocket et le contrôleur de texte lorsque le widget est détruit
     channel.sink.close();
     _messageController.dispose();
     super.dispose();
@@ -144,10 +139,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 final message = messages[index];
 
                 if (message.imageBytes != null) {
-                  // Utilisez le widget GestureDetector pour détecter les clics sur l'image
                   return GestureDetector(
                     onTap: () {
-                      // Affichez l'image en plein écran
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -157,9 +150,30 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       );
                     },
-                    child: Hero(
-                      tag: 'imageHero$index',
-                      child: Image.memory(message.imageBytes!),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        height: 425.0,
+                        child: Hero(
+                          tag: 'image_$index',
+                          child: PhotoViewGallery.builder(
+                            itemCount: 1,
+                            builder: (context, index) {
+                              return PhotoViewGalleryPageOptions(
+                                imageProvider: MemoryImage(message.imageBytes!),
+                                minScale: PhotoViewComputedScale.contained,
+                                maxScale: PhotoViewComputedScale.covered * 2,
+                              );
+                            },
+                            scrollPhysics: NeverScrollableScrollPhysics(),
+                            backgroundDecoration: BoxDecoration(
+                              color: Colors.transparent,
+                            ),
+                            pageController: PageController(),
+                          ),
+                        ),
+                      ),
                     ),
                   );
                 } else {
@@ -195,7 +209,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: TextField(
                     controller: _messageController,
                     decoration: const InputDecoration(
-                      hintText: 'Type your message...',
+                      hintText: 'Type du message...',
                     ),
                   ),
                 ),
@@ -215,18 +229,23 @@ class _MyHomePageState extends State<MyHomePage> {
 class FullScreenImage extends StatelessWidget {
   final Uint8List imageBytes;
 
-  const FullScreenImage({Key? key, required this.imageBytes}) : super(key: key);
+  const FullScreenImage({required this.imageBytes});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: GestureDetector(
-          // Fermez l'image en plein écran lorsqu'on clique dessus
-          onTap: () => Navigator.pop(context),
-          child: Hero(
-            tag: 'imageHero', // Utilisez le même tag qu'à l'écran principal
-            child: Image.memory(imageBytes),
+      body: GestureDetector(
+        onTap: () {
+          Navigator.pop(context);
+        },
+        child: Center(
+          child: PhotoView(
+            imageProvider: MemoryImage(imageBytes),
+            minScale: PhotoViewComputedScale.contained,
+            maxScale: PhotoViewComputedScale.covered * 2,
+            backgroundDecoration: BoxDecoration(
+              color: Colors.transparent,
+            ),
           ),
         ),
       ),
