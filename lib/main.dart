@@ -1,7 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:crypto/crypto.dart';
+import 'dart:typed_data';
 import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,12 +17,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Flutter WebSocket Chat',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Chat en Direct'),
     );
   }
 }
@@ -33,46 +37,94 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  final channel = IOWebSocketChannel.connect('ws://193.38.250.113:3000');
+  final TextEditingController _messageController = TextEditingController();
+  final List<Message> messages = [];
+  final ScrollController _scrollController = ScrollController();
 
-  Future<void> fetchData(String username, String password) async {
-    try {
-      final key = 'cle_secrete';
-      final encryptedUsername = encryptAES(username, key);
-      final encryptedPassword = encryptAES(password, key);
+  @override
+  void initState() {
+    super.initState();
+    // Écoute les messages WebSocket du serveur
+    channel.stream.listen((dynamic message) {
+      setState(() {
+        if (message is String) {
+          // Message texte
+          messages.add(Message(text: message, isUser: false));
+        } else if (message is Uint8List) {
+          // Message image
+          messages.add(Message(imageBytes: message, isUser: false));
+        }
+      });
 
-      final response = await http.get(Uri.parse('http://193.38.250.113:3000/utilisateurs?username=$encryptedUsername&password=$encryptedPassword'));
+      // Fait défiler les messages vers le bas
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    });
+  }
 
-      if (response.statusCode == 200) {
-        final decodedResponse = response.body;
-        print('Réponse du serveur : $decodedResponse');
-      } else {
-        print('Erreur de requête : ${response.statusCode}');
-        throw Exception('Erreur de requête : ${response.statusCode}');
-      }
-    } catch (error) {
-      print('Erreur de connexion: $error');
-      throw Exception('Erreur de connexion: $error');
+  Future<void> _captureAndSendPhoto() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+
+    if (pickedFile != null) {
+      final imageBytes = await testCompressList(await pickedFile.readAsBytes());
+      final userPhotoMessage = Message(imageBytes: imageBytes, isUser: true);
+      channel.sink.add(imageBytes);
+
+      setState(() {
+        messages.add(userPhotoMessage);
+      });
+
+      // Fait défiler les messages vers le bas
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
     }
   }
 
-  String encryptAES(String data, String key) {
-    final bytes = utf8.encode(data);
-    final keyBytes = utf8.encode(key);
-    final encrypted = List<int>.from(bytes.map((e) => e ^ keyBytes[0]));
-
-    return base64.encode(encrypted);
+  Future<Uint8List> testCompressList(Uint8List list) async {
+    var result = await FlutterImageCompress.compressWithList(
+      list,
+      minHeight: 1920,
+      minWidth: 1080,
+      quality: 96,
+    );
+    print(list.length);
+    print(result.length);
+    return result;
   }
 
-  void _incrementCounter() {
+  void _sendMessage() {
+    // Envoye le message au serveur WebSocket
+    final userMessage = Message(text: _messageController.text, isUser: true);
+    channel.sink.add(utf8.encode(userMessage.text!));
+
     setState(() {
-      fetchData(usernameController.text, passwordController.text).catchError((error) {
-        print('Erreur dans fetchData: $error');
-      });
-      _counter++;
+      messages.add(userMessage);
     });
+
+    // Fait défiler la liste vers le bas
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
+
+    _messageController.clear();
+  }
+
+  @override
+  void dispose() {
+    // Ferme la connexion WebSocket et le contrôleur de texte lorsque le widget est détruit
+    channel.sink.close();
+    _messageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -82,40 +134,73 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            TextField(
-              controller: usernameController,
-              decoration: InputDecoration(
-                labelText: 'Username',
-              ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              controller: _scrollController,
+              itemCount: messages.length,
+              itemBuilder: (context, index) {
+                final message = messages[index];
+
+                if (message.imageBytes != null) {
+                  return ListTile(
+                    title: Image.memory(message.imageBytes!),
+                  );
+                } else {
+                  return ListTile(
+                    title: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                        color: message.isUser ? Colors.blue : Colors.grey[200],
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Text(
+                        message.text!,
+                        style: TextStyle(
+                          color: message.isUser ? Colors.white : Colors.black,
+                        ),
+                      ),
+                    ),
+                  );
+                }
+              },
             ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: passwordController,
-              decoration: InputDecoration(
-                labelText: 'Password',
-              ),
-              obscureText: true, // Masquer le mot de passe en affichant des points
+          ),
+          const Divider(),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.camera_alt),
+                  onPressed: _captureAndSendPhoto,
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: _messageController,
+                    decoration: const InputDecoration(
+                      hintText: 'Type your message...',
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.send),
+                  onPressed: _sendMessage,
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline6,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+          ),
+        ],
       ),
     );
   }
+}
+
+class Message {
+  final String? text;
+  final Uint8List? imageBytes;
+  final bool isUser;
+
+  Message({this.text, required this.isUser, this.imageBytes});
 }
