@@ -8,7 +8,6 @@ import 'package:hide_and_street/account_settings.dart';
 import 'package:hide_and_street/login.dart';
 
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:material_symbols_icons/material_symbols_icons.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -16,10 +15,12 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -27,9 +28,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: LoginPage(),  // Définissez votre page LoginPage comme page d'accueil
+      home: const LoginPage(),  // Définissez votre page LoginPage comme page d'accueil
       routes: {
-        '/home': (context) => MyHomePage(),  // Ajoutez cette ligne si vous avez une page home.dart
+        '/home': (context) => const MyHomePage(),  // Ajoutez cette ligne si vous avez une page home.dart
       },
       supportedLocales: L10n.all,
       //locale: const Locale('fr'),
@@ -53,6 +54,8 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -62,8 +65,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final List<Widget> _tabs = [
     ShopPage(),
-    HomePage(),
-    AccountSettingsPage(),
+    const HomePage(),
+    const AccountSettingsPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -79,15 +82,15 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Symbols.shopping_cart_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24 ),
+            icon: const Icon(Symbols.shopping_cart_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24 ),
             label: AppLocalizations.of(context)!.boutique,
           ),
           BottomNavigationBarItem(
-            icon: Icon( Symbols.home_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24 ),
+            icon: const Icon( Symbols.home_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24 ),
             label: AppLocalizations.of(context)!.accueil,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Symbols.settings_account_box_rounded,fill: 1, weight: 700, grade: 200, opticalSize: 24 ),
+            icon: const Icon(Symbols.settings_account_box_rounded,fill: 1, weight: 700, grade: 200, opticalSize: 24 ),
             label: AppLocalizations.of(context)!.profil,
           ),
         ],

@@ -26,7 +26,7 @@ class PremiumPage extends StatelessWidget {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () async {
-                await Purchases.purchaseProduct('premium_subscription');
+                await Purchases.purchaseStoreProduct('premium_subscription' as StoreProduct); // Correction d'un warning pouvant poser probléme
               },
               style: ElevatedButton.styleFrom(
                 shape: SmoothRectangleBorder(

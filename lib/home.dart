@@ -12,6 +12,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,11 +55,11 @@ class HomePage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => MapConfScreen(),
+                        builder: (context) => const MapConfScreen(),
                       ),
                     );
                   },
-                  child: Text('Aller à la carte'),
+                  child: const Text('Aller à la carte'),
                 ),
               ),
               const SizedBox(height: 16),
@@ -70,11 +72,11 @@ class HomePage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => PremiumPage(),
+                        builder: (context) => const PremiumPage(),
                       ),
                     );
                   },
-                  child: Text('Aller à la page premium'),
+                  child: const Text('Aller à la page premium'),
                 ),
               ),
               const SizedBox(height: 16),
@@ -91,10 +93,6 @@ class HomePage extends StatelessWidget {
                       ),
                     );
                   },
-                  child: Text(
-                    AppLocalizations.of(context)!.creerpartie,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
-                  ),
                   style: ElevatedButton.styleFrom(
                     shape: SmoothRectangleBorder(
                       borderRadius: SmoothBorderRadius(
@@ -105,6 +103,10 @@ class HomePage extends StatelessWidget {
                     minimumSize: const Size(double.infinity, 80),
                     backgroundColor: const Color(0xFF373967),
                     foregroundColor: const Color(0xFF212348),
+                  ),
+                  child: Text(
+                    AppLocalizations.of(context)!.creerpartie,
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
                   ),
                 ),
               ),
@@ -122,10 +124,6 @@ class HomePage extends StatelessWidget {
                       ),
                     );
                   },
-                  child: Text(
-                    AppLocalizations.of(context)!.rejoindrepartie,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
-                  ),
                   style: ElevatedButton.styleFrom(
                     shape: SmoothRectangleBorder(
                       borderRadius: SmoothBorderRadius(
@@ -136,6 +134,10 @@ class HomePage extends StatelessWidget {
                     minimumSize: const Size(double.infinity, 80),
                     backgroundColor: const Color(0xFF373967),
                     foregroundColor: const Color(0xFF212348),
+                  ),
+                  child: Text(
+                    AppLocalizations.of(context)!.rejoindrepartie,
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
                   ),
                 ),
               ),

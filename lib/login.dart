@@ -6,6 +6,8 @@ import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginPage extends StatelessWidget {
+  const LoginPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,10 +86,6 @@ class LoginPage extends StatelessWidget {
                       ),
                     );
                   },
-                  child: Text(
-                    AppLocalizations.of(context)!.connexion,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
-                  ),
                   style: ElevatedButton.styleFrom(
                     shape: SmoothRectangleBorder(
                       borderRadius: SmoothBorderRadius(
@@ -99,18 +97,9 @@ class LoginPage extends StatelessWidget {
                     backgroundColor: const Color(0xFF373967),
                     foregroundColor: const Color(0xFF212348),
                   ),
-                ),
-              ),
-              // Bouton "Mot de passe oublié ?"
-              Padding(
-                padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                child: TextButton(
-                  onPressed: () {
-                    launch('https://www.bing.com');
-                  },
                   child: Text(
-                      AppLocalizations.of(context)!.mdpoublie,
-                      style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white )
+                    AppLocalizations.of(context)!.connexion,
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
                   ),
                 ),
               ),
@@ -119,11 +108,24 @@ class LoginPage extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                 child: TextButton(
                   onPressed: () {
-                    launch('https://www.bing.com');
+                    launchUrl('https://www.bing.com' as Uri);
+                  },
+                  child: Text(
+                      AppLocalizations.of(context)!.mdpoublie,
+                      style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white )
+                  ),
+                ),
+              ),
+              // Bouton "Mot de passe oublié ?"
+              Padding(
+                padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                child: TextButton(
+                  onPressed: () {
+                    launchUrl('https://www.bing.com' as Uri);
                   },
                   child: Text(
                       AppLocalizations.of(context)!.inscription,
-                      style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white )
+                      style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white )
                   ),
                 ),
               ),
