@@ -23,9 +23,17 @@
     "@boutique": {
         "description": "Bouton de boutique"
     },
-    "mail": "Mail",
+    "mail": "Email",
     "@mail": {
         "description": "Bouton de mail"
+    },
+    "continuer" : "Continuer",
+    "@continue": {
+        "description": "Bouton de continuer"
+    },
+    "whatmail" : "Quel est votre email ?",
+    "@mail?": {
+        "description": "textfield de mail"
     },
     "mdp": "Mot de passe",
     "@mdp": {
@@ -34,6 +42,10 @@
     "mdpoublie": "Mot de passe oublié ?",
     "@mdpOublie": {
         "description": "Bouton de mot de passe oublié"
+    },
+    "mdpOublieTitle" : "Mot de passe oublié",
+    "@mdpOublieTitle": {
+        "description": "Titre de mot de passe oublié"
     },
     "creerpartie": "Créer une partie",
     "@creerpartie": {
@@ -64,10 +76,6 @@
         "description": "Bouton de règles supplémentaires tableau premium"
     },
     "cosmetiquesuppmoistabprem": "- Un cosmétique exclusif est distribué chaque mois",
-    "@cosmetiquesupptabprem": {
-        "description": "Bouton de cosmétiques supplémentaires tableau premium"
-    },
-    "cosmetiquesupptabprem": "- Deux cosmétiques exclusifs sont donnés au démarrage de l'abonnement",
     "@cosmetiquesupptabprem": {
         "description": "Bouton de cosmétiques supplémentaires tableau premium"
     },

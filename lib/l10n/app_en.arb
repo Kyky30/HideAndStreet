@@ -5,7 +5,7 @@
   "profil": "Profile",
   "inscription": "Register",
   "boutique": "Shop",
-  "mail": "Mail",
+  "mail": "Email",
   "mdp": "Password",
   "mdpoublie": "Forgot password ?",
   "creerpartie": "Create a game",
@@ -26,5 +26,8 @@
   "centrer": "Center",
   "configmaptitle" : "Map configuration",
   "creerpatietitle" : "Create a game",
-  "rejoindrepartietitle" : "Join a game"
+  "rejoindrepartietitle" : "Join a game",
+  "whatmail" : "What is your email address?",
+  "continuer" : "Continue",
+  "mdpOublieTitle" : "Forgot password"
 }

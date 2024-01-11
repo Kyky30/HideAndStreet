@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hide_and_street/main.dart';
+import 'package:hide_and_street/password_forgoten.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 
@@ -108,7 +109,12 @@ class LoginPage extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                 child: TextButton(
                   onPressed: () {
-                    launchUrl('https://www.bing.com' as Uri);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ForgotenPassword(),
+                      ),
+                    );
                   },
                   child: Text(
                       AppLocalizations.of(context)!.mdpoublie,

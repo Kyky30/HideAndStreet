@@ -64,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 1; // Commence par la page d'accueil (index 1).
 
   final List<Widget> _tabs = [
-    ShopPage(),
+    const ShopPage(),
     const HomePage(),
     const AccountSettingsPage(),
   ];
