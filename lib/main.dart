@@ -9,6 +9,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
+import 'package:intl/intl.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Chat en Direct'),
+      home: const MyHomePage(title: 'Chat de la Partie'),
     );
   }
 }
@@ -44,19 +45,32 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _messageController = TextEditingController();
   final List<Message> messages = [];
   final ScrollController _scrollController = ScrollController();
+  final String username = 'Pseudo';
 
   @override
   void initState() {
     super.initState();
+    // Écoute les messages WebSocket du serveur
     channel.stream.listen((dynamic message) {
       setState(() {
         if (message is String) {
-          messages.add(Message(text: message, isUser: false));
+          // Message texte
+          messages.add(Message(text: message, isUser: false, username: 'Server'));
+        } else if (message is Map<String, dynamic>) {
+          // Message avec informations utilisateur (pseudo + contenu)
+          final userMessage = Message(
+            text: message['text'],
+            isUser: true,
+            username: message['username'],
+          );
+          messages.add(userMessage);
         } else if (message is Uint8List) {
-          messages.add(Message(imageBytes: message, isUser: false));
+          // Message image
+          messages.add(Message(imageBytes: message, isUser: false, username: 'Server'));
         }
       });
 
+      // Fait défiler les messages vers le bas
       _scrollController.animateTo(
         _scrollController.position.maxScrollExtent,
         duration: const Duration(milliseconds: 300),
@@ -99,13 +113,15 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _sendMessage() {
-    final userMessage = Message(text: _messageController.text, isUser: true);
+    // Envoye le message au serveur WebSocket
+    final userMessage = Message(text: _messageController.text, isUser: true, username: username);
     channel.sink.add(utf8.encode(userMessage.text!));
 
     setState(() {
       messages.add(userMessage);
     });
 
+    // Fait défiler la liste vers le bas
     _scrollController.animateTo(
       _scrollController.position.maxScrollExtent,
       duration: const Duration(milliseconds: 300),
@@ -117,6 +133,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void dispose() {
+    // Ferme la connexion WebSocket et le contrôleur de texte lorsque le widget est détruit
     channel.sink.close();
     _messageController.dispose();
     super.dispose();
@@ -139,13 +156,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 final message = messages[index];
 
                 if (message.imageBytes != null) {
+                  // Utilisez le widget GestureDetector pour détecter les clics sur l'image
                   return GestureDetector(
                     onTap: () {
+                      // Affichez l'image en plein écran
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => FullScreenImage(
                             imageBytes: message.imageBytes!,
+                            timestamp: message.timestamp,
                           ),
                         ),
                       );
@@ -167,18 +187,42 @@ class _MyHomePageState extends State<MyHomePage> {
                   );
                 }else {
                   return ListTile(
-                    title: Container(
-                      padding: const EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                        color: message.isUser ? Colors.blue : Colors.grey[200],
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: Text(
-                        message.text!,
-                        style: TextStyle(
-                          color: message.isUser ? Colors.white : Colors.black,
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            color: message.isUser ? Colors.blue : Colors.grey[200],
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                message.username ?? '', // Affichez le nom d'utilisateur ici
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                message.text!,
+                                style: TextStyle(
+                                  color: message.isUser ? Colors.white : Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
+                        Text(
+                          DateFormat.Hm().format(message.timestamp),
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12.0,
+                          ),
+                        ),
+                      ],
                     ),
                   );
                 }
@@ -217,8 +261,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
 class FullScreenImage extends StatelessWidget {
   final Uint8List imageBytes;
+  final DateTime timestamp;
 
-  const FullScreenImage({required this.imageBytes});
+  const FullScreenImage({Key? key, required this.imageBytes, required this.timestamp}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -246,6 +291,9 @@ class Message {
   final String? text;
   final Uint8List? imageBytes;
   final bool isUser;
+  final DateTime timestamp;
+  final String? username;
 
-  Message({this.text, required this.isUser, this.imageBytes});
+  Message({this.text, required this.isUser, this.imageBytes, this.username})
+      : timestamp = DateTime.now();
 }
