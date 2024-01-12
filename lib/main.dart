@@ -114,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     // Vérifie si le message n'est pas vide
     if (messageText.isNotEmpty) {
-      // Envoye le message au serveur WebSocket
+      // Envoie le message au serveur WebSocket
       final userMessage = Message(text: messageText, isUser: true, username: username);
 
       setState(() {
