@@ -76,6 +76,10 @@
         "description": "Bouton de règles supplémentaires tableau premium"
     },
     "cosmetiquesuppmoistabprem": "- Un cosmétique exclusif est distribué chaque mois",
+    "@cosmetiquesuppmoistabprem": {
+        "description": "Bouton de cosmétiques supplémentaires tableau premium"
+    },
+    "cosmetiquesupptabprem": "- Deux cosmétiques exclusifs sont donnés au démarrage de l'abonnement",
     "@cosmetiquesupptabprem": {
         "description": "Bouton de cosmétiques supplémentaires tableau premium"
     },

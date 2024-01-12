@@ -12,15 +12,12 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+      body:
+        SingleChildScrollView(
+          child:
+      Stack(
         children: [
           // Image de fond
-          Positioned.fill(
-            child: Image.asset(
-              'assets/background.png',
-              fit: BoxFit.cover,
-            ),
-          ),
           // Contenu de la page
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -60,14 +57,14 @@ class LoginPage extends StatelessWidget {
 
               // Champ de texte pour le mot de passe
               Padding(
-                padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                padding: const EdgeInsets.fromLTRB(15, 8, 15, 0),
                 child: TextField(
-                  obscureText: true, // Pour masquer le texte du mot de passe
                   decoration: InputDecoration(
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: Colors.grey[300],
                     hintText: AppLocalizations.of(context)!.mdp,
                     border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
                       borderRadius: BorderRadius.circular(20.0),
                     ),
                   ),
@@ -139,6 +136,7 @@ class LoginPage extends StatelessWidget {
           ),
         ],
       ),
+        ),
     );
   }
 }
