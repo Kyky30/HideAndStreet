@@ -47,6 +47,14 @@ class _MyHomePageState extends State<MyHomePage> {
   final ScrollController _scrollController = ScrollController();
   final String username = 'Pseudo';
 
+  void scrollToBottom() {
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 100),
+      curve: Curves.easeOut,
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -71,11 +79,9 @@ class _MyHomePageState extends State<MyHomePage> {
       });
 
       // Fait défiler les messages vers le bas
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
+      WidgetsBinding.instance?.addPostFrameCallback((_) {
+        scrollToBottom();
+      });
     });
   }
 
@@ -85,18 +91,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (pickedFile != null) {
       final imageBytes = await testCompressList(await pickedFile.readAsBytes());
-      final userPhotoMessage = Message(imageBytes: imageBytes, isUser: true);
+      final userPhotoMessage = Message(imageBytes: imageBytes, isUser: true, username: username);
+
       channel.sink.add(imageBytes);
 
       setState(() {
         messages.add(userPhotoMessage);
       });
 
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
+      scrollToBottom();
     }
   }
 
@@ -122,13 +125,122 @@ class _MyHomePageState extends State<MyHomePage> {
     });
 
     // Fait défiler la liste vers le bas
-    _scrollController.animateTo(
-      _scrollController.position.maxScrollExtent,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeOut,
-    );
-
+    scrollToBottom();
     _messageController.clear();
+  }
+
+  Widget buildMessageWidget(Message message) {
+    if (message.imageBytes != null) {
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => FullScreenImage(
+                imageBytes: message.imageBytes!,
+                timestamp: message.timestamp,
+              ),
+            ),
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Row(
+            mainAxisAlignment: message.isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                margin: EdgeInsets.only(left: message.isUser ? 0.0 : 20.0, right: message.isUser ? 20.0 : 0.0),
+                padding: const EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  color: message.isUser ? Colors.blue : Colors.grey[200],
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      message.username ?? '',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.6,
+                        child: Hero(
+                          tag: 'image_${message.timestamp}',
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: Image.memory(
+                              message.imageBytes!,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Text(
+                      DateFormat.Hm().format(message.timestamp),
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 12.0,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    } else {
+      // Le reste du code pour les messages texte
+      return ListTile(
+        title: Column(
+          crossAxisAlignment: message.isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          children: [
+            Container(
+              margin: EdgeInsets.only(left: message.isUser ? 20.0 : 1.0, right: message.isUser ? 1.0 : 20.0),
+              padding: const EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                color: message.isUser ? Colors.blue : Colors.grey[200],
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    message.username ?? '',
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    message.text!,
+                    style: TextStyle(
+                      color: message.isUser ? Colors.white : Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 4.0),
+              child: Text(
+                DateFormat.Hm().format(message.timestamp),
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 12.0,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   @override
@@ -154,78 +266,7 @@ class _MyHomePageState extends State<MyHomePage> {
               itemCount: messages.length,
               itemBuilder: (context, index) {
                 final message = messages[index];
-
-                if (message.imageBytes != null) {
-                  // Utilisez le widget GestureDetector pour détecter les clics sur l'image
-                  return GestureDetector(
-                    onTap: () {
-                      // Affichez l'image en plein écran
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => FullScreenImage(
-                            imageBytes: message.imageBytes!,
-                            timestamp: message.timestamp,
-                          ),
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.1,
-                        height: 425.0,
-                        child: Hero(
-                          tag: 'image_$index',
-                          child: Image.memory(
-                            message.imageBytes!,
-                            // Supprimer cette ligne
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                }else {
-                  return ListTile(
-                    title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            color: message.isUser ? Colors.blue : Colors.grey[200],
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                message.username ?? '', // Affichez le nom d'utilisateur ici
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                message.text!,
-                                style: TextStyle(
-                                  color: message.isUser ? Colors.white : Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Text(
-                          DateFormat.Hm().format(message.timestamp),
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 12.0,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }
+                return buildMessageWidget(message);
               },
             ),
           ),
