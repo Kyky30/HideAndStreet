@@ -52,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         if (message is String) {
           // Message texte
-          messages.add(Message(text: message, isUser: false, username: 'Serveur'));
+          messages.add(Message(text: message, isUser: false, username: 'Server'));
         } else if (message is Map<String, dynamic>) {
           // Message avec informations utilisateur (pseudo + contenu)
           final userMessage = Message(
