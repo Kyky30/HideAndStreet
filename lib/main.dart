@@ -8,7 +8,6 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:intl/intl.dart';
 
-
 void main() {
   runApp(const MyApp());
 }
@@ -43,6 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _messageController = TextEditingController();
   final List<Message> messages = [];
   final ScrollController _scrollController = ScrollController();
+  final String username = 'Pseudo';
 
   @override
   void initState() {
@@ -52,10 +52,18 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         if (message is String) {
           // Message texte
-          messages.add(Message(text: message, isUser: false));
+          messages.add(Message(text: message, isUser: false, username: 'Serveur'));
+        } else if (message is Map<String, dynamic>) {
+          // Message avec informations utilisateur (pseudo + contenu)
+          final userMessage = Message(
+            text: message['text'],
+            isUser: true,
+            username: message['username'],
+          );
+          messages.add(userMessage);
         } else if (message is Uint8List) {
           // Message image
-          messages.add(Message(imageBytes: message, isUser: false));
+          messages.add(Message(imageBytes: message, isUser: false, username: 'Server'));
         }
       });
 
@@ -104,7 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _sendMessage() {
     // Envoye le message au serveur WebSocket
-    final userMessage = Message(text: _messageController.text, isUser: true);
+    final userMessage = Message(text: _messageController.text, isUser: true, username: username);
     channel.sink.add(utf8.encode(userMessage.text!));
 
     setState(() {
@@ -176,11 +184,23 @@ class _MyHomePageState extends State<MyHomePage> {
                             color: message.isUser ? Colors.blue : Colors.grey[200],
                             borderRadius: BorderRadius.circular(8.0),
                           ),
-                          child: Text(
-                            message.text!,
-                            style: TextStyle(
-                              color: message.isUser ? Colors.white : Colors.black,
-                            ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                message.username ?? '', // Affichez le nom d'utilisateur ici
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                message.text!,
+                                style: TextStyle(
+                                  color: message.isUser ? Colors.white : Colors.black,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         Text(
@@ -268,7 +288,8 @@ class Message {
   final Uint8List? imageBytes;
   final bool isUser;
   final DateTime timestamp;
+  final String? username;
 
-  Message({this.text, required this.isUser, this.imageBytes})
+  Message({this.text, required this.isUser, this.imageBytes, this.username})
       : timestamp = DateTime.now();
 }
