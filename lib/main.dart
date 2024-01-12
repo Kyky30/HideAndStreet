@@ -245,7 +245,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void dispose() {
-    // Ferme la connexion WebSocket et le contrôleur de texte lorsque le widget est détruit
+    // Ferme la connexion WebSocket et l contrôleur de texte lorsque le widget est détruit
     channel.sink.close();
     _messageController.dispose();
     super.dispose();
