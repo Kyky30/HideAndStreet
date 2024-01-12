@@ -44,6 +44,14 @@ class _MyHomePageState extends State<MyHomePage> {
   final ScrollController _scrollController = ScrollController();
   final String username = 'Pseudo';
 
+  void scrollToBottom() {
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 100),
+      curve: Curves.easeOut,
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -66,13 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
           messages.add(Message(imageBytes: message, isUser: false, username: 'Server'));
         }
       });
-
-      // Fait défiler les messages vers le bas
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
+      scrollToBottom();
     });
   }
 
@@ -89,12 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
         messages.add(userPhotoMessage);
       });
 
-      // Fait défiler les messages vers le bas
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
+      scrollToBottom();
     }
   }
 
@@ -110,24 +107,32 @@ class _MyHomePageState extends State<MyHomePage> {
     return result;
   }
 
+
   void _sendMessage() {
-    // Envoye le message au serveur WebSocket
-    final userMessage = Message(text: _messageController.text, isUser: true, username: username);
-    channel.sink.add(utf8.encode(userMessage.text!));
+    // Récupère le texte du message
+    final messageText = _messageController.text.trim();
 
-    setState(() {
-      messages.add(userMessage);
-    });
+    // Vérifie si le message n'est pas vide
+    if (messageText.isNotEmpty) {
+      // Envoye le message au serveur WebSocket
+      final userMessage = Message(text: messageText, isUser: true, username: username);
 
-    // Fait défiler la liste vers le bas
-    _scrollController.animateTo(
-      _scrollController.position.maxScrollExtent,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeOut,
-    );
+      setState(() {
+        messages.add(userMessage);
+      });
 
+      // Fait défiler la liste vers le bas
+      scrollToBottom();
+
+      channel.sink.add(utf8.encode(userMessage.text!));
+    }
+
+    // Efface le texte du contrôleur
     _messageController.clear();
   }
+
+
+
 
   @override
   void dispose() {
