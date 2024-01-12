@@ -116,16 +116,25 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _sendMessage() {
-    // Envoye le message au serveur WebSocket
-    final userMessage = Message(text: _messageController.text, isUser: true, username: username);
-    channel.sink.add(utf8.encode(userMessage.text!));
+    // Récupère le texte du message
+    final messageText = _messageController.text.trim();
 
-    setState(() {
-      messages.add(userMessage);
-    });
+    // Vérifie si le message n'est pas vide
+    if (messageText.isNotEmpty) {
+      // Envoie le message au serveur WebSocket
+      final userMessage = Message(text: messageText, isUser: true, username: username);
 
-    // Fait défiler la liste vers le bas
-    scrollToBottom();
+      setState(() {
+        messages.add(userMessage);
+      });
+
+      // Fait défiler la liste vers le bas
+      scrollToBottom();
+
+      channel.sink.add(utf8.encode(userMessage.text!));
+    }
+
+    // Efface le texte du contrôleur
     _messageController.clear();
   }
 
