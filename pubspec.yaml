@@ -46,6 +46,8 @@ dependencies:
   flutter_localization:
   intl: ^0.18.1
   purchases_flutter: ^6.6.0
+  flutter_map_location_marker: ^8.0.3
+  flutter_countdown_timer: ^4.1.0
 
 
 dev_dependencies:

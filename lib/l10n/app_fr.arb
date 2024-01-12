@@ -83,6 +83,7 @@
     "@cosmetiquesupptabprem": {
         "description": "Bouton de cosmétiques supplémentaires tableau premium"
     },
+
     "illimite": "Illimité",
     "@illimite": {
         "description": "Bouton d'illimité"

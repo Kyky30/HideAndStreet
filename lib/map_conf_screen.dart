@@ -1,6 +1,7 @@
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -99,12 +100,14 @@ class _MapConfScreen extends State<MapConfScreen> {
                   TileLayer(
                     urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                   ),
+                  CurrentLocationLayer(),
                   CircleLayer(circles: [
                     CircleMarker(
                       point: tapPosition,
-                      color: Colors.red.withOpacity(0.5),
+                      color: Colors.grey.withOpacity(0.5),
                       borderColor: Colors.black,
                       borderStrokeWidth: 2,
+
                       useRadiusInMeter: true,
                       radius: radius, //in meters
                     ),
