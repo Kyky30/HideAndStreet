@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hide_and_street/chat.dart';
 
 import 'package:hide_and_street/map_conf_screen.dart';
 
@@ -77,6 +78,21 @@ class HomePage extends StatelessWidget {
                     );
                   },
                   child: const Text('Aller à la page premium'),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Chat(),
+                      ),
+                    );
+                  },
+                  child: const Text('Chat'),
                 ),
               ),
               const SizedBox(height: 16),
