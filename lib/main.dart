@@ -153,30 +153,19 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.8,
+                        width: MediaQuery.of(context).size.width * 0.1,
                         height: 425.0,
                         child: Hero(
                           tag: 'image_$index',
-                          child: PhotoViewGallery.builder(
-                            itemCount: 1,
-                            builder: (context, index) {
-                              return PhotoViewGalleryPageOptions(
-                                imageProvider: MemoryImage(message.imageBytes!),
-                                minScale: PhotoViewComputedScale.contained,
-                                maxScale: PhotoViewComputedScale.covered * 2,
-                              );
-                            },
-                            scrollPhysics: NeverScrollableScrollPhysics(),
-                            backgroundDecoration: BoxDecoration(
-                              color: Colors.transparent,
-                            ),
-                            pageController: PageController(),
+                          child: Image.memory(
+                            message.imageBytes!,
+                            // Supprimer cette ligne
                           ),
                         ),
                       ),
                     ),
                   );
-                } else {
+                }else {
                   return ListTile(
                     title: Container(
                       padding: const EdgeInsets.all(8.0),
