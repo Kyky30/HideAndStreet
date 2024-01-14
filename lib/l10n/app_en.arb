@@ -8,6 +8,7 @@
   "mail": "Email",
   "mdp": "Password",
   "mdpoublie": "Forgot password ?",
+  "mdpconfirm": "Confirm password",
   "creerpartie": "Create a game",
   "rejoindrepartie": "Join a game",
   "nbparties": "- The number of rounds is unlimited (compared to 3 rounds per week for non-premium users)",
@@ -29,5 +30,15 @@
   "rejoindrepartietitle" : "Join a game",
   "whatmail" : "What is your email address?",
   "continuer" : "Continue",
-  "mdpOublieTitle" : "Forgot password"
+  "mdpOublieTitle" : "Forgot password",
+  "pseudo" : "Username",
+  "erreurinscription" : "An error occurred during registration",
+  "erreurdatedenaissance" : "You must be at least 13 years old to register",
+  "erreurcorrespondancemdp" : "The passwords do not match",
+  "modeaveugle" : "Blind mode",
+  "datedenaissance" : "Date of birth",
+  "commencer_inscription" : "Start registration",
+  "inscription_reussie" : "Registration successful",
+  "exemple_email" : "example : example@provider.xx",
+  "selection_bday" : "Select your date of birth"
 }

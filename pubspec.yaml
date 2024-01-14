@@ -74,6 +74,9 @@ flutter:
       - assets/logo_home_menu.png
       - assets/logo_connect.png
       - assets/background.png
+      - assets/logo.png
+      - assets/logo_problem.png
+      - assets/background_white.jpg
 
 
   fonts:
