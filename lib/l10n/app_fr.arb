@@ -183,6 +183,32 @@
     "selection_bday": "Sélectionnez votre date de naissance",
     "@selection_bday": {
         "description": "Sélection de date de naissance"
+    },
+    "titre_popup_age": "Restriction d'âge",
+    "@titre_popup_age": {
+        "description": "Titre de popup d'âge"
+    },
+    "texte_popup_age": "Vous devez avoir au moins 13 ans pour vous inscrire",
+    "@texte_popup_age": {
+        "description": "Texte de popup d'âge"
+    },
+    "titre_popup_mdp": "Confirmation de mot de passe",
+    "@titre_popup_mdp": {
+        "description": "Titre de popup de mot de passe"
+    },
+    "texte_popup_mdp": "Les mots de passe ne correspondent pas",
+    "@texte_popup_mdp": {
+        "description": "Texte de popup de mot de passe"
+    },
+    "titre_popup_champ_vide": "Champs vides",
+    "@titre_popup_champ_vide": {
+        "description": "Titre de popup de champs vides"
+    },
+    "texte_popup_champ_vide": "Veuillez remplir tous les champs",
+    "@texte_popup_champ_vide": {
+        "description": "Texte de popup de champs vides"
     }
+
+
 
 }

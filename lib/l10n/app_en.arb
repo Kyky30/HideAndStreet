@@ -40,5 +40,15 @@
   "commencer_inscription" : "Start registration",
   "inscription_reussie" : "Registration successful",
   "exemple_email" : "example : example@provider.xx",
-  "selection_bday" : "Select your date of birth"
+  "selection_bday" : "Select your date of birth",
+  "titre_date_naissance" : "Enter your birthday !",
+  "titre_email": "Enter your email address !",
+  "titre_pseudo": "Enter your username !",
+  "titre_mdp": "Enter your password !",
+  "titre_popup_age": "Age restriction",
+  "texte_popup_age": "You must be at least 13 years old to register !",
+  "titre_popup_mdp": "Password confirmation",
+  "texte_popup_mdp": "Your passwords do not match !",
+  "titre_popup_champ_vide": "Empty field",
+  "texte_popup_champ_vide": "You must fill in all the fields !"
 }
