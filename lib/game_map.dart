@@ -5,9 +5,10 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import 'chat.dart';
 
 class GameMap extends StatefulWidget {
-  const GameMap({super.key});
+  const GameMap({Key? key}) : super(key: key);
 
   @override
   State<GameMap> createState() => _GameMapState();
@@ -16,7 +17,7 @@ class GameMap extends StatefulWidget {
 class _GameMapState extends State<GameMap> {
   late Position currentPosition;
   late LatLng tapPosition;
-  bool isLoading = true; // Track loading state
+  bool isLoading = true; // Suivre l'état de chargement
   late double radius;
   int countdownSeconds = 600;
 
@@ -27,7 +28,7 @@ class _GameMapState extends State<GameMap> {
       setState(() {
         currentPosition = position;
         tapPosition = LatLng(currentPosition.latitude, currentPosition.longitude);
-        isLoading = false; // Set loading state to false when the position is determined
+        isLoading = false; // Définir l'état de chargement sur false lorsque la position est déterminée
         radius = 150;
       });
     });
@@ -37,36 +38,34 @@ class _GameMapState extends State<GameMap> {
     bool serviceEnabled;
     LocationPermission permission;
 
-    // Test if location services are enabled.
+    // Teste si les services de localisation sont activés.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      // accessing the position and request users of the
-      // App to enable the location services.
-      return Future.error('Location services are disabled.');
+      // Les services de localisation ne sont pas activés, ne continuez pas
+      // à accéder à la position et demandez aux utilisateurs de l'application d'activer les services de localisation.
+      return Future.error('Les services de localisation sont désactivés.');
     }
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        // Permissions are denied, next time you could try
-        // requesting permissions again (this is also where
-        // Android's shouldShowRequestPermissionRationale
-        // returned true. According to Android guidelines
-        // your App should show an explanatory UI now.
-        return Future.error('Location permissions are denied');
+        // Les autorisations sont refusées, la prochaine fois, vous pourriez essayer
+        // de demander à nouveau des autorisations (c'est aussi là que
+        // shouldShowRequestPermissionRationale d'Android est retourné vrai. Selon les directives d'Android
+        // votre application doit maintenant afficher une interface utilisateur explicative.
+        return Future.error("Les autorisations de localisation sont refusées");
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
+      // Les autorisations sont refusées pour toujours, gérez-les de manière appropriée.
       return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
+          'Les autorisations de localisation sont refusées de manière permanente, nous ne pouvons pas demander les autorisations.');
     }
 
-    // When we reach here, permissions are granted and we can
-    // continue accessing the position of the device.
+    // Lorsque nous arrivons ici, les autorisations sont accordées et nous pouvons
+    // continuer à accéder à la position du périphérique.
     return await Geolocator.getCurrentPosition();
   }
 
@@ -76,20 +75,17 @@ class _GameMapState extends State<GameMap> {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );
-    }
-    else {
+    } else {
       return Scaffold(
         body: Column(
-          children :[
-
+          children: [
             CountdownTimer(
               endTime: DateTime.now().millisecondsSinceEpoch + countdownSeconds * 1000,
               widgetBuilder: (_, CurrentRemainingTime? time) {
                 if (time == null) {
                   return const Text("00:00",
-                      style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
-                );
-
+                    style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
+                  );
                 }
                 return Text(
                   '${time.min}:${time.sec}',
@@ -97,32 +93,42 @@ class _GameMapState extends State<GameMap> {
                 );
               },
             ),
-            Expanded(child: FlutterMap(
-              options: MapOptions(
-                initialCenter: LatLng(
-                    currentPosition.latitude, currentPosition.longitude),
-                initialZoom: 15,
-              ),
-              children: [
-                TileLayer(
-                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+            Expanded(
+              child: FlutterMap(
+                options: MapOptions(
+                  initialCenter: LatLng(
+                      currentPosition.latitude, currentPosition.longitude),
+                  initialZoom: 15,
                 ),
-                CurrentLocationLayer(),
-                CircleLayer(circles: [
-                  CircleMarker(
-                    point: tapPosition,
-                    color: Colors.grey.withOpacity(0.5),
-                    borderColor: Colors.black,
-                    borderStrokeWidth: 2,
-
-                    useRadiusInMeter: true,
-                    radius: radius, //in meters
+                children: [
+                  TileLayer(
+                    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                   ),
-                ]),
-              ],
+                  CurrentLocationLayer(),
+                  CircleLayer(circles: [
+                    CircleMarker(
+                      point: tapPosition,
+                      color: Colors.grey.withOpacity(0.5),
+                      borderColor: Colors.black,
+                      borderStrokeWidth: 2,
+                      useRadiusInMeter: true,
+                      radius: radius, //en mètres
+                    ),
+                  ]),
+                ],
+              ),
             ),
-            ),
-          ]
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            // Naviguer vers l'écran Chat
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Chat()),
+            );
+          },
+          child: Icon(Icons.chat),
         ),
       );
     }

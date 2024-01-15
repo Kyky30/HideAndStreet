@@ -200,13 +200,21 @@
     "@texte_popup_mdp": {
         "description": "Texte de popup de mot de passe"
     },
-    "titre_popup_champ_vide": "Champs vides",
+    "titre_popup_champ_vide": "Champs vides !",
     "@titre_popup_champ_vide": {
         "description": "Titre de popup de champs vides"
     },
     "texte_popup_champ_vide": "Veuillez remplir tous les champs",
     "@texte_popup_champ_vide": {
         "description": "Texte de popup de champs vides"
+    },
+    "titre_popup_mdp_insecure": "Mot de passe pas assez sécurisé !",
+    "@titre_popup_mdp_insecure": {
+        "description": "Titre de popup de mot de passe pas assez sécurisé"
+    },
+    "texte_popup_mdp_insecure": "Votre mot de passe doit contenir au moins 8 caractères, dont une majuscule, une minuscule, un chiffre et un caractère spécial",
+    "@texte_popup_mdp_insecure": {
+        "description": "Texte de popup de mot de passe pas assez sécurisé"
     },
     "titre_blind_toggle": "Activer le mode déficience visuelle ?",
     "@titre_toggle": {

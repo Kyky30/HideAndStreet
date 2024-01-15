@@ -106,14 +106,14 @@ class _RegisterPageState extends State<RegisterPage> {
 
         if (password.isEmpty || confirmPassword.isEmpty) {
           _showEmptyFieldDialog(context, "Password");
+        } else if (password != confirmPassword) {
+          _showPasswordMismatchDialog(context);
+        } else if (!isPasswordSecure(password)) {
+          _showPasswordInsecureDialog(context);
         } else {
-          if (password == confirmPassword) {
-            passwordValues = password;
-            print(passwordValues);
-            _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
-          } else {
-            _showPasswordMissmatchDialog(context);
-          }
+          passwordValues = password;
+          print(passwordValues);
+          _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
         }
       },
     ),
@@ -289,7 +289,7 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
-  void _showPasswordMissmatchDialog(BuildContext context) {
+  void _showPasswordMismatchDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -308,6 +308,7 @@ class _RegisterPageState extends State<RegisterPage> {
       },
     );
   }
+
 
   void _showEmptyFieldDialog(BuildContext context, String fieldName) {
     showDialog(
@@ -349,6 +350,33 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 }
+
+void _showPasswordInsecureDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(AppLocalizations.of(context)!.titre_popup_mdp_insecure),
+        content: Text(AppLocalizations.of(context)!.texte_popup_mdp_insecure),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text("OK"),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+bool isPasswordSecure(String password) {
+  // Vérifie si le mot de passe a au moins 8 caractères, une majuscule, un chiffre et un caractère spécial.
+  RegExp passwordRegex = RegExp(r'^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
+  return passwordRegex.hasMatch(password);
+}
+
 
 class RegistrationStep {
   final String title;
