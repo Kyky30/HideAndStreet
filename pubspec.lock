@@ -321,10 +321,10 @@ packages:
     dependency: "direct main"
     description:
       name: material_symbols_icons
-      sha256: f61d6f345f3b520eb475fddcaec184de94f37b1f0d7a659265904715df1b1d6a
+      sha256: "80147c65e257f286cb7cf2e2abc5a04ec6457fe29c04f1ac88c6e609be040c8b"
       url: "https://pub.dev"
     source: hosted
-    version: "4.2713.0"
+    version: "4.2716.0"
   meta:
     dependency: transitive
     description:
@@ -409,10 +409,10 @@ packages:
     dependency: "direct main"
     description:
       name: purchases_flutter
-      sha256: "0e87add3989b08dc80dbd42c9c4b053a6842a844dfad890224d24ebdf9a9335d"
+      sha256: "8a0131c917c55e520723ae267ca60bea7e5f980108320d9b6349b7f332941129"
       url: "https://pub.dev"
     source: hosted
-    version: "6.6.0"
+    version: "6.15.0"
   shared_preferences:
     dependency: transitive
     description:
@@ -433,10 +433,10 @@ packages:
     dependency: transitive
     description:
       name: shared_preferences_foundation
-      sha256: "7bf53a9f2d007329ee6f3df7268fd498f8373602f943c975598bbb34649b62a7"
+      sha256: "7708d83064f38060c7b39db12aefe449cb8cdc031d6062280087bc4cdb988f5c"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.4"
+    version: "2.3.5"
   shared_preferences_linux:
     dependency: transitive
     description:
@@ -566,10 +566,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_ios
-      sha256: cdb7b6da34483f9b2c9f8b2b29bc468fa7271d92e2021607ca0c4d3bcb04cdd4
+      sha256: "75bb6fe3f60070407704282a2d295630cab232991eb52542b18347a8a941df03"
       url: "https://pub.dev"
     source: hosted
-    version: "6.2.3"
+    version: "6.2.4"
   url_launcher_linux:
     dependency: transitive
     description:
