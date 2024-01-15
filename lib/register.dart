@@ -107,10 +107,11 @@ class _RegisterPageState extends State<RegisterPage> {
           if (password == confirmPassword) {
             passwordValues = password;
             print(passwordValues);
+            _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+
           } else {
-            print("Les mots de passe ne correspondent pas.");
+            _showPasswordMissmatchDialog(context);
           }
-          _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
         }
       },
     ),
@@ -263,13 +264,33 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
+  void _showPasswordMissmatchDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(AppLocalizations.of(context)!.titre_popup_mdp),
+          content: Text(AppLocalizations.of(context)!.texte_popup_mdp),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _showEmptyFieldDialog(BuildContext context, String fieldName) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Empty Field"),
-          content: Text("$fieldName cannot be empty."),
+          title: Text(AppLocalizations.of(context)!.titre_popup_champ_vide),
+          content: Text(AppLocalizations.of(context)!.texte_popup_champ_vide),
           actions: [
             TextButton(
               onPressed: () {
@@ -288,8 +309,8 @@ class _RegisterPageState extends State<RegisterPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Age Restriction"),
-          content: Text("You must be at least 13 years old to register."),
+          title: Text(AppLocalizations.of(context)!.titre_popup_age),
+          content: Text(AppLocalizations.of(context)!.texte_popup_age),
           actions: [
             TextButton(
               onPressed: () {
