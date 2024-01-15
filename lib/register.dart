@@ -15,11 +15,14 @@ class _RegisterPageState extends State<RegisterPage> {
   String emailValues = "";
   DateTime? dateOfBirthValues = DateTime.now();
   String passwordValues = "";
+  bool blindToggleValues = false;
 
   List<GlobalKey<FormFieldState<String>>> pseudoKey = [GlobalKey<FormFieldState<String>>()];
   List<GlobalKey<FormFieldState<String>>> emailKey = [GlobalKey<FormFieldState<String>>()];
   GlobalKey<FormFieldState<String>> dateOfBirthKey = GlobalKey<FormFieldState<String>>();
   List<GlobalKey<FormFieldState<String>>> passwordKeys = [GlobalKey<FormFieldState<String>>(), GlobalKey<FormFieldState<String>>()];
+
+  bool _toggleValue = false;
 
   List<RegistrationStep> _steps(BuildContext context) => [
     RegistrationStep(
@@ -108,16 +111,28 @@ class _RegisterPageState extends State<RegisterPage> {
             passwordValues = password;
             print(passwordValues);
             _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
-
           } else {
             _showPasswordMissmatchDialog(context);
           }
         }
       },
     ),
+    RegistrationStep(
+      title: AppLocalizations.of(context)!.titre_blind_toggle,
+      background: 'assets/background_white.jpg',
+      buttonText: AppLocalizations.of(context)!.confirmer,
+      logo: 'assets/logo_connect.png',
+      fields: [
+        RegistrationField(label: AppLocalizations.of(context)!.blind_toggle_label, toggleField: true),
+      ],
+      onTap: () {
+        blindToggleValues = _toggleValue;
+        print(blindToggleValues);
+        _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+      },
+    ),
   ];
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageView.builder(
@@ -192,6 +207,16 @@ class _RegisterPageState extends State<RegisterPage> {
                           backgroundColor: const Color(0xFF373967),
                           foregroundColor: const Color(0xFF212348),
                         ),
+                      )
+                          : field.toggleField
+                          ? SwitchListTile(
+                        title: Text(field.label),
+                        value: _toggleValue,
+                        onChanged: (value) {
+                          setState(() {
+                            _toggleValue = value;
+                          });
+                        },
                       )
                           : TextFormField(
                         key: field.key,
@@ -351,6 +376,7 @@ class RegistrationField {
   final GlobalKey<FormFieldState<String>>? key;
   final bool isPassword;
   final bool dateField;
+  final bool toggleField;
 
   RegistrationField({
     required this.label,
@@ -358,5 +384,6 @@ class RegistrationField {
     this.key,
     this.isPassword = false,
     this.dateField = false,
+    this.toggleField = false,
   });
 }

@@ -207,6 +207,14 @@
     "texte_popup_champ_vide": "Veuillez remplir tous les champs",
     "@texte_popup_champ_vide": {
         "description": "Texte de popup de champs vides"
+    },
+    "titre_blind_toggle": "Activer le mode déficience visuelle ?",
+    "@titre_toggle": {
+        "description": "Titre de toggle"
+    },
+    "blind_toggle_label" : "Mode déficience visuelle",
+    "@blind_toggle_label": {
+        "description": "Label de toggle"
     }
 
 

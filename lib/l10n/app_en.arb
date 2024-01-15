@@ -50,5 +50,7 @@
   "titre_popup_mdp": "Password confirmation",
   "texte_popup_mdp": "Your passwords do not match !",
   "titre_popup_champ_vide": "Empty field",
-  "texte_popup_champ_vide": "You must fill in all the fields !"
+  "texte_popup_champ_vide": "You must fill in all the fields !",
+  "titre_blind_toggle": "Activate visual impairment mode ?",
+  "blind_toggle_label": "Visual impairment mode"
 }
