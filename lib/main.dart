@@ -35,10 +35,10 @@ class MyApp extends StatelessWidget {
       supportedLocales: L10n.all,
       //locale: const Locale('fr'),
       localizationsDelegates: const [
-         AppLocalizations.delegate,
-         GlobalMaterialLocalizations.delegate,
-         GlobalWidgetsLocalizations.delegate,
-         GlobalCupertinoLocalizations.delegate,
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
       ],
       localeResolutionCallback: (locale, supportedLocales) {
         // Choisissez la meilleure langue en fonction des langues prises en charge
@@ -96,6 +96,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
+        selectedFontSize: 20,
+        unselectedFontSize: 18,
+        iconSize: 30,
       ),
     );
   }

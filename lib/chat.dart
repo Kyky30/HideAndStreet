@@ -9,6 +9,39 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+class ChatLocalStorage {
+  static const String _key = 'chat_messages';
+  static const String _welcomeKey = 'welcome_message';
+
+  static Future<void> saveMessages(List<Message> messages) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final List<String> messagesJson = messages.map((message) => json.encode(message.toJson())).toList();
+    prefs.setStringList(_key, messagesJson);
+  }
+
+  static Future<List<Message>> loadMessages() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? messagesJson = prefs.getStringList(_key);
+    return messagesJson?.map((jsonString) => Message.fromJson(json.decode(jsonString))).toList() ?? [];
+  }
+
+  static Future<void> clearMessages() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove(_key);
+  }
+
+  static Future<bool> hasSeenWelcomeMessage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_welcomeKey) ?? false;
+  }
+
+  static Future<void> markWelcomeMessageSeen() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_welcomeKey, true);
+  }
+}
 
 class Chat extends StatelessWidget {
   const Chat({Key? key});
@@ -37,6 +70,7 @@ class _ChatBodyState extends State<ChatBody> {
   final List<Message> messages = [];
   final ScrollController _scrollController = ScrollController();
   final String username = 'Pseudo';
+  bool _isWelcomeMessageDisplayed = false;
 
   void scrollToBottom() {
     _scrollController.animateTo(
@@ -47,26 +81,29 @@ class _ChatBodyState extends State<ChatBody> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Vérifie si l'utilisateur a déjà vu le message de bienvenue
+    ChatLocalStorage.hasSeenWelcomeMessage().then((hasSeenWelcome) {
+      if (!hasSeenWelcome && !_isWelcomeMessageDisplayed) {
+        _displayWelcomeMessage();
+        _isWelcomeMessageDisplayed = true; // Marque le message comme affiché
+      }
+    });
+  }
+
+  @override
   void initState() {
     super.initState();
+
+    // Charge les messages sauvegardés
+    _loadMessages();
+
     // Écoute les messages WebSocket du serveur
     channel.stream.listen((dynamic message) {
       setState(() {
-        if (message is String) {
-          // Message texte
-          messages.add(Message(text: message, isUser: false, username: 'Server'));
-        } else if (message is Map<String, dynamic>) {
-          // Message avec informations utilisateur (pseudo + contenu)
-          final userMessage = Message(
-            text: message['text'],
-            isUser: true,
-            username: message['username'],
-          );
-          messages.add(userMessage);
-        } else if (message is Uint8List) {
-          // Message image
-          messages.add(Message(imageBytes: message, isUser: false, username: 'Server'));
-        }
+        // Gestion des différents types de messages...
       });
 
       // Fait défiler les messages vers le bas
@@ -74,6 +111,14 @@ class _ChatBodyState extends State<ChatBody> {
         scrollToBottom();
       });
     });
+  }
+
+  Future<void> _loadMessages() async {
+    List<Message> loadedMessages = await ChatLocalStorage.loadMessages();
+    setState(() {
+      messages.addAll(loadedMessages);
+    });
+    scrollToBottom();
   }
 
   Future<void> _captureAndSendPhoto() async {
@@ -91,7 +136,23 @@ class _ChatBodyState extends State<ChatBody> {
       });
 
       scrollToBottom();
+
+      _saveMessages();
     }
+  }
+
+  void _displayWelcomeMessage() {
+    // Affiche le message de bienvenue
+    final welcomeMessage = Message(text: 'Bienvenue dans le chat !', isUser: false, username: 'Server');
+    setState(() {
+      messages.add(welcomeMessage);
+    });
+
+    // Marque le message de bienvenue comme vu
+    ChatLocalStorage.markWelcomeMessageSeen();
+
+    // Fait défiler la liste vers le bas
+    scrollToBottom();
   }
 
   Future<Uint8List> testCompressList(Uint8List list) async {
@@ -112,8 +173,13 @@ class _ChatBodyState extends State<ChatBody> {
 
     // Vérifie si le message n'est pas vide
     if (messageText.isNotEmpty) {
-      // Envoie le message au serveur WebSocket
-      final userMessage = Message(text: messageText, isUser: true, username: username);
+      // Crée un nouvel objet Message avec la date et l'heure actuelles
+      final userMessage = Message(
+        text: messageText,
+        isUser: true,
+        username: username,
+        timestamp: DateTime.now(), // Ajoutez cette ligne
+      );
 
       setState(() {
         messages.add(userMessage);
@@ -122,11 +188,25 @@ class _ChatBodyState extends State<ChatBody> {
       // Fait défiler la liste vers le bas
       scrollToBottom();
 
-      channel.sink.add(utf8.encode(userMessage.text!));
+      // Envoie le message au serveur WebSocket
+      final messageWithTimestamp = {
+        'text': messageText,
+        'isUser': true,
+        'username': username,
+        'timestamp': userMessage.timestamp.toIso8601String(),
+      };
+
+      channel.sink.add(utf8.encode(jsonEncode(messageWithTimestamp)));
+
+      _saveMessages();
     }
 
     // Efface le texte du contrôleur
     _messageController.clear();
+  }
+
+  Future<void> _saveMessages() async {
+    await ChatLocalStorage.saveMessages(messages);
   }
 
   Widget buildMessageWidget(Message message) {
@@ -329,6 +409,31 @@ class Message {
   final DateTime timestamp;
   final String? username;
 
-  Message({this.text, required this.isUser, this.imageBytes, this.username})
-      : timestamp = DateTime.now();
+  Message({
+    this.text,
+    required this.isUser,
+    this.imageBytes,
+    this.username,
+    DateTime? timestamp, // Mettez à jour ici
+  }) : timestamp = timestamp ?? DateTime.now();
+
+  Map<String, dynamic> toJson() {
+    return {
+      'text': text,
+      'isUser': isUser,
+      'imageBytes': imageBytes,
+      'username': username,
+      'timestamp': timestamp.toIso8601String(),
+    };
+  }
+
+  factory Message.fromJson(Map<String, dynamic> json) {
+    return Message(
+      text: json['text'],
+      isUser: json['isUser'],
+      imageBytes: json['imageBytes'],
+      username: json['username'],
+      timestamp: DateTime.parse(json['timestamp'] ?? ''),
+    );
+  }
 }
