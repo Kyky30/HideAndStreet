@@ -1,11 +1,9 @@
-import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
+import 'package:flutter_map_dragmarker/flutter_map_dragmarker.dart';
+import 'package:flutter_map_line_editor/flutter_map_line_editor.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 
 class MapConfScreen extends StatefulWidget {
   const MapConfScreen({super.key});
@@ -16,10 +14,17 @@ class MapConfScreen extends StatefulWidget {
 
 
 class _MapConfScreen extends State<MapConfScreen> {
+  late PolyEditor polyEditor;
   late Position currentPosition;
-  late LatLng tapPosition;
   bool isLoading = true; // Track loading state
-  late double radius;
+
+  final polygons = <Polygon>[];
+  final testPolygon = Polygon(
+    color: Colors.red.withOpacity(0.5),
+    borderColor: Colors.black,
+    isFilled: true,
+    points: [],
+  );
 
   @override
   void initState() {
@@ -27,13 +32,19 @@ class _MapConfScreen extends State<MapConfScreen> {
     _determinePosition().then((position) {
       setState(() {
         currentPosition = position;
-        tapPosition =
-            LatLng(currentPosition.latitude, currentPosition.longitude);
-        isLoading =
-        false; // Set loading state to false when the position is determined
-        radius = 150;
+        isLoading = false; // Set loading state to false when the position is determined
       });
     });
+
+    polyEditor = PolyEditor(
+      addClosePathMarker: true,
+      points: testPolygon.points,
+      pointIcon: const Icon(Icons.crop_square, size: 23),
+      intermediateIcon: const Icon(Icons.lens, size: 15, color: Colors.grey),
+      callbackRefresh: () => {setState(() {})},
+    );
+
+    polygons.add(testPolygon);
   }
 
   Future<Position> _determinePosition() async {
@@ -76,108 +87,35 @@ class _MapConfScreen extends State<MapConfScreen> {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return const Scaffold(
+      return Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );
     } else {
       return Scaffold(
-        appBar: AppBar(title: Text(AppLocalizations.of(context)!.configmaptitle)),
-        body: Column(
+        appBar: AppBar(title: const Text('Map Configuration')),
+        body: FlutterMap(
+          options: MapOptions(
+            onTap: (_, ll) {
+              polyEditor.add(testPolygon.points, ll);
+            },
+            initialCenter: LatLng(currentPosition.latitude, currentPosition.longitude),
+            initialZoom: 15,
+          ),
           children: [
-            Expanded(
-              child: FlutterMap(
-                options: MapOptions(
-                  onTap: (_, tPosition) {
-                    setState(() {
-                      tapPosition = tPosition;
-                    });
-                  },
-                  initialCenter: LatLng(
-                      currentPosition.latitude, currentPosition.longitude),
-                  initialZoom: 15,
-                ),
-                children: [
-                  TileLayer(
-                    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  ),
-                  CurrentLocationLayer(),
-                  CircleLayer(circles: [
-                    CircleMarker(
-                      point: tapPosition,
-                      color: Colors.grey.withOpacity(0.5),
-                      borderColor: Colors.black,
-                      borderStrokeWidth: 2,
-
-                      useRadiusInMeter: true,
-                      radius: radius, //in meters
-                    ),
-                  ]),
-                ],
-              ),
+            TileLayer(
+              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             ),
-            Slider(
-              value: radius,
-              onChanged: (newRadius) {
-                setState(() {
-                  radius = newRadius;
-                });
-              },
-              min: 15,
-              max: 1000,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: SmoothRectangleBorder(
-                      borderRadius: SmoothBorderRadius(
-                        cornerRadius: 20,
-                        cornerSmoothing: 1,
-                      ),
-                    ),
-                    // minimumSize: const Size(double.infinity, 80),
-
-                    backgroundColor: const Color(0xFF373967),
-                    foregroundColor: const Color(0xFF212348),
-                    fixedSize: Size(MediaQuery.of(context).size.width / 2 - 20, 80),
-                  ),
-                  child: Text(
-                    AppLocalizations.of(context)!.confirmer,
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      tapPosition = LatLng(currentPosition.latitude, currentPosition.longitude);
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: SmoothRectangleBorder(
-                      borderRadius: SmoothBorderRadius(
-                        cornerRadius: 20,
-                        cornerSmoothing: 1,
-                      ),
-                    ),
-                    // minimumSize: const Size(double.infinity, 80),
-
-                    backgroundColor: const Color(0xFF373967),
-                    foregroundColor: const Color(0xFF212348),
-                    fixedSize: Size(MediaQuery.of(context).size.width / 2 - 20, 80),
-                  ),
-                  child: Text(
-                    AppLocalizations.of(context)!.centrer,
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20), //margin entre les boutons et le bas de l'écran
+            PolygonLayer(polygons: polygons),
+            DragMarkers(markers: polyEditor.edit()),
           ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.replay),
+          onPressed: () {
+            setState(() {
+              testPolygon.points.clear();
+            });
+          },
         ),
       );
     }
