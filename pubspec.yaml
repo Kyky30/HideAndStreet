@@ -48,6 +48,8 @@ dependencies:
   purchases_flutter: ^6.6.0
   flutter_map_location_marker: ^8.0.3
   flutter_countdown_timer: ^4.1.0
+  carousel_slider: ^4.2.1
+
 
 
 dev_dependencies:
@@ -77,6 +79,7 @@ flutter:
       - assets/logo.png
       - assets/logo_problem.png
       - assets/background_white.jpg
+      - assets/premium.png
 
 
   fonts:
