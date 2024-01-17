@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hide_and_street/chat.dart';
+import 'package:hide_and_street/game_map.dart';
 
 import 'package:hide_and_street/map_conf_screen.dart';
 
@@ -28,79 +29,100 @@ class HomePage extends StatelessWidget {
             ),
           ),
           // Contenu de la page
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Logo en haut de la page
-              Container(
-                margin: const EdgeInsets.fromLTRB(15, 75, 15, 0),
-                child: Column(
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween, // Align content at the top and bottom
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Logo en haut de la page
+                Container(
+                  margin: const EdgeInsets.fromLTRB(15, 75, 15, 0),
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        'assets/logo_home_menu.png',
+                        width: MediaQuery.of(context).size.width - 150,
+                        fit: BoxFit.contain,
+                      ),
+                      const SizedBox(height: 10),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 3),
+
+                // Boutons de navigation
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset(
-                      'assets/logo_home_menu.png',
-                      width: MediaQuery.of(context).size.width - 150,
-                      fit: BoxFit.contain,
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const MapConfScreen(),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: Size(MediaQuery.of(context).size.width - 30, 50),
+                      ),
+                      child: const Text('Aller à la carte'),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 6),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const PremiumPage(),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: Size(MediaQuery.of(context).size.width - 30, 50),
+                      ),
+                      child: const Text('Aller à la page premium'),
+                    ),
+                    const SizedBox(height: 6),
+
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const Chat(partieId: 0),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: Size(MediaQuery.of(context).size.width - 30, 50),
+                      ),
+                      child: const Text('Chat'),
+                    ),
+                    const SizedBox(height: 6),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const GameMap(),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: Size(MediaQuery.of(context).size.width - 30, 50),
+                      ),
+                      child: const Text('Game Map'),
+                    ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 16),
 
-              // Bouton pour naviguer vers la page map_conf_screen.dart
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const MapConfScreen(),
-                      ),
-                    );
-                  },
-                  child: const Text('Aller à la carte'),
-                ),
-              ),
-              const SizedBox(height: 16),
+                // Spacer to fill the available space
+                const Spacer(),
 
-              // Bouton pour naviguer vers la page map_conf_screen.dart
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const PremiumPage(),
-                      ),
-                    );
-                  },
-                  child: const Text('Aller à la page premium'),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const Chat(),
-                      ),
-                    );
-                  },
-                  child: const Text('Chat'),
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Bouton pour naviguer vers la page room_creation.dart
-              Padding(
-                padding: const EdgeInsets.fromLTRB(15, 100, 15, 0),
-                child: ElevatedButton(
+                // Boutons pour créer et rejoindre une partie
+                ElevatedButton(
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -125,13 +147,9 @@ class HomePage extends StatelessWidget {
                     style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-              // Bouton pour naviguer vers la page room_joining.dart
-              Padding(
-                padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                child: ElevatedButton(
+                ElevatedButton(
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -156,11 +174,12 @@ class HomePage extends StatelessWidget {
                     style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
     );
+
   }
 }

@@ -17,14 +17,18 @@ class ChatLocalStorage {
 
   static Future<void> saveMessages(List<Message> messages) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    final List<String> messagesJson = messages.map((message) => json.encode(message.toJson())).toList();
+    final List<String> messagesJson =
+    messages.map((message) => json.encode(message.toJson())).toList();
     prefs.setStringList(_key, messagesJson);
   }
 
   static Future<List<Message>> loadMessages() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String>? messagesJson = prefs.getStringList(_key);
-    return messagesJson?.map((jsonString) => Message.fromJson(json.decode(jsonString))).toList() ?? [];
+    return messagesJson
+        ?.map((jsonString) => Message.fromJson(json.decode(jsonString)))
+        .toList() ??
+        [];
   }
 
   static Future<void> clearMessages() async {
@@ -44,7 +48,8 @@ class ChatLocalStorage {
 }
 
 class Chat extends StatelessWidget {
-  const Chat({Key? key});
+  final int partieId;
+  const Chat({Key? key, required this.partieId});
 
   @override
   Widget build(BuildContext context) {
@@ -52,16 +57,17 @@ class Chat extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Chat de la Partie'),
       ),
-      body: ChatBody(),
+      body: ChatBody(partieId: partieId),
     );
   }
 }
 
 class ChatBody extends StatefulWidget {
-  const ChatBody({Key? key}) : super(key: key);
+  final int partieId;
+  const ChatBody({Key? key, required this.partieId}) : super(key: key);
 
   @override
-  _ChatBodyState createState() => _ChatBodyState();
+  _ChatBodyState createState() => _ChatBodyState(partieId: partieId);
 }
 
 class _ChatBodyState extends State<ChatBody> {
@@ -70,7 +76,10 @@ class _ChatBodyState extends State<ChatBody> {
   final List<Message> messages = [];
   final ScrollController _scrollController = ScrollController();
   final String username = 'Pseudo';
+  final int partieId;
   bool _isWelcomeMessageDisplayed = false;
+
+  _ChatBodyState({required this.partieId});
 
   void scrollToBottom() {
     _scrollController.animateTo(
@@ -101,9 +110,30 @@ class _ChatBodyState extends State<ChatBody> {
     _loadMessages();
 
     // Écoute les messages WebSocket du serveur
+    channel.sink.add(jsonEncode({'partie': partieId}));
     channel.stream.listen((dynamic message) {
       setState(() {
-        // Gestion des différents types de messages...
+        if (message is String) {
+          messages.add(Message(
+              text: message,
+              isUser: false,
+              username: 'Server',
+              status: MessageStatus.received));
+        } else if (message is Map<String, dynamic>) {
+          final userMessage = Message(
+            text: message['text'],
+            isUser: true,
+            username: message['Username'],
+            status: MessageStatus.received,
+          );
+          messages.add(userMessage);
+        } else if (message is Uint8List) {
+          messages.add(Message(
+              imageBytes: message,
+              isUser: false,
+              username: 'Server',
+              status: MessageStatus.received));
+        }
       });
 
       // Fait défiler les messages vers le bas
@@ -118,7 +148,10 @@ class _ChatBodyState extends State<ChatBody> {
     setState(() {
       messages.addAll(loadedMessages);
     });
-    scrollToBottom();
+    // Fait défiler les messages vers le bas
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      scrollToBottom();
+    });
   }
 
   Future<void> _captureAndSendPhoto() async {
@@ -126,8 +159,13 @@ class _ChatBodyState extends State<ChatBody> {
     final pickedFile = await picker.pickImage(source: ImageSource.camera);
 
     if (pickedFile != null) {
-      final imageBytes = await testCompressList(await pickedFile.readAsBytes());
-      final userPhotoMessage = Message(imageBytes: imageBytes, isUser: true, username: username);
+      final imageBytes =
+      await testCompressList(await pickedFile.readAsBytes());
+      final userPhotoMessage = Message(
+          imageBytes: imageBytes,
+          isUser: true,
+          username: username,
+          status: MessageStatus.sent);
 
       channel.sink.add(imageBytes);
 
@@ -143,7 +181,12 @@ class _ChatBodyState extends State<ChatBody> {
 
   void _displayWelcomeMessage() {
     // Affiche le message de bienvenue
-    final welcomeMessage = Message(text: 'Bienvenue dans le chat !', isUser: false, username: 'Server');
+    final welcomeMessage = Message(
+      text: 'Bienvenue dans le chat !',
+      isUser: false,
+      username: 'Server',
+      status: MessageStatus.sent,
+    );
     setState(() {
       messages.add(welcomeMessage);
     });
@@ -154,6 +197,8 @@ class _ChatBodyState extends State<ChatBody> {
     // Fait défiler la liste vers le bas
     scrollToBottom();
   }
+
+
 
   Future<Uint8List> testCompressList(Uint8List list) async {
     var result = await FlutterImageCompress.compressWithList(
@@ -178,6 +223,7 @@ class _ChatBodyState extends State<ChatBody> {
         text: messageText,
         isUser: true,
         username: username,
+        status: MessageStatus.sent,
         timestamp: DateTime.now(), // Ajoutez cette ligne
       );
 
@@ -198,8 +244,14 @@ class _ChatBodyState extends State<ChatBody> {
 
       channel.sink.add(utf8.encode(jsonEncode(messageWithTimestamp)));
 
-      _saveMessages();
+      Future.delayed(const Duration(seconds: 2), () {
+        setState(() {
+          userMessage.status = MessageStatus.received;
+        });
+      });
     }
+
+    _saveMessages();
 
     // Efface le texte du contrôleur
     _messageController.clear();
@@ -207,6 +259,24 @@ class _ChatBodyState extends State<ChatBody> {
 
   Future<void> _saveMessages() async {
     await ChatLocalStorage.saveMessages(messages);
+  }
+
+  Widget buildStatusIndicator(MessageStatus status) {
+    if (status == MessageStatus.sent) {
+      return Icon(
+        Icons.done_all,
+        color: Colors.grey,
+        size: 16.0,
+      );
+    } else if (status == MessageStatus.received) {
+      return Icon(
+        Icons.done_all,
+        color: Colors.red,
+        size: 16.0,
+      );
+    } else {
+      return SizedBox.shrink();
+    }
   }
 
   Widget buildMessageWidget(Message message) {
@@ -226,11 +296,14 @@ class _ChatBodyState extends State<ChatBody> {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Row(
-            mainAxisAlignment: message.isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+            mainAxisAlignment:
+            message.isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                margin: EdgeInsets.only(left: message.isUser ? 0.0 : 20.0, right: message.isUser ? 20.0 : 0.0),
+                margin: EdgeInsets.only(
+                    left: message.isUser ? 0.0 : 20.0,
+                    right: message.isUser ? 20.0 : 0.0),
                 padding: const EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
                   color: message.isUser ? Colors.blue : Colors.grey[200],
@@ -268,6 +341,7 @@ class _ChatBodyState extends State<ChatBody> {
                         fontSize: 12.0,
                       ),
                     ),
+                    buildStatusIndicator(message.status),
                   ],
                 ),
               ),
@@ -279,10 +353,13 @@ class _ChatBodyState extends State<ChatBody> {
       // Le reste du code pour les messages texte
       return ListTile(
         title: Column(
-          crossAxisAlignment: message.isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          crossAxisAlignment:
+          message.isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
             Container(
-              margin: EdgeInsets.only(left: message.isUser ? 20.0 : 1.0, right: message.isUser ? 1.0 : 20.0),
+              margin: EdgeInsets.only(
+                  left: message.isUser ? 20.0 : 1.0,
+                  right: message.isUser ? 1.0 : 20.0),
               padding: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
                 color: message.isUser ? Colors.blue : Colors.grey[200],
@@ -304,6 +381,7 @@ class _ChatBodyState extends State<ChatBody> {
                       color: message.isUser ? Colors.white : Colors.black,
                     ),
                   ),
+                  buildStatusIndicator(message.status),
                 ],
               ),
             ),
@@ -378,7 +456,9 @@ class FullScreenImage extends StatelessWidget {
   final Uint8List imageBytes;
   final DateTime timestamp;
 
-  const FullScreenImage({Key? key, required this.imageBytes, required this.timestamp}) : super(key: key);
+  const FullScreenImage(
+      {Key? key, required this.imageBytes, required this.timestamp})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -402,18 +482,25 @@ class FullScreenImage extends StatelessWidget {
   }
 }
 
+enum MessageStatus {
+  sent,
+  received,
+}
+
 class Message {
   final String? text;
   final Uint8List? imageBytes;
   final bool isUser;
   final DateTime timestamp;
   final String? username;
+  MessageStatus status;
 
   Message({
     this.text,
     required this.isUser,
     this.imageBytes,
     this.username,
+    required this.status,
     DateTime? timestamp, // Mettez à jour ici
   }) : timestamp = timestamp ?? DateTime.now();
 
@@ -433,6 +520,7 @@ class Message {
       isUser: json['isUser'],
       imageBytes: json['imageBytes'],
       username: json['username'],
+      status: json['status'] ?? MessageStatus.sent,
       timestamp: DateTime.parse(json['timestamp'] ?? ''),
     );
   }

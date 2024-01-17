@@ -83,6 +83,7 @@
     "@cosmetiquesupptabprem": {
         "description": "Bouton de cosmétiques supplémentaires tableau premium"
     },
+
     "illimite": "Illimité",
     "@illimite": {
         "description": "Bouton d'illimité"
@@ -122,5 +123,92 @@
     "rejoindrepartietitle": "Rejoindre une partie",
     "@rejoindrepartietitle": {
         "description": "Titre de rejoindre une partie"
+    },
+    "mdpconfirm": "Confirmer le mot de passe",
+    "@mdpconfirm": {
+        "description": "Bouton de confirmation de mot de passe"
+    },
+    "pseudo": "Pseudo",
+    "@pseudo": {
+        "description": "Bouton de pseudo"
+    },
+    "erreurinscription": "Erreur lors de l'inscription",
+    "@erreurinscription": {
+        "description": "Bouton d'erreur d'inscription"
+    },
+    "erreurdatedenaissance": "Vous devez avoir au moins 13 ans pour vous inscrire",
+    "@erreurdatedenaissance": {
+        "description": "Bouton d'erreur de date de naissance"
+    },
+    "erreurcorrespondancemdp": "Les mots de passe ne correspondent pas",
+    "@erreurcorrespondancemdp": {
+        "description": "Bouton d'erreur de correspondance de mot de passe"
+    },
+    "modeaveugle": "Mode aveugle",
+    "@modeaveugle": {
+        "description": "Bouton de mode aveugle"
+    },
+    "datedenaissance": "Date de naissance",
+    "@datedenaissance": {
+        "description": "Bouton de date de naissance"
+    },
+    "commencer_inscription": "Commencer l'inscription",
+    "@commencer_inscription": {
+        "description": "Bouton de commencer"
+    },
+    "inscription_reussie": "Inscription réussie",
+    "@inscription_reussie": {
+        "description": "Bouton d'inscription réussie"
+    },
+    "titre_email": "Entrez votre email !",
+    "@titre_email": {
+        "description": "Titre d'email"
+    },
+    "titre_pseudo": "Entrez votre pseudo !",
+    "@titre_pseudo": {
+        "description": "Titre de pseudo"
+    },
+    "titre_mdp": "Choisissez votre mot de passe !",
+    "@titre_mdp": {
+        "description": "Titre de mot de passe"
+    },
+    "titre_date_naissance": "Entrez votre date de naissance !",
+    "@titre_date_naissance": {
+        "description": "Titre de date de naissance"
+    },
+    "exemple_email": "exemple : exemple@fournisseur.xxx",
+    "@exemple_email": {
+        "description": "Exemple d'email"
+    },
+    "selection_bday": "Sélectionnez votre date de naissance",
+    "@selection_bday": {
+        "description": "Sélection de date de naissance"
+    },
+    "titre_popup_age": "Restriction d'âge",
+    "@titre_popup_age": {
+        "description": "Titre de popup d'âge"
+    },
+    "texte_popup_age": "Vous devez avoir au moins 13 ans pour vous inscrire",
+    "@texte_popup_age": {
+        "description": "Texte de popup d'âge"
+    },
+    "titre_popup_mdp": "Confirmation de mot de passe",
+    "@titre_popup_mdp": {
+        "description": "Titre de popup de mot de passe"
+    },
+    "texte_popup_mdp": "Les mots de passe ne correspondent pas",
+    "@texte_popup_mdp": {
+        "description": "Texte de popup de mot de passe"
+    },
+    "titre_popup_champ_vide": "Champs vides",
+    "@titre_popup_champ_vide": {
+        "description": "Titre de popup de champs vides"
+    },
+    "texte_popup_champ_vide": "Veuillez remplir tous les champs",
+    "@texte_popup_champ_vide": {
+        "description": "Texte de popup de champs vides"
     }
+
+
+
 }

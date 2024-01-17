@@ -56,6 +56,13 @@ dependencies:
   flutter_localization:
   intl: ^0.18.1
   purchases_flutter: ^6.6.0
+  flutter_countdown_timer: ^4.1.0
+  flutter_map_location_marker: ^8.0.3
+  flutter_map_line_editor: ^6.0.0
+  flutter_map_dragmarker: ^6.0.0
+  carousel_slider: ^4.2.1
+
+
 
 
 dev_dependencies:
@@ -79,9 +86,9 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-      - assets/logo_home_menu.png
-      - assets/logo_connect.png
-      - assets/background.png
+    - assets/logo_home_menu.png
+    - assets/logo_connect.png
+    - assets/background.png
 
 
   fonts:

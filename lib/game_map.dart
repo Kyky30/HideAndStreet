@@ -1,30 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_countdown_timer/current_remaining_time.dart';
+import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_map_dragmarker/flutter_map_dragmarker.dart';
-import 'package:flutter_map_line_editor/flutter_map_line_editor.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
 
-class MapConfScreen extends StatefulWidget {
-  const MapConfScreen({super.key});
+class GameMap extends StatefulWidget {
+  const GameMap({super.key});
 
   @override
-  State<MapConfScreen> createState() => _MapConfScreen();
+  State<GameMap> createState() => _GameMapState();
 }
 
-
-class _MapConfScreen extends State<MapConfScreen> {
-  late PolyEditor polyEditor;
+class _GameMapState extends State<GameMap> {
   late Position currentPosition;
+  late LatLng tapPosition;
   bool isLoading = true; // Track loading state
-
-  final polygons = <Polygon>[];
-  final testPolygon = Polygon(
-    color: Colors.red.withOpacity(0.5),
-    borderColor: Colors.black,
-    isFilled: true,
-    points: [],
-  );
+  late double radius;
+  int countdownSeconds = 600;
 
   @override
   void initState() {
@@ -32,19 +26,11 @@ class _MapConfScreen extends State<MapConfScreen> {
     _determinePosition().then((position) {
       setState(() {
         currentPosition = position;
+        tapPosition = LatLng(currentPosition.latitude, currentPosition.longitude);
         isLoading = false; // Set loading state to false when the position is determined
+        radius = 150;
       });
     });
-
-    polyEditor = PolyEditor(
-      addClosePathMarker: true,
-      points: testPolygon.points,
-      pointIcon: const Icon(Icons.crop_square, size: 23),
-      intermediateIcon: const Icon(Icons.lens, size: 15, color: Colors.grey),
-      callbackRefresh: () => {setState(() {})},
-    );
-
-    polygons.add(testPolygon);
   }
 
   Future<Position> _determinePosition() async {
@@ -87,35 +73,57 @@ class _MapConfScreen extends State<MapConfScreen> {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return Scaffold(
+      return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );
-    } else {
+    }
+    else {
       return Scaffold(
-        appBar: AppBar(title: const Text('Map Configuration')),
-        body: FlutterMap(
-          options: MapOptions(
-            onTap: (_, ll) {
-              polyEditor.add(testPolygon.points, ll);
-            },
-            initialCenter: LatLng(currentPosition.latitude, currentPosition.longitude),
-            initialZoom: 15,
-          ),
-          children: [
-            TileLayer(
-              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+        body: Column(
+          children :[
+
+            CountdownTimer(
+              endTime: DateTime.now().millisecondsSinceEpoch + countdownSeconds * 1000,
+              widgetBuilder: (_, CurrentRemainingTime? time) {
+                if (time == null) {
+                  return const Text("00:00",
+                      style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
+                );
+
+                }
+                return Text(
+                  '${time.min}:${time.sec}',
+                  style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
+                );
+              },
             ),
-            PolygonLayer(polygons: polygons),
-            DragMarkers(markers: polyEditor.edit()),
-          ],
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.replay),
-          onPressed: () {
-            setState(() {
-              testPolygon.points.clear();
-            });
-          },
+            Expanded(child: FlutterMap(
+              options: MapOptions(
+                initialCenter: LatLng(
+                    currentPosition.latitude, currentPosition.longitude),
+                initialZoom: 15,
+              ),
+              children: [
+                TileLayer(
+                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                ),
+                CurrentLocationLayer(),
+                CircleLayer(circles: [
+                  CircleMarker(
+                    point: tapPosition,
+                    color: Colors.grey.withOpacity(0.5),
+                    borderColor: Colors.black,
+                    borderStrokeWidth: 2,
+
+                    useRadiusInMeter: true,
+                    radius: radius, //in meters
+                  ),
+                ]),
+              ],
+            ),),
+
+
+          ]
         ),
       );
     }
