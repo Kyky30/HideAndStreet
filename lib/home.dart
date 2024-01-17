@@ -91,7 +91,7 @@ class HomePage extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const Chat(),
+                            builder: (context) => const Chat(partieId:0),
                           ),
                         );
                       },

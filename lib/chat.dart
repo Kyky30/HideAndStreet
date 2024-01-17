@@ -9,11 +9,11 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:intl/intl.dart';
 
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Chat extends StatelessWidget {
-  final String partieId;
+  final int partieId;
+
   const Chat({Key? key, required this.partieId});
 
   @override
@@ -28,8 +28,9 @@ class Chat extends StatelessWidget {
 }
 
 class ChatBody extends StatefulWidget {
-  final String partieId;
-  const ChatBody({Key? key,required this.partieId}) : super(key: key);
+  final int partieId;
+
+  const ChatBody({Key? key, required this.partieId}) : super(key: key);
 
   @override
   _ChatBodyState createState() => _ChatBodyState(partieId: partieId);
@@ -41,7 +42,7 @@ class _ChatBodyState extends State<ChatBody> {
   final List<Message> messages = [];
   final ScrollController _scrollController = ScrollController();
   final String username = 'Pseudo';
-  final String partieId;
+  final int partieId;
 
   _ChatBodyState({required this.partieId});
 
@@ -90,7 +91,6 @@ class _ChatBodyState extends State<ChatBody> {
     if (pickedFile != null) {
       final imageBytes = await testCompressList(await pickedFile.readAsBytes());
       final userPhotoMessage = Message(imageBytes: imageBytes, isUser: true, username: username, status: MessageStatus.sent);
-
 
       channel.sink.add(imageBytes);
 
