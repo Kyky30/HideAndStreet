@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:figma_squircle/figma_squircle.dart';
+import 'package:hide_and_street/PreferencesManager.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -23,6 +24,23 @@ class _RegisterPageState extends State<RegisterPage> {
   List<GlobalKey<FormFieldState<String>>> passwordKeys = [GlobalKey<FormFieldState<String>>(), GlobalKey<FormFieldState<String>>()];
 
   bool _toggleValue = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBlindToggle(); // Charge la valeur du switch au démarrage
+  }
+
+  _loadBlindToggle() async {
+    bool blindToggle = await PreferencesManager.getBlindToggle();
+    setState(() {
+      _toggleValue = blindToggle;
+    });
+  }
+
+  _saveBlindToggle() async {
+    await PreferencesManager.setBlindToggle(_toggleValue);
+  }
 
   List<RegistrationStep> _steps(BuildContext context) => [
     RegistrationStep(
@@ -128,6 +146,7 @@ class _RegisterPageState extends State<RegisterPage> {
       onTap: () {
         blindToggleValues = _toggleValue;
         print(blindToggleValues);
+        _saveBlindToggle();
         _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
       },
     ),
