@@ -1,20 +1,18 @@
-// chat.dart
 import 'dart:typed_data';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:web_socket_channel/io.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:photo_view/photo_view_gallery.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ChatLocalStorage {
   static const String _key = 'chat_messages';
-  static const String _welcomeKey = 'welcome_message';
+  //static const String _welcomeKey = 'welcome_message';
 
+  //Sauvegarde les messages dans le stockage local
   static Future<void> saveMessages(List<Message> messages) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final List<String> messagesJson =
@@ -22,6 +20,7 @@ class ChatLocalStorage {
     prefs.setStringList(_key, messagesJson);
   }
 
+  //charge les message à partir du stockage local
   static Future<List<Message>> loadMessages() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String>? messagesJson = prefs.getStringList(_key);
@@ -31,20 +30,21 @@ class ChatLocalStorage {
         [];
   }
 
+  //Supprime tous les messages du stockage local
   static Future<void> clearMessages() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove(_key);
   }
 
-  static Future<bool> hasSeenWelcomeMessage() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_welcomeKey) ?? false;
-  }
+  //static Future<bool> hasSeenWelcomeMessage() async {
+    //SharedPreferences prefs = await SharedPreferences.getInstance();
+    //return prefs.getBool(_welcomeKey) ?? false;
+  //}
 
-  static Future<void> markWelcomeMessageSeen() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_welcomeKey, true);
-  }
+  //static Future<void> markWelcomeMessageSeen() async {
+    //SharedPreferences prefs = await SharedPreferences.getInstance();
+    //await prefs.setBool(_welcomeKey, true);
+  //}
 }
 
 class Chat extends StatelessWidget {
@@ -77,10 +77,18 @@ class _ChatBodyState extends State<ChatBody> {
   final ScrollController _scrollController = ScrollController();
   final String username = 'Pseudo';
   final int partieId;
-  bool _isWelcomeMessageDisplayed = false;
+  //bool _isWelcomeMessageDisplayed = false;
 
-  _ChatBodyState({required this.partieId});
+  _ChatBodyState({required this.partieId}) {
+    _loadMessages();
+  }
 
+  //Fonction pour envoyer des données au serveur WebSocket
+  void sendToServer(Map<String, dynamic> data) {
+    channel.sink.add(jsonEncode(data));
+  }
+
+  //Fonction pour faire défiler la liste de message
   void scrollToBottom() {
     _scrollController.animateTo(
       _scrollController.position.maxScrollExtent,
@@ -90,70 +98,143 @@ class _ChatBodyState extends State<ChatBody> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    // Vérifie si l'utilisateur a déjà vu le message de bienvenue
-    ChatLocalStorage.hasSeenWelcomeMessage().then((hasSeenWelcome) {
-      if (!hasSeenWelcome && !_isWelcomeMessageDisplayed) {
-        _displayWelcomeMessage();
-        _isWelcomeMessageDisplayed = true; // Marque le message comme affiché
-      }
-    });
-  }
-
-  @override
   void initState() {
     super.initState();
 
-    // Charge les messages sauvegardés
+    // Charge les messages depuis le stockage local lorsque le widget est initialisé
     _loadMessages();
 
     // Écoute les messages WebSocket du serveur
-    channel.sink.add(jsonEncode({'partie': partieId}));
     channel.stream.listen((dynamic message) {
+      print('Message reçu du serveur : $message');
+
       setState(() {
         if (message is String) {
+          // Message texte
+          Map<String, dynamic> decodedMessage = json.decode(message);
           messages.add(Message(
-              text: message,
-              isUser: false,
-              username: 'Server',
-              status: MessageStatus.received));
+            text: decodedMessage['text'],
+            isUser: false,
+            username: 'Serveur',
+            status: decodedMessage['status'] == 'MessageStatus.sent'
+                ? MessageStatus.sent
+                : MessageStatus.received,
+            timestamp: DateTime.parse(decodedMessage['timestamp'] ?? ''),
+          ));
         } else if (message is Map<String, dynamic>) {
+          // Message avec informations utilisateur (pseudo + contenu)
+          print('Message utilisateur reçu : $message');
           final userMessage = Message(
             text: message['text'],
             isUser: true,
-            username: message['Username'],
-            status: MessageStatus.received,
+            username: message['username'],
+            status: message['status'] == 'MessageStatus.sent'
+                ? MessageStatus.sent
+                : MessageStatus.received,
+            timestamp: DateTime.parse(message['timestamp'] ?? ''),
           );
           messages.add(userMessage);
         } else if (message is Uint8List) {
+          // Message image
           messages.add(Message(
-              imageBytes: message,
-              isUser: false,
-              username: 'Server',
-              status: MessageStatus.received));
+            imageBytes: message,
+            isUser: false,
+            username: 'Serveur',
+            status: MessageStatus.received,
+          ));
         }
       });
 
+      //Affiche la liste de messages mise a jour dans la console
+      print('Liste de messages mise à jour :');
+      messages.forEach((message) => print(message.toJson()));
+
+      //Save des messages en local
+      _saveMessages();
+
       // Fait défiler les messages vers le bas
-      WidgetsBinding.instance?.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         scrollToBottom();
       });
     });
+
+    // Vérifie si l'utilisateur a déjà vu le message de bienvenue
+    //ChatLocalStorage.hasSeenWelcomeMessage().then((hasSeenWelcome) {
+      //if (!hasSeenWelcome && !_isWelcomeMessageDisplayed) {
+        //_displayWelcomeMessage();
+        //_isWelcomeMessageDisplayed = true; // Marque le message comme affiché
+      //}
+    //});
   }
 
+  //Fonction pour envoyer un message
+  Future<void> _sendMessage() async {
+    // Récupère le texte du message
+    final messageText = _messageController.text.trim();
+
+    // Vérifie si le message n'est pas vide
+    if (messageText.isNotEmpty) {
+      // Crée un nouvel objet Message avec la date et l'heure actuelles
+      final userMessage = Message(
+        text: messageText,
+        isUser: true,
+        username: username,
+        status: MessageStatus.sent,
+        timestamp: DateTime.now(),
+      );
+
+      setState(() {
+        messages.add(userMessage);
+      });
+
+      // Fait défiler la liste vers le bas
+      scrollToBottom();
+
+      // Envoie le message au serveur WebSocket
+      final messageWithTimestamp = {
+        'text': messageText,
+        'isUser': true,
+        'username': username,
+        'timestamp': userMessage.timestamp.toIso8601String(),
+        'status': userMessage.status.toString(),
+      };
+
+      print('Envoi du message au serveur : $messageWithTimestamp');
+      channel.sink.add(utf8.encode(jsonEncode(messageWithTimestamp)));
+
+      // Utilise Future.delayed pour gérer le délai correctement
+      await Future.delayed(const Duration(milliseconds: 10), () {
+        setState(() {
+          userMessage.status = MessageStatus.received;
+          print('Message marqué comme reçu : ${userMessage.toJson()}');
+        });
+        _saveMessages();
+      });
+    }
+
+    //Save local
+    _saveMessages();
+
+    // Efface le texte du contrôleur
+    _messageController.clear();
+  }
+
+  //Charge les messages localement
   Future<void> _loadMessages() async {
+    // Load messages from local storage
     List<Message> loadedMessages = await ChatLocalStorage.loadMessages();
     setState(() {
+      messages.clear(); // Clear existing messages
       messages.addAll(loadedMessages);
     });
-    // Fait défiler les messages vers le bas
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+
+    // Scroll messages to the bottom
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       scrollToBottom();
     });
   }
 
+  //Capture et envoie de photo
   Future<void> _captureAndSendPhoto() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.camera);
@@ -162,10 +243,11 @@ class _ChatBodyState extends State<ChatBody> {
       final imageBytes =
       await testCompressList(await pickedFile.readAsBytes());
       final userPhotoMessage = Message(
-          imageBytes: imageBytes,
-          isUser: true,
-          username: username,
-          status: MessageStatus.sent);
+        imageBytes: imageBytes,
+        isUser: true,
+        username: username,
+        status: MessageStatus.sent,
+      );
 
       channel.sink.add(imageBytes);
 
@@ -192,14 +274,13 @@ class _ChatBodyState extends State<ChatBody> {
     });
 
     // Marque le message de bienvenue comme vu
-    ChatLocalStorage.markWelcomeMessageSeen();
+    //ChatLocalStorage.markWelcomeMessageSeen();
 
     // Fait défiler la liste vers le bas
     scrollToBottom();
   }
 
-
-
+  // Fonction pour compresser une liste d'octets (image)
   Future<Uint8List> testCompressList(Uint8List list) async {
     var result = await FlutterImageCompress.compressWithList(
       list,
@@ -212,55 +293,13 @@ class _ChatBodyState extends State<ChatBody> {
     return result;
   }
 
-  void _sendMessage() {
-    // Récupère le texte du message
-    final messageText = _messageController.text.trim();
-
-    // Vérifie si le message n'est pas vide
-    if (messageText.isNotEmpty) {
-      // Crée un nouvel objet Message avec la date et l'heure actuelles
-      final userMessage = Message(
-        text: messageText,
-        isUser: true,
-        username: username,
-        status: MessageStatus.sent,
-        timestamp: DateTime.now(), // Ajoutez cette ligne
-      );
-
-      setState(() {
-        messages.add(userMessage);
-      });
-
-      // Fait défiler la liste vers le bas
-      scrollToBottom();
-
-      // Envoie le message au serveur WebSocket
-      final messageWithTimestamp = {
-        'text': messageText,
-        'isUser': true,
-        'username': username,
-        'timestamp': userMessage.timestamp.toIso8601String(),
-      };
-
-      channel.sink.add(utf8.encode(jsonEncode(messageWithTimestamp)));
-
-      Future.delayed(const Duration(seconds: 2), () {
-        setState(() {
-          userMessage.status = MessageStatus.received;
-        });
-      });
-    }
-
-    _saveMessages();
-
-    // Efface le texte du contrôleur
-    _messageController.clear();
-  }
-
+  // Fonction pour sauvegarder les messages localement
   Future<void> _saveMessages() async {
+    // Save messages to local storage
     await ChatLocalStorage.saveMessages(messages);
   }
 
+  // Widget pour afficher l'indicateur de statut des messages
   Widget buildStatusIndicator(MessageStatus status) {
     if (status == MessageStatus.sent) {
       return Icon(
@@ -279,6 +318,7 @@ class _ChatBodyState extends State<ChatBody> {
     }
   }
 
+  // Widget pour construire l'élément d'affichage d'un message
   Widget buildMessageWidget(Message message) {
     if (message.imageBytes != null) {
       return GestureDetector(
@@ -401,6 +441,8 @@ class _ChatBodyState extends State<ChatBody> {
     }
   }
 
+
+  // Fonction de nettoyage lorsque le widget est détruit
   @override
   void dispose() {
     // Ferme la connexion WebSocket et le contrôleur de texte lorsque le widget est détruit
@@ -409,6 +451,7 @@ class _ChatBodyState extends State<ChatBody> {
     super.dispose();
   }
 
+  // Construction de l'interface utilisateur pour l'écran de chat
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -452,6 +495,7 @@ class _ChatBodyState extends State<ChatBody> {
   }
 }
 
+// Widget pour afficher une image en plein écran
 class FullScreenImage extends StatelessWidget {
   final Uint8List imageBytes;
   final DateTime timestamp;
@@ -501,8 +545,8 @@ class Message {
     this.imageBytes,
     this.username,
     required this.status,
-    DateTime? timestamp, // Mettez à jour ici
-  }) : timestamp = timestamp ?? DateTime.now();
+    DateTime? timestamp, // Ajout de la déclaration ici
+  }) : timestamp = timestamp ?? DateTime.now(); // Initialisation avec la valeur actuelle si elle est nulle
 
   Map<String, dynamic> toJson() {
     return {
