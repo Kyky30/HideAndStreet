@@ -6,17 +6,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'PreferencesManager.dart'; // Assurez-vous d'importer votre gestionnaire de préférences approprié
 
 class AccountSettingsPage extends StatefulWidget {
-  final String username;
-  final String email;
-
-  const AccountSettingsPage({Key? key, required this.username, required this.email}) : super(key: key);
 
   @override
   _AccountSettingsPageState createState() => _AccountSettingsPageState();
 }
 
 class _AccountSettingsPageState extends State<AccountSettingsPage> {
-  late bool isBlindModeEnabled;
+  late bool isBlindModeEnabled = false;
 
   @override
   void initState() {
@@ -27,7 +23,8 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
   _loadBlindMode() async {
     bool blindMode = await PreferencesManager.getBlindToggle();
     setState(() {
-      isBlindModeEnabled = blindMode;
+      // isBlindModeEnabled = blindMode;
+      isBlindModeEnabled = false;
     });
   }
 
@@ -37,9 +34,19 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
 
   Future<void> _logout(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('loggedin', false);
 
-    // Naviguez vers la page de connexion après la déconnexion
+    // Remove any stored user credentials or tokens
+    await prefs.remove('loggedin');  // Assuming 'loggedin' is used for storing authentication status
+
+    // Clear the blind mode preference
+    await PreferencesManager.setBlindToggle(false);
+
+    // Reset the state
+    setState(() {
+      isBlindModeEnabled = false;
+    });
+
+    // Navigate to the login page
     Navigator.pushReplacementNamed(context, '/login');
   }
 
@@ -58,19 +65,19 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
               AppLocalizations.of(context)!.usernameLabel,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            Text(
-              widget.username,
-              style: TextStyle(fontSize: 16),
-            ),
+            // Text(
+            //   widget.username,
+            //   style: TextStyle(fontSize: 16),
+            // ),
             SizedBox(height: 20),
             Text(
               AppLocalizations.of(context)!.emailLabel,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            Text(
-              widget.email,
-              style: TextStyle(fontSize: 16),
-            ),
+            // Text(
+            //   widget.email,
+            //   style: TextStyle(fontSize: 16),
+            // ),
             SizedBox(height: 20),
             Row(
               children: [

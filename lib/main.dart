@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         '/home': (context) => const MyHomePage(),
-        '/account_settings': (context) => const AccountSettingsPage(),
+        '/account_settings': (context) => AccountSettingsPage(),
         '/login': (context) => LoginPage(),
       },
       supportedLocales: L10n.all,
@@ -59,14 +59,14 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  Future<Widget?> autoLogin() async {
+  Future<Widget> autoLogin() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool? loggedIn = prefs.getBool('loggedin');
 
     if (loggedIn == true) {
       return const MyHomePage();
     } else {
-      return null;
+      return LoginPage(); // Return the LoginPage widget
     }
   }
 }
@@ -84,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Widget> _tabs = [
     const ShopPage(),
     const HomePage(),
-    const AccountSettingsPage(),
+    AccountSettingsPage(),
   ];
 
   void _onItemTapped(int index) {
