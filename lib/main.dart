@@ -13,7 +13,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
-
 void main() {
   runApp(const MyApp());
 }
@@ -66,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Widget> _tabs = [
     const ShopPage(),
     const HomePage(),
-    const AccountSettingsPage(),
+    const AccountSettingsPage(username: "sperme",email: "a@a.fr"),
   ];
 
   void _onItemTapped(int index) {
@@ -103,3 +102,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
+
+

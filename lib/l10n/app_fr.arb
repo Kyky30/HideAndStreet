@@ -223,6 +223,43 @@
     "blind_toggle_label" : "Mode déficience visuelle",
     "@blind_toggle_label": {
         "description": "Label de toggle"
+    },
+    "titre_conf_duree": "Durée de la partie",
+    "@titre_conf_duree": {
+        "description": "Titre de durée de la partie"
+    },
+    "champ_conf_duree": "Durée de la partie",
+    "@champ_conf_duree": {
+        "description": "Champ de durée de la partie"
+    },
+    "texte_champ_conf_duree": "Durée de la partie en minutes",
+    "@texte_champ_conf_duree": {
+        "description": "Texte de champ de durée de la partie"
+    },
+    "titre_conf_chercheurs": "Nombre de chercheurs",
+    "@titre_conf_chercheurs": {
+        "description": "Titre de nombre de chercheurs"
+    },
+    "champ_conf_chercheurs": "Nombre de chercheurs",
+    "@champ_conf_chercheurs": {
+        "description": "Champ de nombre de chercheurs"
+    },
+    "texte_champ_conf_chercheurs": "Nombre de chercheurs",
+    "@texte_champ_conf_chercheurs": {
+        "description": "Texte de champ de nombre de chercheurs"
+    },
+
+    "profileTitle": "Profil",
+    "@profil_title": {
+        "description": "Titre de profil"
+    },
+    "usernameLabel": "Pseudo",
+    "@usernameLabel": {
+        "description": "Label de pseudo"
+    },
+    "emailLabel": "Email",
+    "@email":{
+        "description": "Label d'email"
     }
 
 

@@ -6,6 +6,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'room_creation.dart';
 
 class MapConfScreen extends StatefulWidget {
   const MapConfScreen({super.key});
@@ -130,7 +131,14 @@ class _MapConfScreen extends State<MapConfScreen> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => RoomCreationPage(
+                          initialTapPosition: tapPosition,
+                          initialRadius: radius,
+                        ),                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     shape: SmoothRectangleBorder(

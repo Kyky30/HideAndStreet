@@ -1,24 +1,16 @@
+import 'dart:io' show Platform;
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:flutter/services.dart';
 
+Future<void> initPlatformState() async {
+  await Purchases.setDebugLogsEnabled(true);
 
-class PurchaseApi {
-  static const _apiKey = '';
-
-  static Future init() async {
-    await Purchases.setDebugLogsEnabled(true);
-    await Purchases.setup(_apiKey);
+  PurchasesConfiguration configuration;
+  if (Platform.isAndroid) {
+    configuration = PurchasesConfiguration("goog_WZiqNVmIVvkQgSbtEAtteprmaZE");
+  } else{
+    configuration = PurchasesConfiguration("goog_WZiqNVmIVvkQgSbtEAtteprmaZE");
   }
+  await Purchases.configure(configuration);
 
-  static Future<List<Offering>> fetchOffers() async {
-    try{
-      final offerings = await Purchases.getOfferings();
-      final current = offerings.current;
-
-      return current == null ? [] : [current];
-    } on PlatformException catch (e) {
-      print(e);
-      return [];
-    }
-  }
 }
