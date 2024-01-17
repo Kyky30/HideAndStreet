@@ -1,14 +1,88 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:hide_and_street/main.dart';
 import 'package:hide_and_street/password_forgoten.dart';
-// import 'package:url_launcher/url_launcher.dart';
 import 'package:figma_squircle/figma_squircle.dart';
+import 'package:web_socket_channel/io.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'register.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class WebSocketManager {
+  static IOWebSocketChannel? _channel;
+
+  static Future<void> connect(String email) async {
+    _channel = IOWebSocketChannel.connect('wss://app.hideandstreet.furrball.fr/login$email');
+  }
+
+  static Future<void> closeConnection() async {
+    _channel?.sink.close();
+  }
+
+  static Future<void> sendLoginData(String auth, String email, String password) async {
+    if (_channel != null) {
+      String loginData = "{'auth':'$auth','cmd':'login','email':'$email','hash':'$password'}";
+      _channel!.sink.add(loginData);
+    }
+  }
+
+  static Stream<dynamic> getStream() {
+    return _channel?.stream ?? Stream.empty();
+  }
+}
+
+class LoginPage extends StatefulWidget {
+  LoginPage({Key? key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  // Déclarez les variables email et password ici
+  String email = '';
+
+  String password = '';
+
+  Future<void> login(BuildContext context) async {
+    String auth = "chatappauthkey231r4";
+
+    try {
+      await WebSocketManager.connect(email);
+
+      WebSocketManager.getStream().listen((event) async {
+        event = event.replaceAll(RegExp("'"), '"');
+        var responseData = json.decode(event);
+
+        if (responseData["status"] == 'success') {
+          await WebSocketManager.closeConnection();
+
+          // Mettez à jour les SharedPreferences avec le statut de connexion
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setBool('loggedin', true);
+
+          // Effectuer des actions après une connexion réussie
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MyHomePage(),
+            ),
+          );
+        } else {
+          await WebSocketManager.closeConnection();
+          print("Erreur lors de la connexion");
+          // Facultatif : fournir des commentaires à l'utilisateur sur la tentative de connexion échouée
+          // Vous pouvez afficher un snackbar ou définir une variable pour afficher un message d'erreur dans l'interface utilisateur
+        }
+      });
+
+      await WebSocketManager.sendLoginData(auth, email, password);
+    } catch (e) {
+      print("Erreur lors de la connexion au WebSocket: " + e.toString());
+      // Gérer l'erreur de connexion, par exemple, afficher un message d'erreur à l'utilisateur
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,12 +120,13 @@ class LoginPage extends StatelessWidget {
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.grey[300],
-                            hintText: AppLocalizations.of(context)!.mail,
+                            hintText: 'Mail...',
                             border: OutlineInputBorder(
                               borderSide: BorderSide.none,
                               borderRadius: BorderRadius.circular(20.0),
                             ),
                           ),
+                          onChanged: (e) => email = e,
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -63,12 +138,13 @@ class LoginPage extends StatelessWidget {
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.grey[300],
-                            hintText: AppLocalizations.of(context)!.mdp,
+                            hintText: 'Password...',
                             border: OutlineInputBorder(
                               borderSide: BorderSide.none,
                               borderRadius: BorderRadius.circular(20.0),
                             ),
                           ),
+                          onChanged: (e) => password = e,
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -88,12 +164,7 @@ class LoginPage extends StatelessWidget {
                         padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => MyHomePage(),
-                              ),
-                            );
+                            login(context);
                           },
                           style: ElevatedButton.styleFrom(
                             shape: SmoothRectangleBorder(
@@ -107,7 +178,7 @@ class LoginPage extends StatelessWidget {
                             foregroundColor: const Color(0xFF212348),
                           ),
                           child: Text(
-                            AppLocalizations.of(context)!.connexion,
+                            'Connexion',
                             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
                           ),
                         ),
@@ -124,8 +195,8 @@ class LoginPage extends StatelessWidget {
                             );
                           },
                           child: Text(
-                              AppLocalizations.of(context)!.mdpoublie,
-                              style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white)
+                            'Mot de Passe Oublié',
+                            style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
                           ),
                         ),
                       ),
@@ -141,8 +212,8 @@ class LoginPage extends StatelessWidget {
                             );
                           },
                           child: Text(
-                              AppLocalizations.of(context)!.inscription,
-                              style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white)
+                            'Inscription',
+                            style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
                           ),
                         ),
                       ),

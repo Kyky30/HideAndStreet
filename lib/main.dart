@@ -1,18 +1,16 @@
-// main.dart
 import 'package:flutter/material.dart';
-
-import 'package:hide_and_street/home.dart';
-import 'package:hide_and_street/l10n/l10n.dart';
-import 'package:hide_and_street/shop.dart';
-import 'package:hide_and_street/account_settings.dart';
-import 'package:hide_and_street/login.dart';
-
-import 'package:material_symbols_icons/symbols.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'home.dart';
+import 'l10n/l10n.dart';
+import 'login.dart';
+import 'shop.dart';
+import 'account_settings.dart';
 
+
+import 'package:material_symbols_icons/symbols.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,20 +26,29 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const LoginPage(),  // Définissez votre page LoginPage comme page d'accueil
+      home: FutureBuilder<Widget?>(
+        future: autoLogin(),
+        builder: (BuildContext context, AsyncSnapshot<Widget?> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else {
+            return snapshot.data ?? const MyHomePage();
+          }
+        },
+      ),
       routes: {
-        '/home': (context) => const MyHomePage(),  // Ajoutez cette ligne si vous avez une page home.dart
+        '/home': (context) => const MyHomePage(),
+        '/account_settings': (context) => const AccountSettingsPage(),
+        '/login': (context) => LoginPage(),
       },
       supportedLocales: L10n.all,
-      //locale: const Locale('fr'),
       localizationsDelegates: const [
-         AppLocalizations.delegate,
-         GlobalMaterialLocalizations.delegate,
-         GlobalWidgetsLocalizations.delegate,
-         GlobalCupertinoLocalizations.delegate,
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
       ],
       localeResolutionCallback: (locale, supportedLocales) {
-        // Choisissez la meilleure langue en fonction des langues prises en charge
         for (var supportedLocale in supportedLocales) {
           if (supportedLocale.languageCode == locale?.languageCode) {
             return supportedLocale;
@@ -50,6 +57,17 @@ class MyApp extends StatelessWidget {
         return supportedLocales.first;
       },
     );
+  }
+
+  Future<Widget?> autoLogin() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? loggedIn = prefs.getBool('loggedin');
+
+    if (loggedIn == true) {
+      return const MyHomePage();
+    } else {
+      return null;
+    }
   }
 }
 
@@ -61,7 +79,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _selectedIndex = 1; // Commence par la page d'accueil (index 1).
+  int _selectedIndex = 1;
 
   final List<Widget> _tabs = [
     const ShopPage(),
@@ -82,15 +100,15 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
-            icon: const Icon(Symbols.shopping_cart_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24 ),
+            icon: const Icon(Symbols.shopping_cart_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
             label: AppLocalizations.of(context)!.boutique,
           ),
           BottomNavigationBarItem(
-            icon: const Icon( Symbols.home_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24 ),
+            icon: const Icon(Symbols.home_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
             label: AppLocalizations.of(context)!.accueil,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Symbols.settings_account_box_rounded,fill: 1, weight: 700, grade: 200, opticalSize: 24 ),
+            icon: const Icon(Symbols.settings_account_box_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
             label: AppLocalizations.of(context)!.profil,
           ),
         ],
