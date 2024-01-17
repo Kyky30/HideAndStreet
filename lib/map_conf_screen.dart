@@ -8,33 +8,43 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'room_creation.dart';
 
+import 'PreferencesManager.dart';
+
 class MapConfScreen extends StatefulWidget {
-  const MapConfScreen({super.key});
+  const MapConfScreen({Key? key}) : super(key: key);
 
   @override
-  State<MapConfScreen> createState() => _MapConfScreen();
+  State<MapConfScreen> createState() => _MapConfScreenState();
 }
 
-
-class _MapConfScreen extends State<MapConfScreen> {
+class _MapConfScreenState extends State<MapConfScreen> {
   late Position currentPosition;
   late LatLng tapPosition;
   bool isLoading = true; // Track loading state
   late double radius;
+  bool isBlindModeEnabled = true;
 
   @override
   void initState() {
     super.initState();
-    _determinePosition().then((position) {
+    _initializeState();
+  }
+
+  Future<void> _initializeState() async {
+    await _loadBlindModeStatus();
+    await _determinePosition().then((position) {
       setState(() {
         currentPosition = position;
-        tapPosition =
-            LatLng(currentPosition.latitude, currentPosition.longitude);
-        isLoading =
-        false; // Set loading state to false when the position is determined
+        tapPosition = LatLng(currentPosition.latitude, currentPosition.longitude);
+        isLoading = false;
         radius = 150;
       });
     });
+  }
+
+  Future<void> _loadBlindModeStatus() async {
+    isBlindModeEnabled = await PreferencesManager.getBlindToggle();
+    setState(() {});
   }
 
   Future<Position> _determinePosition() async {
@@ -89,12 +99,13 @@ class _MapConfScreen extends State<MapConfScreen> {
               child: FlutterMap(
                 options: MapOptions(
                   onTap: (_, tPosition) {
-                    setState(() {
-                      tapPosition = tPosition;
-                    });
+                    if (isBlindModeEnabled == false) {
+                      setState(() {
+                        tapPosition = tPosition;
+                      });
+                    }
                   },
-                  initialCenter: LatLng(
-                      currentPosition.latitude, currentPosition.longitude),
+                  initialCenter: LatLng(currentPosition.latitude, currentPosition.longitude),
                   initialZoom: 15,
                 ),
                 children: [
@@ -108,7 +119,6 @@ class _MapConfScreen extends State<MapConfScreen> {
                       color: Colors.grey.withOpacity(0.5),
                       borderColor: Colors.black,
                       borderStrokeWidth: 2,
-
                       useRadiusInMeter: true,
                       radius: radius, //in meters
                     ),
@@ -116,16 +126,75 @@ class _MapConfScreen extends State<MapConfScreen> {
                 ],
               ),
             ),
-            Slider(
-              value: radius,
-              onChanged: (newRadius) {
-                setState(() {
-                  radius = newRadius;
-                });
-              },
-              min: 15,
-              max: 1000,
-            ),
+            if (isBlindModeEnabled == false) ...[
+              // Afficher le Slider lorsque le mode aveugle est désactivé
+              Slider(
+                value: radius,
+                onChanged: (newRadius) {
+                  setState(() {
+                    radius = newRadius;
+                  });
+                },
+                min: 15,
+                max: 1000,
+              ),
+            ] else ...[
+              // Afficher la ligne avec la valeur de radius et les boutons lorsque le mode aveugle est activé
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        radius -= 5;
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: SmoothRectangleBorder(
+                        borderRadius: SmoothBorderRadius(
+                          cornerRadius: 20,
+                          cornerSmoothing: 1,
+                        ),
+                      ),
+                      backgroundColor: const Color(0xFF373967),
+                      foregroundColor: const Color(0xFF212348),
+                      fixedSize: Size(MediaQuery.of(context).size.width / 3.5 - 20, 80),
+                    ),
+                    child: Text(
+                      '- 5 m',
+                      style: const TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                  ),
+                  Text(
+                    'Rayon : ${radius.toStringAsFixed(2)} m',
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        radius += 5;
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: SmoothRectangleBorder(
+                        borderRadius: SmoothBorderRadius(
+                          cornerRadius: 20,
+                          cornerSmoothing: 1,
+                        ),
+                      ),
+                      backgroundColor: const Color(0xFF373967),
+                      foregroundColor: const Color(0xFF212348),
+                      fixedSize: Size(MediaQuery.of(context).size.width / 3.5 - 20, 80),
+                    ),
+                    child: Text(
+                      '+ 5 m',
+                      style: const TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                  ),
+
+                ],
+              ),
+            ],
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -137,7 +206,8 @@ class _MapConfScreen extends State<MapConfScreen> {
                         builder: (context) => RoomCreationPage(
                           initialTapPosition: tapPosition,
                           initialRadius: radius,
-                        ),                      ),
+                        ),
+                      ),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -147,8 +217,6 @@ class _MapConfScreen extends State<MapConfScreen> {
                         cornerSmoothing: 1,
                       ),
                     ),
-                    // minimumSize: const Size(double.infinity, 80),
-
                     backgroundColor: const Color(0xFF373967),
                     foregroundColor: const Color(0xFF212348),
                     fixedSize: Size(MediaQuery.of(context).size.width / 2 - 20, 80),
@@ -158,30 +226,30 @@ class _MapConfScreen extends State<MapConfScreen> {
                     style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      tapPosition = LatLng(currentPosition.latitude, currentPosition.longitude);
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: SmoothRectangleBorder(
-                      borderRadius: SmoothBorderRadius(
-                        cornerRadius: 20,
-                        cornerSmoothing: 1,
+                if (isBlindModeEnabled == false) ...[
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        tapPosition = LatLng(currentPosition.latitude, currentPosition.longitude);
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: SmoothRectangleBorder(
+                        borderRadius: SmoothBorderRadius(
+                          cornerRadius: 20,
+                          cornerSmoothing: 1,
+                        ),
                       ),
+                      backgroundColor: const Color(0xFF373967),
+                      foregroundColor: const Color(0xFF212348),
+                      fixedSize: Size(MediaQuery.of(context).size.width / 2 - 20, 80),
                     ),
-                    // minimumSize: const Size(double.infinity, 80),
-
-                    backgroundColor: const Color(0xFF373967),
-                    foregroundColor: const Color(0xFF212348),
-                    fixedSize: Size(MediaQuery.of(context).size.width / 2 - 20, 80),
+                    child: Text(
+                      AppLocalizations.of(context)!.centrer,
+                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
+                    ),
                   ),
-                  child: Text(
-                    AppLocalizations.of(context)!.centrer,
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
-                  ),
-                ),
+                ],
               ],
             ),
             const SizedBox(height: 20), //margin entre les boutons et le bas de l'écran

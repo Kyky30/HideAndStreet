@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'PreferencesManager.dart'; // Assurez-vous d'importer votre gestionnaire de préférences approprié
+import 'PreferencesManager.dart';
 
 class AccountSettingsPage extends StatefulWidget {
   final String username;
@@ -13,7 +13,7 @@ class AccountSettingsPage extends StatefulWidget {
 }
 
 class _AccountSettingsPageState extends State<AccountSettingsPage> {
-  late bool isBlindModeEnabled;
+  bool isBlindModeEnabled = false;
 
   @override
   void initState() {
