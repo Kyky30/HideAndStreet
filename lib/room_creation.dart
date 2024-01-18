@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:web_socket_channel/io.dart';
 
 
 class RoomCreationPage extends StatefulWidget {
@@ -19,7 +20,30 @@ class RoomCreationPage extends StatefulWidget {
 
 class _RoomCreationPageState extends State<RoomCreationPage> {
   PageController _pageController = PageController(initialPage: 0);
+  late IOWebSocketChannel channel;
 
+  @override
+  void initState() {
+    super.initState();
+
+    // Établir la connexion WebSocket sécurisée
+    channel = IOWebSocketChannel.connect('wss://votre-domaine.com');
+  }
+
+  void _createGame() {
+    double initialRadius = widget.initialRadius;
+    LatLng initialTapPosition = widget.initialTapPosition;
+    String creatorId = ''; // Remplacez avec la logique pour obtenir l'ID du créateur
+    // Logique pour créer la partie et envoyer des données via WebSocket sécurisé
+    channel.sink.add('{"radius": $initialRadius, "creatorId": "$creatorId", "center": {"lat": ${initialTapPosition.latitude}, "lng": ${initialTapPosition.longitude}}, "duration": $dureePartie}');
+  }
+
+  @override
+  void dispose() {
+    // Fermer la connexion WebSocket lorsque le widget est détruit
+    channel.sink.close();
+    super.dispose();
+  }
   int dureePartie = 0;
   int nbChercheurs = 0;
 
@@ -46,26 +70,6 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
         }
       },
     ),
-    RoomCreationStep(
-      title: AppLocalizations.of(context)!.titre_conf_chercheurs,
-      background: 'assets/background_white.jpg',
-      buttonText: AppLocalizations.of(context)!.confirmer,
-      logo: 'assets/logo_connect.png',
-      fields: [
-        RoomCreationField(label: AppLocalizations.of(context)!.champ_conf_chercheurs, hint: AppLocalizations.of(context)!.texte_champ_conf_chercheurs, key: nbChercheursKey[0], keyboardType: TextInputType.number),
-      ],
-      onTap: () {
-        var nbcherch = nbChercheursKey[0].currentState?.value ?? "";
-        if (nbcherch.isEmpty) {
-          _showEmptyFieldDialog(context);
-        } else {
-          nbChercheurs = int.parse(nbcherch);
-          print(nbChercheurs);
-          _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
-        }
-      },
-    ),
-
   ];
 
   Widget build(BuildContext context) {
@@ -228,5 +232,7 @@ class RoomCreationField {
     this.key,
     this.keyboardType = TextInputType.text, // Set the default keyboard type to text
   });
+
 }
+
 
