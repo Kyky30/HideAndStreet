@@ -126,6 +126,7 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
                       padding: const EdgeInsets.all(16.0),
                       child: TextFormField(
                         key: field.key,
+                        keyboardType: field.keyboardType,
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Colors.grey[300],
