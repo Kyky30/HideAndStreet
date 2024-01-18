@@ -23,8 +23,8 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
   int dureePartie = 0;
   int nbChercheurs = 0;
 
-  List<GlobalKey<FormFieldState<String>>> nameKey = [GlobalKey<FormFieldState<String>>()];
-  List<GlobalKey<FormFieldState<String>>> descriptionKey = [GlobalKey<FormFieldState<String>>()];
+  List<GlobalKey<FormFieldState<String>>> dureeKey = [GlobalKey<FormFieldState<String>>()];
+  List<GlobalKey<FormFieldState<String>>> nbChercheursKey = [GlobalKey<FormFieldState<String>>()];
 
   List<RoomCreationStep> _steps(BuildContext context) => [
     RoomCreationStep(
@@ -33,14 +33,14 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
       buttonText: AppLocalizations.of(context)!.confirmer,
       logo: 'assets/logo_connect.png',
       fields: [
-        RoomCreationField(label: AppLocalizations.of(context)!.champ_conf_duree, hint: AppLocalizations.of(context)!.texte_champ_conf_duree, key: nameKey[0], keyboardType: TextInputType.number),
+        RoomCreationField(label: AppLocalizations.of(context)!.champ_conf_duree, hint: AppLocalizations.of(context)!.texte_champ_conf_duree, key: dureeKey[0], keyboardType: TextInputType.number),
       ],
       onTap: () {
-        var duree = nameKey[0].currentState?.value ?? "";
+        var duree = dureeKey[0].currentState?.value ?? "";
         if (duree.isEmpty) {
           _showEmptyFieldDialog(context);
         } else {
-          dureePartie = duree as int;
+          dureePartie = int.parse(duree);
           print(dureePartie);
           _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
         }
@@ -52,14 +52,14 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
       buttonText: AppLocalizations.of(context)!.confirmer,
       logo: 'assets/logo_connect.png',
       fields: [
-        RoomCreationField(label: AppLocalizations.of(context)!.champ_conf_chercheurs, hint: AppLocalizations.of(context)!.texte_champ_conf_chercheurs, key: nameKey[0], keyboardType: TextInputType.number),
+        RoomCreationField(label: AppLocalizations.of(context)!.champ_conf_chercheurs, hint: AppLocalizations.of(context)!.texte_champ_conf_chercheurs, key: nbChercheursKey[0], keyboardType: TextInputType.number),
       ],
       onTap: () {
-        var nbcherch = nameKey[0].currentState?.value ?? "";
+        var nbcherch = nbChercheursKey[0].currentState?.value ?? "";
         if (nbcherch.isEmpty) {
           _showEmptyFieldDialog(context);
         } else {
-          nbChercheurs = nbcherch as int;
+          nbChercheurs = int.parse(nbcherch);
           print(nbChercheurs);
           _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
         }

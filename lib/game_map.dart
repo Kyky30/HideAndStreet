@@ -6,6 +6,7 @@ import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'chat.dart';
+import 'PreferencesManager.dart';
 
 class GameMap extends StatefulWidget {
   const GameMap({Key? key}) : super(key: key);
@@ -20,18 +21,29 @@ class _GameMapState extends State<GameMap> {
   bool isLoading = true; // Suivre l'état de chargement
   late double radius;
   int countdownSeconds = 600;
+  bool isBlindModeEnabled = true;
 
   @override
   void initState() {
     super.initState();
-    _determinePosition().then((position) {
+    _initializeState();
+  }
+
+  Future<void> _initializeState() async {
+    await _loadBlindModeStatus();
+    await _determinePosition().then((position) {
       setState(() {
         currentPosition = position;
         tapPosition = LatLng(currentPosition.latitude, currentPosition.longitude);
-        isLoading = false; // Définir l'état de chargement sur false lorsque la position est déterminée
+        isLoading = false;
         radius = 150;
       });
     });
+  }
+
+  Future<void> _loadBlindModeStatus() async {
+    isBlindModeEnabled = await PreferencesManager.getBlindToggle();
+    setState(() {});
   }
 
   Future<Position> _determinePosition() async {
@@ -120,7 +132,8 @@ class _GameMapState extends State<GameMap> {
             ),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton: isBlindModeEnabled == false
+            ? FloatingActionButton(
           onPressed: () {
             // Naviguer vers l'écran Chat
             Navigator.push(
@@ -129,7 +142,8 @@ class _GameMapState extends State<GameMap> {
             );
           },
           child: Icon(Icons.chat),
-        ),
+        )
+            : null,
       );
     }
   }

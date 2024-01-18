@@ -75,6 +75,8 @@ class _RegisterPageState extends State<RegisterPage> {
   String confirmPasswordValues = "";
   bool blindToggleValues = false;
 
+  String _TexteSelctionDate = "";
+
   List<GlobalKey<FormFieldState<String>>> pseudoKey = [GlobalKey<FormFieldState<String>>()];
   List<GlobalKey<FormFieldState<String>>> emailKey = [GlobalKey<FormFieldState<String>>()];
   GlobalKey<FormFieldState<String>> dateOfBirthKey = GlobalKey<FormFieldState<String>>();
@@ -85,8 +87,15 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   void initState() {
     super.initState();
-    _loadBlindToggle(); // Charge la valeur du switch au démarrage
+    _loadBlindToggle(); // Move this to didChangeDependencies
   }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _TexteSelctionDate = AppLocalizations.of(context)?.selection_bday ?? "";
+  }
+
 
   _loadBlindToggle() async {
     bool blindToggle = await PreferencesManager.getBlindToggle();
@@ -270,7 +279,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           ? ElevatedButton(
                         onPressed: () => _selectDate(context),
                         child: Text(
-                          AppLocalizations.of(context)!.selection_bday,
+                          _TexteSelctionDate,
                           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
                         ),
                         style: ElevatedButton.styleFrom(
@@ -362,6 +371,7 @@ class _RegisterPageState extends State<RegisterPage> {
     if (pickedDate != null && pickedDate != _selectedDate) {
       setState(() {
         _selectedDate = pickedDate;
+        _TexteSelctionDate = _selectedDate.toString().substring(0, 10);
       });
     }
   }

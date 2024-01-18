@@ -6,10 +6,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'PreferencesManager.dart';
 
 class AccountSettingsPage extends StatefulWidget {
-  final String username;
-  final String email;
 
-  const AccountSettingsPage({Key? key, required this.username, required this.email}) : super(key: key);
+  const AccountSettingsPage();
 
   @override
   _AccountSettingsPageState createState() => _AccountSettingsPageState();
@@ -68,19 +66,19 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
               AppLocalizations.of(context)!.usernameLabel,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            Text(
-              widget.username,
-              style: TextStyle(fontSize: 16),
-            ),
+            // Text(
+            //   widget.username,
+            //   style: TextStyle(fontSize: 16),
+            // ),
             SizedBox(height: 20),
             Text(
               AppLocalizations.of(context)!.emailLabel,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            Text(
-              widget.email,
-              style: TextStyle(fontSize: 16),
-            ),
+            // Text(
+            //   widget.email,
+            //   style: TextStyle(fontSize: 16),
+            // ),
             SizedBox(height: 20),
             Row(
               children: [
