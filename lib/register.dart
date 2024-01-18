@@ -1,7 +1,63 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:hide_and_street/PreferencesManager.dart';
+import 'package:hide_and_street/login.dart';
+import 'package:web_socket_channel/io.dart';
+
+import 'dart:developer' as developer;
+
+void signUp(BuildContext context, String emailValues, String pseudoValues, String passwordValues, String confirmPasswordValues) async {
+  // Check if email is valid.
+  bool isValid = RegExp(
+      r"^[a-zA-Z0-9.a-zA-Z0-9!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+      .hasMatch(emailValues);
+  String auth = "chatappauthkey231r4";
+  // Check if email is valid
+  if (isValid) {
+    if (passwordValues == confirmPasswordValues) {
+      IOWebSocketChannel channel;
+      try {
+        // Create connection.
+        channel = IOWebSocketChannel.connect('wss://app.hideandstreet.furrball.fr/signup$emailValues');
+        print("Connexion réussie inshallah");
+      } catch (e) {
+        print("Error on connecting to websocket: " + e.toString());
+        return;
+      }
+      // Data that will be sent to Node.js
+      String signUpData =
+          "{'auth':'$auth','cmd':'signup','email':'$emailValues','username':'$pseudoValues','hash':'$confirmPasswordValues'}";
+      // Send data to Node.js
+      channel.sink.add(signUpData);
+      // Listen for data from the server
+      channel.stream.listen((event) async {
+        developer.log(signUpData);
+        event = event.replaceAll(RegExp("'"), '"');
+        var signupData = json.decode(event);
+        // Check if the status is successful
+        if (signupData["status"] == 'success') {
+          // Close connection.
+          channel.sink.close();
+          // Return user to login if successful
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => LoginPage()),
+          );
+        } else {
+          channel.sink.close();
+          print("Error signing up");
+        }
+      });
+    } else {
+      print("Passwords do not match");
+    }
+  } else {
+    print("Invalid email");
+  }
+}
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -16,6 +72,7 @@ class _RegisterPageState extends State<RegisterPage> {
   String emailValues = "";
   DateTime? dateOfBirthValues = DateTime.now();
   String passwordValues = "";
+  String confirmPasswordValues = "";
   bool blindToggleValues = false;
 
   List<GlobalKey<FormFieldState<String>>> pseudoKey = [GlobalKey<FormFieldState<String>>()];
@@ -130,6 +187,7 @@ class _RegisterPageState extends State<RegisterPage> {
           _showPasswordInsecureDialog(context);
         } else {
           passwordValues = password;
+          confirmPasswordValues = confirmPassword;
           print(passwordValues);
           _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
         }
@@ -147,7 +205,7 @@ class _RegisterPageState extends State<RegisterPage> {
         blindToggleValues = _toggleValue;
         print(blindToggleValues);
         _saveBlindToggle();
-        _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+        signUp(context, emailValues, pseudoValues, passwordValues, confirmPasswordValues);
       },
     ),
   ];
@@ -392,7 +450,7 @@ void _showPasswordInsecureDialog(BuildContext context) {
 
 bool isPasswordSecure(String password) {
   // Vérifie si le mot de passe a au moins 8 caractères, une majuscule, un chiffre et un caractère spécial.
-  RegExp passwordRegex = RegExp(r'^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
+  RegExp passwordRegex = RegExp(r'^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$&*~]).{8,}$');
   return passwordRegex.hasMatch(password);
 }
 

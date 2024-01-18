@@ -51,7 +51,7 @@ dependencies:
   http: ^1.1.2
   photo_view: ^0.14.0
   flutter_osm_plugin: ^0.70.4
-  web_socket_channel: ^2.1.0
+  web_socket_channel: ^2.4.0
   image_picker: ^1.0.7
   flutter_image_compress: ^2.1.0
   shared_preferences: ^2.2.2

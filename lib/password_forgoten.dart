@@ -2,6 +2,8 @@
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 
 class ForgotenPassword extends StatelessWidget {
@@ -19,7 +21,7 @@ class ForgotenPassword extends StatelessWidget {
           Expanded(
             child: Center(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,  // Ajout de cette ligne pour aligner le contenu à gauche
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Align(
                     alignment: Alignment.topLeft,
@@ -56,7 +58,26 @@ class ForgotenPassword extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () async {
+                String email = 'dorianrochette@gmail.com';
+                String auth = "chatappauthkey231r4";
+
+                // Créer une connexion WebSocket
+                WebSocketChannel channel = IOWebSocketChannel.connect('wss://app.hideandstreet.furrball.fr/resetPassword');
+
+                // Envoyer la demande de réinitialisation du mot de passe au backend
+                String resetData = '{"auth":"$auth","email":"$email","cmd":"resetPassword"}';
+                print(resetData);
+                channel.sink.add(resetData);
+
+                // Fermer la connexion après envoi
+                channel.sink.close();
+
+                // Afficher un message à l'utilisateur
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Un email de réinitialisation a été envoyé.')),
+                );
+              },
               style: ElevatedButton.styleFrom(
                 shape: SmoothRectangleBorder(
                   borderRadius: SmoothBorderRadius(
@@ -85,4 +106,3 @@ class ForgotenPassword extends StatelessWidget {
     );
   }
 }
-

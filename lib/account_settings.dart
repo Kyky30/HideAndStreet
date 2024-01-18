@@ -1,4 +1,7 @@
+// account_settings.dart
+import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'PreferencesManager.dart';
 
@@ -30,6 +33,24 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
 
   _saveBlindMode() async {
     await PreferencesManager.setBlindToggle(isBlindModeEnabled);
+  }
+
+  Future<void> _logout(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // Remove any stored user credentials or tokens
+    await prefs.remove('loggedin');  // Assuming 'loggedin' is used for storing authentication status
+
+    // Clear the blind mode preference
+    await PreferencesManager.setBlindToggle(false);
+
+    // Reset the state
+    setState(() {
+      isBlindModeEnabled = false;
+    });
+
+    // Navigate to the login page
+    Navigator.pushReplacementNamed(context, '/login');
   }
 
   @override
@@ -78,6 +99,25 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                   },
                 ),
               ],
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => _logout(context),
+              style: ElevatedButton.styleFrom(
+                shape: SmoothRectangleBorder(
+                  borderRadius: SmoothBorderRadius(
+                    cornerRadius: 20,
+                    cornerSmoothing: 1,
+                  ),
+                ),
+                minimumSize: const Size(double.infinity, 80),
+                backgroundColor: const Color(0xFF373967),
+                foregroundColor: const Color(0xFF212348),
+              ),
+              child: Text(
+                'Logout',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+              ),
             ),
           ],
         ),
