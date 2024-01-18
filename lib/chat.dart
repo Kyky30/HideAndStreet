@@ -1,13 +1,10 @@
-// chat.dart
 import 'dart:typed_data';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:web_socket_channel/io.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:photo_view/photo_view_gallery.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -49,7 +46,8 @@ class ChatLocalStorage {
 
 class Chat extends StatelessWidget {
   final int partieId;
-  const Chat({Key? key, required this.partieId});
+
+  const Chat({Key? key, required this.partieId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +62,7 @@ class Chat extends StatelessWidget {
 
 class ChatBody extends StatefulWidget {
   final int partieId;
+
   const ChatBody({Key? key, required this.partieId}) : super(key: key);
 
   @override
@@ -71,89 +70,207 @@ class ChatBody extends StatefulWidget {
 }
 
 class _ChatBodyState extends State<ChatBody> {
-  final channel = IOWebSocketChannel.connect('ws://193.38.250.113:3000');
+  late IOWebSocketChannel channel;
   final TextEditingController _messageController = TextEditingController();
   final List<Message> messages = [];
-  final ScrollController _scrollController = ScrollController();
+  late ScrollController _scrollController;
   final String username = 'Pseudo';
   final int partieId;
   bool _isWelcomeMessageDisplayed = false;
 
   _ChatBodyState({required this.partieId});
 
-  void scrollToBottom() {
-    _scrollController.animateTo(
-      _scrollController.position.maxScrollExtent,
-      duration: const Duration(milliseconds: 100),
-      curve: Curves.easeOut,
-    );
+  // Fonction pour envoyer des données au serveur WebSocket
+  void sendToServer(Map<String, dynamic> data) {
+    channel.sink.add(jsonEncode(data));
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+/// Fonction pour faire défiler la liste de message
+  void scrollToBottom() {
+    Future.delayed(Duration(milliseconds: 900), () {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.easeOut,
+      );
+      print('Scroll to bottom called');
+    });
 
-    // Vérifie si l'utilisateur a déjà vu le message de bienvenue
-    ChatLocalStorage.hasSeenWelcomeMessage().then((hasSeenWelcome) {
-      if (!hasSeenWelcome && !_isWelcomeMessageDisplayed) {
-        _displayWelcomeMessage();
-        _isWelcomeMessageDisplayed = true; // Marque le message comme affiché
-      }
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
     });
   }
+
+
+
 
   @override
   void initState() {
     super.initState();
 
-    // Charge les messages sauvegardés
+    // Initialiser le canal WebSocket et le contrôleur de défilement
+    channel = IOWebSocketChannel.connect('ws://193.38.250.113:3000');
+    _scrollController = ScrollController();
+
+    // Charge les messages depuis le stockage local lorsque le widget est initialisé
     _loadMessages();
 
+    // Déclenche le défilement vers le bas lors de l'entrée dans le chat
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      scrollToBottom();
+    });
+
     // Écoute les messages WebSocket du serveur
-    channel.sink.add(jsonEncode({'partie': partieId}));
     channel.stream.listen((dynamic message) {
+      print('Message reçu du serveur : $message');
+
       setState(() {
         if (message is String) {
+          // Message texte
+          Map<String, dynamic> decodedMessage = json.decode(message);
           messages.add(Message(
-              text: message,
-              isUser: false,
-              username: 'Server',
-              status: MessageStatus.received));
+            text: decodedMessage['text'],
+            isUser: false,
+            username: 'Serveur',
+            status: decodedMessage['status'] == 'MessageStatus.sent'
+                ? MessageStatus.sent
+                : MessageStatus.received,
+            timestamp: DateTime.parse(decodedMessage['timestamp'] ?? ''),
+          ));
         } else if (message is Map<String, dynamic>) {
+          // Message avec informations utilisateur (pseudo + contenu)
+          print('Message utilisateur reçu : $message');
           final userMessage = Message(
             text: message['text'],
             isUser: true,
-            username: message['Username'],
-            status: MessageStatus.received,
+            username: message['username'],
+            status: message['status'] == 'MessageStatus.sent'
+                ? MessageStatus.sent
+                : MessageStatus.received,
+            timestamp: DateTime.parse(message['timestamp'] ?? ''),
           );
           messages.add(userMessage);
         } else if (message is Uint8List) {
+          // Message image
           messages.add(Message(
-              imageBytes: message,
-              isUser: false,
-              username: 'Server',
-              status: MessageStatus.received));
+            imageBytes: message,
+            isUser: false,
+            username: 'Serveur',
+            status: MessageStatus.received,
+          ));
         }
       });
 
+      // Affiche la liste de messages mise à jour dans la console
+      print('Liste de messages mise à jour :');
+      messages.forEach((message) => print(message.toJson()));
+
+      // Sauvegarde des messages en local
+      _saveMessages();
+
       // Fait défiler les messages vers le bas
-      WidgetsBinding.instance?.addPostFrameCallback((_) {
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
         scrollToBottom();
       });
     });
+
+    // Vérifie si l'utilisateur a déjà vu le message de bienvenue
+    ChatLocalStorage.hasSeenWelcomeMessage().then((hasSeenWelcome) {
+      if (!hasSeenWelcome && !_isWelcomeMessageDisplayed) {
+        setState(() {
+          _displayWelcomeMessage();
+          _isWelcomeMessageDisplayed = true; // Marque le message comme affiché
+        });
+      }
+    });
   }
 
+  // Fonction pour envoyer un message
+  Future<void> _sendMessage() async {
+    // Récupère le texte du message
+    final messageText = _messageController.text.trim();
+
+    // Vérifie si le message n'est pas vide
+    if (messageText.isNotEmpty) {
+      print('Avant l\'ajout du nouveau message :');
+      messages.forEach((message) => print(message.toJson()));
+
+      // Crée un nouvel objet Message avec la date et l'heure actuelles
+      final userMessage = Message(
+        text: messageText,
+        isUser: true,
+        username: username,
+        status: MessageStatus.sent,
+        timestamp: DateTime.now(),
+      );
+
+      print('Nouveau message créé : ${userMessage.toJson()}');
+
+      setState(() {
+        messages.add(userMessage);
+      });
+
+      // Fait défiler la liste vers le bas
+      scrollToBottom();
+
+      print('Après l\'ajout du nouveau message :');
+      messages.forEach((message) => print(message.toJson()));
+
+      // Envoie le message au serveur WebSocket
+      final messageWithTimestamp = {
+        'text': messageText,
+        'isUser': true,
+        'username': username,
+        'timestamp': userMessage.timestamp.toIso8601String(),
+        'status': userMessage.status.toString(),
+      };
+
+      print('Envoi du message au serveur : $messageWithTimestamp');
+      channel.sink.add(utf8.encode(jsonEncode(messageWithTimestamp)));
+
+      // Utilise Future.delayed pour gérer le délai correctement
+      await Future.delayed(const Duration(milliseconds: 10), () {
+        setState(() {
+          userMessage.status = MessageStatus.received;
+          print('Message marqué comme reçu : ${userMessage.toJson()}');
+        });
+        _saveMessages();
+
+        // Ajout d'une impression de débogage supplémentaire
+        print('Après réception du serveur, avant scrollToBottom :');
+        messages.forEach((message) => print(message.toJson()));
+      });
+
+      // Fait défiler la liste vers le bas après la réception du serveur
+      scrollToBottom();
+    }
+
+    // Sauvegarde locale
+    _saveMessages();
+
+    // Efface le texte du contrôleur
+    _messageController.clear();
+  }
+
+
+
+
+  //Charge les messages localement
   Future<void> _loadMessages() async {
+    // Load messages from local storage
     List<Message> loadedMessages = await ChatLocalStorage.loadMessages();
     setState(() {
+      messages.clear(); // Clear existing messages
       messages.addAll(loadedMessages);
     });
-    // Fait défiler les messages vers le bas
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+
+    // Scroll messages to the bottom
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       scrollToBottom();
     });
   }
 
+  //Capture et envoie de photo
   Future<void> _captureAndSendPhoto() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.camera);
@@ -162,10 +279,11 @@ class _ChatBodyState extends State<ChatBody> {
       final imageBytes =
       await testCompressList(await pickedFile.readAsBytes());
       final userPhotoMessage = Message(
-          imageBytes: imageBytes,
-          isUser: true,
-          username: username,
-          status: MessageStatus.sent);
+        imageBytes: imageBytes,
+        isUser: true,
+        username: username,
+        status: MessageStatus.sent,
+      );
 
       channel.sink.add(imageBytes);
 
@@ -181,12 +299,9 @@ class _ChatBodyState extends State<ChatBody> {
 
   void _displayWelcomeMessage() {
     // Affiche le message de bienvenue
-    final welcomeMessage = Message(
-      text: 'Bienvenue dans le chat !',
-      isUser: false,
-      username: 'Server',
-      status: MessageStatus.sent,
-    );
+    final welcomeMessage = Message(text: 'Bienvenue dans le chat !',
+        isUser: false, username: 'Server',
+        status: MessageStatus.sent);
     setState(() {
       messages.add(welcomeMessage);
     });
@@ -198,8 +313,7 @@ class _ChatBodyState extends State<ChatBody> {
     scrollToBottom();
   }
 
-
-
+  // Fonction pour compresser une liste d'octets (image)
   Future<Uint8List> testCompressList(Uint8List list) async {
     var result = await FlutterImageCompress.compressWithList(
       list,
@@ -212,55 +326,13 @@ class _ChatBodyState extends State<ChatBody> {
     return result;
   }
 
-  void _sendMessage() {
-    // Récupère le texte du message
-    final messageText = _messageController.text.trim();
-
-    // Vérifie si le message n'est pas vide
-    if (messageText.isNotEmpty) {
-      // Crée un nouvel objet Message avec la date et l'heure actuelles
-      final userMessage = Message(
-        text: messageText,
-        isUser: true,
-        username: username,
-        status: MessageStatus.sent,
-        timestamp: DateTime.now(), // Ajoutez cette ligne
-      );
-
-      setState(() {
-        messages.add(userMessage);
-      });
-
-      // Fait défiler la liste vers le bas
-      scrollToBottom();
-
-      // Envoie le message au serveur WebSocket
-      final messageWithTimestamp = {
-        'text': messageText,
-        'isUser': true,
-        'username': username,
-        'timestamp': userMessage.timestamp.toIso8601String(),
-      };
-
-      channel.sink.add(utf8.encode(jsonEncode(messageWithTimestamp)));
-
-      Future.delayed(const Duration(seconds: 2), () {
-        setState(() {
-          userMessage.status = MessageStatus.received;
-        });
-      });
-    }
-
-    _saveMessages();
-
-    // Efface le texte du contrôleur
-    _messageController.clear();
-  }
-
+  // Fonction pour sauvegarder les messages localement
   Future<void> _saveMessages() async {
+    // Save messages to local storage
     await ChatLocalStorage.saveMessages(messages);
   }
 
+  // Widget pour afficher l'indicateur de statut des messages
   Widget buildStatusIndicator(MessageStatus status) {
     if (status == MessageStatus.sent) {
       return Icon(
@@ -279,6 +351,7 @@ class _ChatBodyState extends State<ChatBody> {
     }
   }
 
+  // Widget pour construire l'élément d'affichage d'un message
   Widget buildMessageWidget(Message message) {
     if (message.imageBytes != null) {
       return GestureDetector(
@@ -286,23 +359,24 @@ class _ChatBodyState extends State<ChatBody> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => FullScreenImage(
-                imageBytes: message.imageBytes!,
-                timestamp: message.timestamp,
-              ),
+              builder: (context) =>
+                  FullScreenImage(
+                    imageBytes: message.imageBytes!,
+                    timestamp: message.timestamp,
+                  ),
             ),
           );
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Row(
-            mainAxisAlignment:
-            message.isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+            mainAxisAlignment: message.isUser
+                ? MainAxisAlignment.end
+                : MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                margin: EdgeInsets.only(
-                    left: message.isUser ? 0.0 : 20.0,
+                margin: EdgeInsets.only(left: message.isUser ? 0.0 : 20.0,
                     right: message.isUser ? 20.0 : 0.0),
                 padding: const EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
@@ -322,7 +396,10 @@ class _ChatBodyState extends State<ChatBody> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4.0),
                       child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.6,
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width * 0.6,
                         child: Hero(
                           tag: 'image_${message.timestamp}',
                           child: ClipRRect(
@@ -341,7 +418,6 @@ class _ChatBodyState extends State<ChatBody> {
                         fontSize: 12.0,
                       ),
                     ),
-                    buildStatusIndicator(message.status),
                   ],
                 ),
               ),
@@ -353,12 +429,12 @@ class _ChatBodyState extends State<ChatBody> {
       // Le reste du code pour les messages texte
       return ListTile(
         title: Column(
-          crossAxisAlignment:
-          message.isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          crossAxisAlignment: message.isUser
+              ? CrossAxisAlignment.end
+              : CrossAxisAlignment.start,
           children: [
             Container(
-              margin: EdgeInsets.only(
-                  left: message.isUser ? 20.0 : 1.0,
+              margin: EdgeInsets.only(left: message.isUser ? 20.0 : 1.0,
                   right: message.isUser ? 1.0 : 20.0),
               padding: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
@@ -381,7 +457,6 @@ class _ChatBodyState extends State<ChatBody> {
                       color: message.isUser ? Colors.white : Colors.black,
                     ),
                   ),
-                  buildStatusIndicator(message.status),
                 ],
               ),
             ),
@@ -401,6 +476,8 @@ class _ChatBodyState extends State<ChatBody> {
     }
   }
 
+
+  // Fonction de nettoyage lorsque le widget est détruit
   @override
   void dispose() {
     // Ferme la connexion WebSocket et le contrôleur de texte lorsque le widget est détruit
@@ -409,8 +486,10 @@ class _ChatBodyState extends State<ChatBody> {
     super.dispose();
   }
 
+  // Construction de l'interface utilisateur pour l'écran de chat
   @override
   Widget build(BuildContext context) {
+    print('Building chat screen...');
     return Column(
       children: [
         Expanded(
@@ -450,8 +529,10 @@ class _ChatBodyState extends State<ChatBody> {
       ],
     );
   }
+
 }
 
+// Widget pour afficher une image en plein écran
 class FullScreenImage extends StatelessWidget {
   final Uint8List imageBytes;
   final DateTime timestamp;
@@ -501,8 +582,8 @@ class Message {
     this.imageBytes,
     this.username,
     required this.status,
-    DateTime? timestamp, // Mettez à jour ici
-  }) : timestamp = timestamp ?? DateTime.now();
+    DateTime? timestamp, // Ajout de la déclaration ici
+  }) : timestamp = timestamp ?? DateTime.now(); // Initialisation avec la valeur actuelle si elle est nulle
 
   Map<String, dynamic> toJson() {
     return {
@@ -511,17 +592,24 @@ class Message {
       'imageBytes': imageBytes,
       'username': username,
       'timestamp': timestamp.toIso8601String(),
+      'status': status.toString(), // Ajoutez cette ligne
     };
   }
 
+
   factory Message.fromJson(Map<String, dynamic> json) {
+    List<int>? imageBytesList = json['imageBytes']?.cast<int>();
+    Uint8List? imageBytes = imageBytesList != null ? Uint8List.fromList(imageBytesList) : null;
+
     return Message(
       text: json['text'],
       isUser: json['isUser'],
-      imageBytes: json['imageBytes'],
+      imageBytes: imageBytes,
       username: json['username'],
-      status: json['status'] ?? MessageStatus.sent,
+      status: json['status'] == 'MessageStatus.sent' ? MessageStatus.sent : MessageStatus.received,
       timestamp: DateTime.parse(json['timestamp'] ?? ''),
     );
   }
+
+
 }
