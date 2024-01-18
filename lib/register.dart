@@ -119,7 +119,7 @@ class _RegisterPageState extends State<RegisterPage> {
       ],
       validate: () {
         if (_selectedDate == null) {
-          _showEmptyFieldDialog(context, "Date of Birth");
+          _showEmptyFieldDialog(context, AppLocalizations.of(context)!.datedenaissance);
         } else {
           var currentDate = DateTime.now();
           var age = currentDate.year - _selectedDate!.year - ((_selectedDate!.month > currentDate.month || (_selectedDate!.month == currentDate.month && _selectedDate!.day > currentDate.day)) ? 1 : 0);
@@ -148,7 +148,7 @@ class _RegisterPageState extends State<RegisterPage> {
       onTap: () {
         var pseudo = pseudoKey[0].currentState?.value ?? "";
         if (pseudo.isEmpty) {
-          _showEmptyFieldDialog(context, "Pseudo");
+          _showEmptyFieldDialog(context, AppLocalizations.of(context)!.pseudo);
         } else {
           pseudoValues = pseudo;
           print(pseudoValues);
@@ -167,7 +167,7 @@ class _RegisterPageState extends State<RegisterPage> {
       onTap: () {
         var email = emailKey[0].currentState?.value ?? "";
         if (email.isEmpty) {
-          _showEmptyFieldDialog(context, "Email");
+          _showEmptyFieldDialog(context, AppLocalizations.of(context)!.mail);
         } else {
           emailValues = email;
           print(emailValues);
@@ -189,7 +189,7 @@ class _RegisterPageState extends State<RegisterPage> {
         var confirmPassword = passwordKeys[1].currentState?.value ?? "";
 
         if (password.isEmpty || confirmPassword.isEmpty) {
-          _showEmptyFieldDialog(context, "Password");
+          _showEmptyFieldDialog(context, AppLocalizations.of(context)!.mdp);
         } else if (password != confirmPassword) {
           _showPasswordMismatchDialog(context);
         } else if (!isPasswordSecure(password)) {
