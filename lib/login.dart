@@ -6,6 +6,8 @@ import 'package:hide_and_street/password_forgoten.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 import 'register.dart';
 
@@ -45,7 +47,30 @@ class _LoginPageState extends State<LoginPage> {
 
   String password = '';
 
+
+
   Future<void> login(BuildContext context) async {
+    if (email.isEmpty || password.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(AppLocalizations.of(context)!.titre_popup_champ_vide),
+            content: Text(AppLocalizations.of(context)!.texte_popup_champ_vide),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("OK"),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
     String auth = "chatappauthkey231r4";
 
     try {
@@ -114,13 +139,17 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      Text(
+                        AppLocalizations.of(context)!.mail,
+                        style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                      ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                         child: TextField(
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.grey[300],
-                            hintText: 'Mail...',
+                            hintText: AppLocalizations.of(context)!.mail,
                             border: OutlineInputBorder(
                               borderSide: BorderSide.none,
                               borderRadius: BorderRadius.circular(20.0),
@@ -130,7 +159,10 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       const SizedBox(height: 16),
-
+                      Text(
+                        AppLocalizations.of(context)!.mdp,
+                        style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                      ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(15, 8, 15, 0),
                         child: TextField(
@@ -138,7 +170,7 @@ class _LoginPageState extends State<LoginPage> {
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.grey[300],
-                            hintText: 'Password...',
+                            hintText: AppLocalizations.of(context)!.mdp,
                             border: OutlineInputBorder(
                               borderSide: BorderSide.none,
                               borderRadius: BorderRadius.circular(20.0),
@@ -178,7 +210,7 @@ class _LoginPageState extends State<LoginPage> {
                             foregroundColor: const Color(0xFF212348),
                           ),
                           child: Text(
-                            'Connexion',
+                            AppLocalizations.of(context)!.connexion,
                             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
                           ),
                         ),
@@ -195,7 +227,7 @@ class _LoginPageState extends State<LoginPage> {
                             );
                           },
                           child: Text(
-                            'Mot de Passe Oublié',
+                            AppLocalizations.of(context)!.mdpoublie,
                             style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
                           ),
                         ),
@@ -212,7 +244,7 @@ class _LoginPageState extends State<LoginPage> {
                             );
                           },
                           child: Text(
-                            'Inscription',
+                            AppLocalizations.of(context)!.inscription,
                             style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
                           ),
                         ),
