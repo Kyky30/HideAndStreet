@@ -54,5 +54,7 @@
   "titre_blind_toggle": "Activate visual impairment mode ?",
   "blind_toggle_label": "Visual impairment mode",
   "titre_popup_mdp_pas_insecure": "Password not secure enough !",
-  "texte_popup_mdp_pas_insecure": "Your password must contain at least 8 characters, including at least one uppercase letter, one lowercase letter, one number and one special character !"
+  "texte_popup_mdp_pas_insecure": "Your password must contain at least 8 characters, including at least one uppercase letter, one lowercase letter, one number and one special character !",
+  "waitingRoomTitle" : "Waiting room",
+  "creationDateLabel" : "Creation date"
 }

@@ -15,17 +15,24 @@ class AccountSettingsPage extends StatefulWidget {
 
 class _AccountSettingsPageState extends State<AccountSettingsPage> {
   bool isBlindModeEnabled = false;
+  String username = '';
+  String DateCreation = '';
+  String email = '';
 
   @override
   void initState() {
     super.initState();
-    _loadBlindMode(); // Charge la valeur du mode aveugle au démarrage
+    _loadPreferences(); // Charge la valeur du mode aveugle au démarrage
   }
 
-  _loadBlindMode() async {
+  _loadPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     bool blindMode = await PreferencesManager.getBlindToggle();
     setState(() {
+      username = prefs.getString('username') ?? ''; // Utilisez la clé correcte
+      DateCreation = prefs.getString('DateCreation') ?? '';
       isBlindModeEnabled = blindMode;
+      email = prefs.getString('email') ?? '';
     });
   }
 
@@ -66,19 +73,28 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
               AppLocalizations.of(context)!.usernameLabel,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            // Text(
-            //   widget.username,
-            //   style: TextStyle(fontSize: 16),
-            // ),
+            Text(
+              username,
+              style: TextStyle(fontSize: 16),
+            ),
             SizedBox(height: 20),
             Text(
               AppLocalizations.of(context)!.emailLabel,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            // Text(
-            //   widget.email,
-            //   style: TextStyle(fontSize: 16),
-            // ),
+            Text(
+              email,
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 20),
+            Text(
+              AppLocalizations.of(context)!.creationDateLabel,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              DateCreation,
+              style: TextStyle(fontSize: 16),
+            ),
             SizedBox(height: 20),
             Row(
               children: [

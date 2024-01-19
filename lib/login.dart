@@ -88,6 +88,9 @@ class _LoginPageState extends State<LoginPage> {
           print(responseData["userId"]);
           prefs.setBool('loggedin', true);
           prefs.setString('userId', responseData["userId"]);
+          prefs.setString('username', responseData["username"]);
+          prefs.setString('email', responseData["email"]);
+          prefs.setString('DateCreation', responseData["DateCreation"]);
 
           // Effectuer des actions après une connexion réussie
           Navigator.pushReplacement(
