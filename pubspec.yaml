@@ -61,6 +61,8 @@ dependencies:
   flutter_map_line_editor: ^6.0.0
   flutter_map_dragmarker: ^6.0.0
   carousel_slider: ^4.2.1
+  image_gallery_saver: ^2.0.1
+  path_provider: ^2.0.14
 
 
 
