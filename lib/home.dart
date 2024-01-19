@@ -4,7 +4,7 @@ import 'package:hide_and_street/game_map.dart';
 
 import 'package:hide_and_street/map_conf_screen.dart';
 
-import 'package:hide_and_street/room_creation.dart';
+import 'package:hide_and_street/map_conf_screen.dart';
 import 'package:hide_and_street/room_joining.dart';
 
 import 'package:hide_and_street/premium_page.dart';
@@ -127,7 +127,7 @@ class HomePage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => RoomCreationPage(),
+                        builder: (context) => MapConfScreen(),
                       ),
                     );
                   },

@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/current_remaining_time.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
@@ -5,9 +7,11 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import 'chat.dart';
+import 'PreferencesManager.dart';
 
 class GameMap extends StatefulWidget {
-  const GameMap({super.key});
+  const GameMap({Key? key}) : super(key: key);
 
   @override
   State<GameMap> createState() => _GameMapState();
@@ -16,59 +20,103 @@ class GameMap extends StatefulWidget {
 class _GameMapState extends State<GameMap> {
   late Position currentPosition;
   late LatLng tapPosition;
-  bool isLoading = true; // Track loading state
+  bool isLoading = true; // Suivre l'état de chargement
   late double radius;
   int countdownSeconds = 600;
+  bool isBlindModeEnabled = true;
+  bool isOutsideZone = false; // Indicateur si le joueur est en dehors de la zone
+
+  late Timer timer;
+
+  ValueNotifier<bool> isOutsideZoneNotifier = ValueNotifier<bool>(false);
+
 
   @override
   void initState() {
     super.initState();
-    _determinePosition().then((position) {
+    _initializeState();
+  }
+
+  @override
+  void dispose() {
+    timer.cancel(); // Annulez le timer lorsqu'il n'est plus nécessaire
+    super.dispose();
+  }
+
+  Future<void> _initializeState() async {
+    await _loadBlindModeStatus();
+    await _determinePosition().then((position) {
       setState(() {
         currentPosition = position;
         tapPosition = LatLng(currentPosition.latitude, currentPosition.longitude);
-        isLoading = false; // Set loading state to false when the position is determined
-        radius = 150;
+        isLoading = false;
+        radius = 5;
       });
     });
+    _startLocationCheckTimer();
+  }
+
+  Future<void> _loadBlindModeStatus() async {
+    isBlindModeEnabled = await PreferencesManager.getBlindToggle();
+    setState(() {});
   }
 
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
 
-    // Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      // accessing the position and request users of the
-      // App to enable the location services.
-      return Future.error('Location services are disabled.');
+      return Future.error('Les services de localisation sont désactivés.');
     }
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        // Permissions are denied, next time you could try
-        // requesting permissions again (this is also where
-        // Android's shouldShowRequestPermissionRationale
-        // returned true. According to Android guidelines
-        // your App should show an explanatory UI now.
-        return Future.error('Location permissions are denied');
+        return Future.error("Les autorisations de localisation sont refusées");
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
       return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
+          'Les autorisations de localisation sont refusées de manière permanente, nous ne pouvons pas demander les autorisations.');
     }
 
-    // When we reach here, permissions are granted and we can
-    // continue accessing the position of the device.
     return await Geolocator.getCurrentPosition();
   }
+
+  Future<void> _updatePosition() async {
+    currentPosition = await _determinePosition();
+    _checkPlayerLocation();
+  }
+
+  void _startLocationCheckTimer() {
+    print("Starting timer...");
+    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      print("Timer tick...");
+      _updatePosition();
+      _checkPlayerLocation();
+    });
+  }
+
+
+  void _checkPlayerLocation() {
+    double distance = Geolocator.distanceBetween(
+      currentPosition.latitude,
+      currentPosition.longitude,
+      tapPosition.latitude,
+      tapPosition.longitude,
+    );
+
+    isOutsideZoneNotifier.value = distance > radius;
+
+    print("Distance: $distance");
+    print("Radius: $radius");
+    print(currentPosition);
+    print(isOutsideZoneNotifier.value);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -76,20 +124,17 @@ class _GameMapState extends State<GameMap> {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );
-    }
-    else {
+    } else {
       return Scaffold(
         body: Column(
-          children :[
-
+          children: [
             CountdownTimer(
               endTime: DateTime.now().millisecondsSinceEpoch + countdownSeconds * 1000,
               widgetBuilder: (_, CurrentRemainingTime? time) {
                 if (time == null) {
                   return const Text("00:00",
-                      style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
-                );
-
+                    style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
+                  );
                 }
                 return Text(
                   '${time.min}:${time.sec}',
@@ -97,34 +142,54 @@ class _GameMapState extends State<GameMap> {
                 );
               },
             ),
-            Expanded(child: FlutterMap(
-              options: MapOptions(
-                initialCenter: LatLng(
-                    currentPosition.latitude, currentPosition.longitude),
-                initialZoom: 15,
-              ),
-              children: [
-                TileLayer(
-                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+            Expanded(
+              child: FlutterMap(
+                options: MapOptions(
+                  initialCenter: LatLng(
+                      currentPosition.latitude, currentPosition.longitude),
+                  initialZoom: 15,
                 ),
-                CurrentLocationLayer(),
-                CircleLayer(circles: [
-                  CircleMarker(
-                    point: tapPosition,
-                    color: Colors.grey.withOpacity(0.5),
-                    borderColor: Colors.black,
-                    borderStrokeWidth: 2,
-
-                    useRadiusInMeter: true,
-                    radius: radius, //in meters
+                children: [
+                  TileLayer(
+                    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                   ),
-                ]),
-              ],
-            ),),
-
-
-          ]
+                  CurrentLocationLayer(),
+                  CircleLayer(circles: [
+                    CircleMarker(
+                      point: tapPosition,
+                      color: Colors.grey.withOpacity(0.5),
+                      borderColor: Colors.black,
+                      borderStrokeWidth: 2,
+                      useRadiusInMeter: true,
+                      radius: radius, //en mètres
+                    ),
+                  ]),
+                ],
+              ),
+            ),
+            ValueListenableBuilder<bool>(
+              valueListenable: isOutsideZoneNotifier,
+              builder: (context, isOutsideZone, child) {
+                return Text(
+                  isOutsideZone ? "Vous êtes en dehors de la zone" : "Vous êtes dans la zone",
+                  style: TextStyle(fontSize: 24.0, fontFamily: "Poppins", fontWeight: FontWeight.w600,color: isOutsideZone ? Colors.red : Colors.green),
+                );
+              },
+            ),
+          ],
         ),
+        floatingActionButton: isBlindModeEnabled == false
+            ? FloatingActionButton(
+          onPressed: () {
+            // Naviguer vers l'écran Chat
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Chat()),
+            );
+          },
+          child: Icon(Icons.chat),
+        )
+            : null,
       );
     }
   }

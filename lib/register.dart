@@ -1,6 +1,63 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:figma_squircle/figma_squircle.dart';
+import 'package:hide_and_street/PreferencesManager.dart';
+import 'package:hide_and_street/login.dart';
+import 'package:web_socket_channel/io.dart';
+
+import 'dart:developer' as developer;
+
+void signUp(BuildContext context, String emailValues, String pseudoValues, String passwordValues, String confirmPasswordValues) async {
+  // Check if email is valid.
+  bool isValid = RegExp(
+      r"^[a-zA-Z0-9.a-zA-Z0-9!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+      .hasMatch(emailValues);
+  String auth = "chatappauthkey231r4";
+  // Check if email is valid
+  if (isValid) {
+    if (passwordValues == confirmPasswordValues) {
+      IOWebSocketChannel channel;
+      try {
+        // Create connection.
+        channel = IOWebSocketChannel.connect('wss://app.hideandstreet.furrball.fr/signup$emailValues');
+        print("Connexion réussie inshallah");
+      } catch (e) {
+        print("Error on connecting to websocket: " + e.toString());
+        return;
+      }
+      // Data that will be sent to Node.js
+      String signUpData =
+          "{'auth':'$auth','cmd':'signup','email':'$emailValues','username':'$pseudoValues','hash':'$confirmPasswordValues'}";
+      // Send data to Node.js
+      channel.sink.add(signUpData);
+      // Listen for data from the server
+      channel.stream.listen((event) async {
+        developer.log(signUpData);
+        event = event.replaceAll(RegExp("'"), '"');
+        var signupData = json.decode(event);
+        // Check if the status is successful
+        if (signupData["status"] == 'success') {
+          // Close connection.
+          channel.sink.close();
+          // Return user to login if successful
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => LoginPage()),
+          );
+        } else {
+          channel.sink.close();
+          print("Error signing up");
+        }
+      });
+    } else {
+      print("Passwords do not match");
+    }
+  } else {
+    print("Invalid email");
+  }
+}
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -15,11 +72,41 @@ class _RegisterPageState extends State<RegisterPage> {
   String emailValues = "";
   DateTime? dateOfBirthValues = DateTime.now();
   String passwordValues = "";
+  String confirmPasswordValues = "";
+  bool blindToggleValues = false;
+
+  String _TexteSelctionDate = "";
 
   List<GlobalKey<FormFieldState<String>>> pseudoKey = [GlobalKey<FormFieldState<String>>()];
   List<GlobalKey<FormFieldState<String>>> emailKey = [GlobalKey<FormFieldState<String>>()];
   GlobalKey<FormFieldState<String>> dateOfBirthKey = GlobalKey<FormFieldState<String>>();
   List<GlobalKey<FormFieldState<String>>> passwordKeys = [GlobalKey<FormFieldState<String>>(), GlobalKey<FormFieldState<String>>()];
+
+  bool _toggleValue = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBlindToggle(); // Move this to didChangeDependencies
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _TexteSelctionDate = AppLocalizations.of(context)?.selection_bday ?? "";
+  }
+
+
+  _loadBlindToggle() async {
+    bool blindToggle = await PreferencesManager.getBlindToggle();
+    setState(() {
+      _toggleValue = blindToggle;
+    });
+  }
+
+  _saveBlindToggle() async {
+    await PreferencesManager.setBlindToggle(_toggleValue);
+  }
 
   List<RegistrationStep> _steps(BuildContext context) => [
     RegistrationStep(
@@ -32,7 +119,7 @@ class _RegisterPageState extends State<RegisterPage> {
       ],
       validate: () {
         if (_selectedDate == null) {
-          _showEmptyFieldDialog(context, "Date of Birth");
+          _showEmptyFieldDialog(context, AppLocalizations.of(context)!.datedenaissance);
         } else {
           var currentDate = DateTime.now();
           var age = currentDate.year - _selectedDate!.year - ((_selectedDate!.month > currentDate.month || (_selectedDate!.month == currentDate.month && _selectedDate!.day > currentDate.day)) ? 1 : 0);
@@ -61,7 +148,7 @@ class _RegisterPageState extends State<RegisterPage> {
       onTap: () {
         var pseudo = pseudoKey[0].currentState?.value ?? "";
         if (pseudo.isEmpty) {
-          _showEmptyFieldDialog(context, "Pseudo");
+          _showEmptyFieldDialog(context, AppLocalizations.of(context)!.pseudo);
         } else {
           pseudoValues = pseudo;
           print(pseudoValues);
@@ -80,7 +167,7 @@ class _RegisterPageState extends State<RegisterPage> {
       onTap: () {
         var email = emailKey[0].currentState?.value ?? "";
         if (email.isEmpty) {
-          _showEmptyFieldDialog(context, "Email");
+          _showEmptyFieldDialog(context, AppLocalizations.of(context)!.mail);
         } else {
           emailValues = email;
           print(emailValues);
@@ -102,22 +189,36 @@ class _RegisterPageState extends State<RegisterPage> {
         var confirmPassword = passwordKeys[1].currentState?.value ?? "";
 
         if (password.isEmpty || confirmPassword.isEmpty) {
-          _showEmptyFieldDialog(context, "Password");
+          _showEmptyFieldDialog(context, AppLocalizations.of(context)!.mdp);
+        } else if (password != confirmPassword) {
+          _showPasswordMismatchDialog(context);
+        } else if (!isPasswordSecure(password)) {
+          _showPasswordInsecureDialog(context);
         } else {
-          if (password == confirmPassword) {
-            passwordValues = password;
-            print(passwordValues);
-            _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
-
-          } else {
-            _showPasswordMissmatchDialog(context);
-          }
+          passwordValues = password;
+          confirmPasswordValues = confirmPassword;
+          print(passwordValues);
+          _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
         }
+      },
+    ),
+    RegistrationStep(
+      title: AppLocalizations.of(context)!.titre_blind_toggle,
+      background: 'assets/background_white.jpg',
+      buttonText: AppLocalizations.of(context)!.confirmer,
+      logo: 'assets/logo_connect.png',
+      fields: [
+        RegistrationField(label: AppLocalizations.of(context)!.blind_toggle_label, toggleField: true),
+      ],
+      onTap: () {
+        blindToggleValues = _toggleValue;
+        print(blindToggleValues);
+        _saveBlindToggle();
+        signUp(context, emailValues, pseudoValues, passwordValues, confirmPasswordValues);
       },
     ),
   ];
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageView.builder(
@@ -178,7 +279,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           ? ElevatedButton(
                         onPressed: () => _selectDate(context),
                         child: Text(
-                          AppLocalizations.of(context)!.selection_bday,
+                          _TexteSelctionDate,
                           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
                         ),
                         style: ElevatedButton.styleFrom(
@@ -192,6 +293,16 @@ class _RegisterPageState extends State<RegisterPage> {
                           backgroundColor: const Color(0xFF373967),
                           foregroundColor: const Color(0xFF212348),
                         ),
+                      )
+                          : field.toggleField
+                          ? SwitchListTile(
+                        title: Text(field.label),
+                        value: _toggleValue,
+                        onChanged: (value) {
+                          setState(() {
+                            _toggleValue = value;
+                          });
+                        },
                       )
                           : TextFormField(
                         key: field.key,
@@ -260,11 +371,12 @@ class _RegisterPageState extends State<RegisterPage> {
     if (pickedDate != null && pickedDate != _selectedDate) {
       setState(() {
         _selectedDate = pickedDate;
+        _TexteSelctionDate = _selectedDate.toString().substring(0, 10);
       });
     }
   }
 
-  void _showPasswordMissmatchDialog(BuildContext context) {
+  void _showPasswordMismatchDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -283,6 +395,7 @@ class _RegisterPageState extends State<RegisterPage> {
       },
     );
   }
+
 
   void _showEmptyFieldDialog(BuildContext context, String fieldName) {
     showDialog(
@@ -325,6 +438,33 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 }
 
+void _showPasswordInsecureDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(AppLocalizations.of(context)!.titre_popup_mdp_insecure),
+        content: Text(AppLocalizations.of(context)!.texte_popup_mdp_insecure),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text("OK"),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+bool isPasswordSecure(String password) {
+  // Vérifie si le mot de passe a au moins 8 caractères, une majuscule, un chiffre et un caractère spécial.
+  RegExp passwordRegex = RegExp(r'^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$&*~]).{8,}$');
+  return passwordRegex.hasMatch(password);
+}
+
+
 class RegistrationStep {
   final String title;
   final String background;
@@ -351,6 +491,7 @@ class RegistrationField {
   final GlobalKey<FormFieldState<String>>? key;
   final bool isPassword;
   final bool dateField;
+  final bool toggleField;
 
   RegistrationField({
     required this.label,
@@ -358,5 +499,6 @@ class RegistrationField {
     this.key,
     this.isPassword = false,
     this.dateField = false,
+    this.toggleField = false,
   });
 }
