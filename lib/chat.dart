@@ -611,7 +611,7 @@ class FullScreenImage extends StatelessWidget {
             minScale: PhotoViewComputedScale.contained,
             maxScale: PhotoViewComputedScale.covered * 2,
             backgroundDecoration: BoxDecoration(
-              color: Colors.transparent,
+              color: Colors.transparent,//df
             ),
           ),
         ),
