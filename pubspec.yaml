@@ -55,6 +55,7 @@ dependencies:
   image_picker: ^1.0.7
   flutter_image_compress: ^2.1.0
   shared_preferences: ^2.2.2
+  share: ^2.0.4
 
 
 dev_dependencies:
