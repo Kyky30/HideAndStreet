@@ -381,7 +381,7 @@ class _ChatBodyState extends State<ChatBody> {
         color: Colors.grey,
         size: 16.0,
       );
-    } else if (status == MessageStatus.received) {
+    //} else if (status == MessageStatus.received) {
       return Icon(
         Icons.done_all,
         color: Colors.red,
