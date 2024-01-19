@@ -86,11 +86,10 @@ class _LoginPageState extends State<LoginPage> {
           // Mettez à jour les SharedPreferences avec le statut de connexion
           SharedPreferences prefs = await SharedPreferences.getInstance();
           print(responseData["userId"]);
-          print(responseData["username"]);
-          print(responseData["DateCreation"]);
           prefs.setBool('loggedin', true);
           prefs.setString('userId', responseData["userId"]);
           prefs.setString('username', responseData["username"]);
+          prefs.setString('email', responseData["email"]);
           prefs.setString('DateCreation', responseData["DateCreation"]);
 
           // Effectuer des actions après une connexion réussie
