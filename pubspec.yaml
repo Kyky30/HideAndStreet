@@ -36,6 +36,9 @@ dependencies:
   web_socket_channel: ^2.1.0
   image_picker: ^1.0.7
   flutter_image_compress: ^2.1.0
+  image_gallery_saver: ^2.0.1
+  path_provider: ^2.0.14
+
 
   awesome_notifications: ^0.7.4+1
   shared_preferences: ^2.0.7

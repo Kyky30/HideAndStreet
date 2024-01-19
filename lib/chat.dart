@@ -7,7 +7,11 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 
+// Classe pour gérer le stockage local des messages
 class ChatLocalStorage {
   static const String _key = 'chat_messages';
   static const String _welcomeKey = 'welcome_message';
@@ -77,6 +81,7 @@ class _ChatBodyState extends State<ChatBody> {
   final String username = 'Pseudo';
   final int partieId;
   bool _isWelcomeMessageDisplayed = false;
+  Uint8List? _capturedImage;
 
   _ChatBodyState({required this.partieId});
 
@@ -85,12 +90,12 @@ class _ChatBodyState extends State<ChatBody> {
     channel.sink.add(jsonEncode(data));
   }
 
-/// Fonction pour faire défiler la liste de message
+  /// Fonction pour faire défiler la liste de message
   void scrollToBottom() {
     Future.delayed(Duration(milliseconds: 900), () {
       _scrollController.animateTo(
         _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 100),
+        duration: const Duration(milliseconds: 900),
         curve: Curves.easeOut,
       );
       print('Scroll to bottom called');
@@ -100,9 +105,6 @@ class _ChatBodyState extends State<ChatBody> {
       _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
     });
   }
-
-
-
 
   @override
   void initState() {
@@ -154,7 +156,7 @@ class _ChatBodyState extends State<ChatBody> {
           // Message image
           messages.add(Message(
             imageBytes: message,
-            isUser: false,
+            isUser: true,
             username: 'Serveur',
             status: MessageStatus.received,
           ));
@@ -192,9 +194,6 @@ class _ChatBodyState extends State<ChatBody> {
 
     // Vérifie si le message n'est pas vide
     if (messageText.isNotEmpty) {
-      print('Avant l\'ajout du nouveau message :');
-      messages.forEach((message) => print(message.toJson()));
-
       // Crée un nouvel objet Message avec la date et l'heure actuelles
       final userMessage = Message(
         text: messageText,
@@ -204,17 +203,12 @@ class _ChatBodyState extends State<ChatBody> {
         timestamp: DateTime.now(),
       );
 
-      print('Nouveau message créé : ${userMessage.toJson()}');
-
       setState(() {
         messages.add(userMessage);
       });
 
       // Fait défiler la liste vers le bas
       scrollToBottom();
-
-      print('Après l\'ajout du nouveau message :');
-      messages.forEach((message) => print(message.toJson()));
 
       // Envoie le message au serveur WebSocket
       final messageWithTimestamp = {
@@ -228,34 +222,60 @@ class _ChatBodyState extends State<ChatBody> {
       print('Envoi du message au serveur : $messageWithTimestamp');
       channel.sink.add(utf8.encode(jsonEncode(messageWithTimestamp)));
 
-      // Utilise Future.delayed pour gérer le délai correctement
-      await Future.delayed(const Duration(milliseconds: 10), () {
-        setState(() {
-          userMessage.status = MessageStatus.received;
-          print('Message marqué comme reçu : ${userMessage.toJson()}');
-        });
-        _saveMessages();
-
-        // Ajout d'une impression de débogage supplémentaire
-        print('Après réception du serveur, avant scrollToBottom :');
-        messages.forEach((message) => print(message.toJson()));
+      // Marquer le message comme "reçu" immédiatement
+      setState(() {
+        userMessage.status = MessageStatus.received;
+        print('Message marqué comme reçu : ${userMessage.toJson()}');
       });
 
-      // Fait défiler la liste vers le bas après la réception du serveur
-      scrollToBottom();
-    }
+      // Sauvegarde des messages en local
+      _saveMessages();
 
-    // Sauvegarde locale
-    _saveMessages();
+      // Fait défiler la liste vers le bas
+      scrollToBottom();
+    } else if (_capturedImage != null) {
+      // Cas où une image a été capturée
+      final userPhotoMessage = Message(
+        imageBytes: _capturedImage,
+        isUser: true,
+        username: username,
+        status: MessageStatus.sent,
+      );
+
+      setState(() {
+        messages.add(userPhotoMessage);
+      });
+
+      // Fait défiler la liste vers le bas
+      scrollToBottom();
+
+      // Envoie le message image au serveur WebSocket
+      channel.sink.add(_capturedImage!);
+
+      // Marquer le message image comme "reçu" immédiatement
+      setState(() {
+        userPhotoMessage.status = MessageStatus.received;
+        print('Message image marqué comme reçu : ${userPhotoMessage.toJson()}');
+      });
+
+      // Sauvegarde des messages en local
+      _saveMessages();
+
+      // Fait défiler la liste vers le bas
+      scrollToBottom();
+
+      // Réinitialise la variable _capturedImage
+      setState(() {
+        _capturedImage = null;
+      });
+    }
 
     // Efface le texte du contrôleur
     _messageController.clear();
   }
 
 
-
-
-  //Charge les messages localement
+  // Charge les messages localement
   Future<void> _loadMessages() async {
     // Load messages from local storage
     List<Message> loadedMessages = await ChatLocalStorage.loadMessages();
@@ -265,12 +285,12 @@ class _ChatBodyState extends State<ChatBody> {
     });
 
     // Scroll messages to the bottom
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       scrollToBottom();
     });
   }
 
-  //Capture et envoie de photo
+  // Capture et envoie de photo
   Future<void> _captureAndSendPhoto() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.camera);
@@ -299,8 +319,10 @@ class _ChatBodyState extends State<ChatBody> {
 
   void _displayWelcomeMessage() {
     // Affiche le message de bienvenue
-    final welcomeMessage = Message(text: 'Bienvenue dans le chat !',
-        isUser: false, username: 'Server',
+    final welcomeMessage = Message(
+        text: 'Bienvenue dans le chat !',
+        isUser: false,
+        username: 'Server',
         status: MessageStatus.sent);
     setState(() {
       messages.add(welcomeMessage);
@@ -351,6 +373,39 @@ class _ChatBodyState extends State<ChatBody> {
     }
   }
 
+
+  Widget buildImageStatusIndicator(MessageStatus status) {
+    if (status == MessageStatus.sent) {
+      return Icon(
+        Icons.done_all,
+        color: Colors.grey,
+        size: 16.0,
+      );
+    } else if (status == MessageStatus.received) {
+      return Icon(
+        Icons.done_all,
+        color: Colors.red,
+        size: 16.0,
+      );
+    } else {
+      return SizedBox.shrink();
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   // Widget pour construire l'élément d'affichage d'un message
   Widget buildMessageWidget(Message message) {
     if (message.imageBytes != null) {
@@ -359,11 +414,10 @@ class _ChatBodyState extends State<ChatBody> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  FullScreenImage(
-                    imageBytes: message.imageBytes!,
-                    timestamp: message.timestamp,
-                  ),
+              builder: (context) => FullScreenImage(
+                imageBytes: message.imageBytes!,
+                timestamp: message.timestamp,
+              ),
             ),
           );
         },
@@ -418,6 +472,8 @@ class _ChatBodyState extends State<ChatBody> {
                         fontSize: 12.0,
                       ),
                     ),
+                    buildImageStatusIndicator(message.status),
+
                   ],
                 ),
               ),
@@ -457,6 +513,7 @@ class _ChatBodyState extends State<ChatBody> {
                       color: message.isUser ? Colors.white : Colors.black,
                     ),
                   ),
+                  buildStatusIndicator(message.status),
                 ],
               ),
             ),
@@ -559,7 +616,44 @@ class FullScreenImage extends StatelessWidget {
           ),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _saveImageToGallery(context),
+        tooltip: 'Save to Gallery',
+        child: Icon(Icons.download),
+      ),
     );
+  }
+
+  Future<void> _saveImageToGallery(BuildContext context) async {
+    try {
+      // Obtenir le répertoire temporaire pour stocker l'image
+      final tempDir = await getTemporaryDirectory();
+      final tempPath = tempDir.path;
+
+      // Écrire l'image dans le répertoire temporaire
+      final tempFile = File('$tempPath/${timestamp.toIso8601String()}.png');
+      await tempFile.writeAsBytes(imageBytes);
+
+      // Sauvegarder l'image dans la galerie
+      final result = await ImageGallerySaver.saveFile(tempFile.path);
+
+      // Afficher un message à l'utilisateur en fonction du résultat
+      if (result['isSuccess']) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Image saved to gallery'),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to save image to gallery'),
+          ),
+        );
+      }
+    } catch (e) {
+      print('Error saving image to gallery: $e');
+    }
   }
 }
 
