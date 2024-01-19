@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/current_remaining_time.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
@@ -22,11 +24,23 @@ class _GameMapState extends State<GameMap> {
   late double radius;
   int countdownSeconds = 600;
   bool isBlindModeEnabled = true;
+  bool isOutsideZone = false; // Indicateur si le joueur est en dehors de la zone
+
+  late Timer timer;
+
+  ValueNotifier<bool> isOutsideZoneNotifier = ValueNotifier<bool>(false);
+
 
   @override
   void initState() {
     super.initState();
     _initializeState();
+  }
+
+  @override
+  void dispose() {
+    timer.cancel(); // Annulez le timer lorsqu'il n'est plus nécessaire
+    super.dispose();
   }
 
   Future<void> _initializeState() async {
@@ -36,9 +50,10 @@ class _GameMapState extends State<GameMap> {
         currentPosition = position;
         tapPosition = LatLng(currentPosition.latitude, currentPosition.longitude);
         isLoading = false;
-        radius = 150;
+        radius = 5;
       });
     });
+    _startLocationCheckTimer();
   }
 
   Future<void> _loadBlindModeStatus() async {
@@ -50,11 +65,8 @@ class _GameMapState extends State<GameMap> {
     bool serviceEnabled;
     LocationPermission permission;
 
-    // Teste si les services de localisation sont activés.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      // Les services de localisation ne sont pas activés, ne continuez pas
-      // à accéder à la position et demandez aux utilisateurs de l'application d'activer les services de localisation.
       return Future.error('Les services de localisation sont désactivés.');
     }
 
@@ -62,24 +74,49 @@ class _GameMapState extends State<GameMap> {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        // Les autorisations sont refusées, la prochaine fois, vous pourriez essayer
-        // de demander à nouveau des autorisations (c'est aussi là que
-        // shouldShowRequestPermissionRationale d'Android est retourné vrai. Selon les directives d'Android
-        // votre application doit maintenant afficher une interface utilisateur explicative.
         return Future.error("Les autorisations de localisation sont refusées");
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      // Les autorisations sont refusées pour toujours, gérez-les de manière appropriée.
       return Future.error(
           'Les autorisations de localisation sont refusées de manière permanente, nous ne pouvons pas demander les autorisations.');
     }
 
-    // Lorsque nous arrivons ici, les autorisations sont accordées et nous pouvons
-    // continuer à accéder à la position du périphérique.
     return await Geolocator.getCurrentPosition();
   }
+
+  Future<void> _updatePosition() async {
+    currentPosition = await _determinePosition();
+    _checkPlayerLocation();
+  }
+
+  void _startLocationCheckTimer() {
+    print("Starting timer...");
+    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      print("Timer tick...");
+      _updatePosition();
+      _checkPlayerLocation();
+    });
+  }
+
+
+  void _checkPlayerLocation() {
+    double distance = Geolocator.distanceBetween(
+      currentPosition.latitude,
+      currentPosition.longitude,
+      tapPosition.latitude,
+      tapPosition.longitude,
+    );
+
+    isOutsideZoneNotifier.value = distance > radius;
+
+    print("Distance: $distance");
+    print("Radius: $radius");
+    print(currentPosition);
+    print(isOutsideZoneNotifier.value);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -129,6 +166,15 @@ class _GameMapState extends State<GameMap> {
                   ]),
                 ],
               ),
+            ),
+            ValueListenableBuilder<bool>(
+              valueListenable: isOutsideZoneNotifier,
+              builder: (context, isOutsideZone, child) {
+                return Text(
+                  isOutsideZone ? "Vous êtes en dehors de la zone" : "Vous êtes dans la zone",
+                  style: TextStyle(fontSize: 24.0, fontFamily: "Poppins", fontWeight: FontWeight.w600,color: isOutsideZone ? Colors.red : Colors.green),
+                );
+              },
             ),
           ],
         ),
