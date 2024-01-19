@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web_socket_channel/io.dart';
 
 
@@ -21,21 +22,32 @@ class RoomCreationPage extends StatefulWidget {
 class _RoomCreationPageState extends State<RoomCreationPage> {
   PageController _pageController = PageController(initialPage: 0);
   late IOWebSocketChannel channel;
+  String creatorId = '';
+  String email = '';
 
   @override
   void initState() {
     super.initState();
-
+    getCreatorId();
     // Établir la connexion WebSocket sécurisée
-    channel = IOWebSocketChannel.connect('wss://votre-domaine.com');
+    channel = IOWebSocketChannel.connect('wss://app.hideandstreet.furrball.fr/createGame');
   }
 
   void _createGame() {
     double initialRadius = widget.initialRadius;
-    LatLng initialTapPosition = widget.initialTapPosition;
-    String creatorId = ''; // Remplacez avec la logique pour obtenir l'ID du créateur
+    LatLng initialTapPosition = widget.initialTapPosition; // Remplacez avec la logique pour obtenir l'ID du créateur
     // Logique pour créer la partie et envoyer des données via WebSocket sécurisé
-    channel.sink.add('{"radius": $initialRadius, "creatorId": "$creatorId", "center": {"lat": ${initialTapPosition.latitude}, "lng": ${initialTapPosition.longitude}}, "duration": $dureePartie}');
+    String auth = "chatappauthkey231r4";
+    
+    channel.sink.add('{"email":"$email","auth":"$auth","cmd":"createGame","radius": $initialRadius, "creatorId": "$creatorId", "center": {"lat": ${initialTapPosition.latitude}, "lng": ${initialTapPosition.longitude}}, "duration": $dureePartie}');
+  }
+
+  void getCreatorId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      creatorId = prefs.getString('userId') ?? ''; // Utilisez la clé correcte
+      email = prefs.getString('email') ?? '';
+    });
   }
 
   @override
@@ -66,6 +78,7 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
         } else {
           dureePartie = int.parse(duree);
           print(dureePartie);
+          _createGame();
           _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
         }
       },
