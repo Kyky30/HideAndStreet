@@ -260,8 +260,11 @@
     "emailLabel": "Email",
     "@email":{
         "description": "Label d'email"
+    },
+    "waitingRoomTitle": "Salle d'attente",
+    "@waitingRoomTitle": {
+        "description": "Titre de salle d'attente"
     }
-
 
 
 }

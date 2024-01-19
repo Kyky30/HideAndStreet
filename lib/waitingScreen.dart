@@ -1,24 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WaitingScreen extends StatelessWidget {
   final String gameCode;
 
   WaitingScreen({required this.gameCode});
 
+  void _shareGameCode() {
+    // Use the share package to send a message with the game code
+    Share.share('Join my game with code: $gameCode');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Waiting Screen'),
+        title: Text(AppLocalizations.of(context)!.waitingRoomTitle),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text('Game Code: $gameCode'),
           ElevatedButton(
-            onPressed: () {
-              // Implement logic to share game code
-            },
+            onPressed: _shareGameCode,
             child: Text('Share Game Code'),
           ),
           SizedBox(height: 20),
@@ -29,7 +34,6 @@ class WaitingScreen extends StatelessWidget {
     );
   }
 }
-
 class PlayerList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
