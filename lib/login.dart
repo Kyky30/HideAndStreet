@@ -254,6 +254,27 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
+
+
+
+                      // TODO: supprimer ce bouton avant version finale
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MyHomePage(),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            "Passer connexion -> dev",
+                            style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),

@@ -17,24 +17,24 @@ class AdmobHelper {
   void createInterstitialAd() {
 
     InterstitialAd.load(
-        adUnitId: "ca-app-pub-3940256099942544/1033173712",
-        request: AdRequest(),
-        adLoadCallback: InterstitialAdLoadCallback(
-            onAdLoaded: (InterstitialAd ad) {
-              print('$ad loaded');
-              _interstitialAd = ad;
-              numInterstitialLoadAttempts = 0;
-            },
-            onAdFailedToLoad: (LoadAdError error) {
-              print('InterstitialAd failed to load: $error');
-              numInterstitialLoadAttempts += 1;
-              _interstitialAd = null;
-              if (numInterstitialLoadAttempts <= 2) {
-                createInterstitialAd();
-              }
-            }),
+      adUnitId: "ca-app-pub-2973083761727471/2574585036",
+      request: AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+          onAdLoaded: (InterstitialAd ad) {
+            print('$ad loaded');
+            _interstitialAd = ad;
+            numInterstitialLoadAttempts = 0;
+          },
+          onAdFailedToLoad: (LoadAdError error) {
+            print('InterstitialAd failed to load: $error');
+            numInterstitialLoadAttempts += 1;
+            _interstitialAd = null;
+            if (numInterstitialLoadAttempts <= 2) {
+              createInterstitialAd();
+            }
+          }),
     );
-    
+
   }
 
   void showInterstitialAd() {
@@ -61,6 +61,24 @@ class AdmobHelper {
     _interstitialAd = null;
   }
 
+  static BannerAd getBannerAd() {
+    BannerAd bAd = new BannerAd(
+      size: AdSize.fullBanner,
+      adUnitId: "ca-app-pub-2973083761727471/9921542261",
+      listener: BannerAdListener(
+        onAdClosed: (Ad ad) => print('Ad closed.'),
+        onAdFailedToLoad: (Ad ad, LoadAdError error) {
+          ad.dispose();
+          print('Ad failed to load: $error');
+        },
+        onAdLoaded: (Ad ad) => print('Ad loaded.'),
+        onAdOpened: (Ad ad) => print('Ad opened.'),
+      ),
+      request: AdRequest(),
+    );
+
+    return bAd;
+  }
 
 
 

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'PreferencesManager.dart';
+import 'package:hide_and_street/api/AdmobHelper.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class AccountSettingsPage extends StatefulWidget {
 
@@ -133,6 +135,13 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
               ),
             ),
+            Container(
+              child: AdWidget(
+                ad: AdmobHelper.getBannerAd()..load(),
+                key: UniqueKey(),
+              ),
+              height: 75,
+            )
           ],
         ),
       ),
