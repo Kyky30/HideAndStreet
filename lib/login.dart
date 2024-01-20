@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:hide_and_street/home.dart';
 import 'package:hide_and_street/main.dart';
 import 'package:hide_and_street/password_forgoten.dart';
 import 'package:figma_squircle/figma_squircle.dart';
