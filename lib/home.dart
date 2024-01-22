@@ -74,21 +74,6 @@ class HomePage extends StatelessWidget {
                       child: const Text('Aller à la carte'),
                     ),
                     const SizedBox(height: 6),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => WaitingScreen(gameCode: "ADFJHR"),
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: Size(MediaQuery.of(context).size.width - 30, 50),
-                      ),
-                      child: const Text('Waiting'),
-                    ),
-                    const SizedBox(height: 6),
 
                     ElevatedButton(
                       onPressed: () {
