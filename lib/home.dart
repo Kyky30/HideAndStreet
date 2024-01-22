@@ -6,14 +6,11 @@ import 'package:hide_and_street/map_conf_screen.dart';
 
 import 'package:hide_and_street/room_joining.dart';
 
-import 'package:hide_and_street/premium_page.dart';
-
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hide_and_street/waitingScreen.dart';
 
 import 'package:hide_and_street/api/AdmobHelper.dart';
-import 'package:hide_and_street/api/PurchaseApi.dart';
 import '/api/PremiumStatus.dart';
 
 
@@ -77,20 +74,6 @@ class HomePage extends StatelessWidget {
                       child: const Text('Aller à la carte'),
                     ),
                     const SizedBox(height: 6),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const PremiumPage(),
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: Size(MediaQuery.of(context).size.width - 30, 50),
-                      ),
-                      child: const Text('Aller à la page premium'),
-                    ),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
