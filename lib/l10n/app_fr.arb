@@ -276,6 +276,7 @@
     "popup_texte_email_mdp_incorrect": "Veuillez réessayer",
     "@popup_texte_email_mdp_incorrect": {
         "description": "Texte de popup d'email ou mot de passe incorrect"
+    },
     "partagerCodePartie": "Partager le code",
     "@partagerCodePartie": {
         "description": "Bouton de partager le code"
