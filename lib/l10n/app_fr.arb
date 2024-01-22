@@ -324,7 +324,35 @@
     "texte_popup_autre_erreur": "Une erreur est survenue, veuillez réessayer. Pensez à vérifier votre code partie.",
     "@texte_popup_autre_erreur": {
         "description": "Texte de popup d'autre erreur"
+    },
+    "start_game": "Commencer la partie",
+    "@start_game": {
+        "description": "Bouton de commencer la partie"
+    },
+    "game_code": "Code de la partie : {code}",
+    "@game_code": {
+        "description": "Code de la partie",
+        "placeholders": {
+            "code": {
+                "content": "Code de la partie",
+                "type": "String",
+                "example": "ABCDEF"
+            }
+        }
+    },
+    "cgu": "Conditions générales d'utilisation",
+    "@cgu": {
+        "description": "Bouton de conditions générales d'utilisation"
+    },
+    "cgv": "Conditions générales de vente",
+    "@cgv": {
+        "description": "Bouton de conditions générales de vente"
+    },
+    "privacy": "Politique de confidentialité",
+    "@privacy": {
+        "description": "Bouton de politique de confidentialité"
     }
+
 
 
 }

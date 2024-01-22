@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:figma_squircle/figma_squircle.dart';
 
 class WaitingScreen extends StatefulWidget {
   final String gameCode;
@@ -121,13 +122,34 @@ class _WaitingScreenState extends State<WaitingScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Game Code: ${widget.gameCode}'),
+          Text(
+            AppLocalizations.of(context)!.game_code(widget.gameCode),
+            style: const TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+          ),
           ElevatedButton(
             onPressed: _shareGameCode,
-            child: Text(AppLocalizations.of(context)!.partagerCodePartie),
+            style: ElevatedButton.styleFrom(
+              shape: SmoothRectangleBorder(
+                borderRadius: SmoothBorderRadius(
+                  cornerRadius: 20,
+                  cornerSmoothing: 1,
+                ),
+              ),
+              minimumSize: Size(MediaQuery.of(context).size.width - 30, 60),
+              backgroundColor: const Color(0xFF5A5C98),
+              foregroundColor: const Color(0xFF212348),
+            ),
+            child: Text(
+                AppLocalizations.of(context)!.partagerCodePartie,
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
+            ),
           ),
-          SizedBox(height: 20),
-          Text(AppLocalizations.of(context)!.listeDesJoueurs),
+          Spacer(),
+          Text(
+              AppLocalizations.of(context)!.listeDesJoueurs,
+              style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+
+          ),
           StreamBuilder<List<String>>(
             stream: _playerListController.stream,
             initialData: [],
@@ -141,9 +163,25 @@ class _WaitingScreenState extends State<WaitingScreen> {
               }
             },
           ),
+          Spacer(),
           ElevatedButton(
             onPressed: _startGame,
-            child: Text('Start Game'),
+            child: Text(
+                AppLocalizations.of(context)!.start_game,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
+
+            ),
+            style: ElevatedButton.styleFrom(
+              shape: SmoothRectangleBorder(
+                borderRadius: SmoothBorderRadius(
+                  cornerRadius: 20,
+                  cornerSmoothing: 1,
+                ),
+              ),
+              minimumSize: Size(MediaQuery.of(context).size.width - 30, 80),
+              backgroundColor: const Color(0xFF373967),
+              foregroundColor: const Color(0xFF212348),
+            ),
           ),
         ],
       ),
@@ -183,7 +221,11 @@ class _PlayerListItemState extends State<PlayerListItem> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(widget.playerName),
+      title: Text(
+        widget.playerName,
+        style: const TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+
+      ),
       trailing: Checkbox(
         value: isChecked,
         onChanged: (value) {
