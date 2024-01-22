@@ -89,6 +89,15 @@ class _WaitingScreenState extends State<WaitingScreen> {
         selectedPlayers.add(playerName);
       }
     });
+
+    // Envoyer la liste mise à jour au serveur
+    _updateSelectedPlayersToServer();
+  }
+
+  void _updateSelectedPlayersToServer() {
+    // Envoyer la liste des joueurs sélectionnés au serveur
+    String auth = "chatappauthkey231r4";
+    _channel.sink.add('{"email":"$email","auth":"$auth","cmd":"updateSeekerStatus","gameCode":"${widget.gameCode}", "selectedPlayers": ${jsonEncode(selectedPlayers)}}');
   }
 
   void _startGame() {
