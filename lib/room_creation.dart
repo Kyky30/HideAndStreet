@@ -82,7 +82,7 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
     );
 
     // Send the game creation command to the server
-    channel.sink.add('{"email":"$email","auth":"$auth","cmd":"createGame","radius": $initialRadius, "creatorId": "$creatorId", "center": {"lat": ${initialTapPosition.latitude}, "lng": ${initialTapPosition.longitude}}, "duration": $dureePartie}');
+    channel.sink.add('{"email":"$email","auth":"$auth","cmd":"createGame","radius": "$initialRadius", "creatorId": "$creatorId", "center": {"lat": ${initialTapPosition.latitude}, "lng": ${initialTapPosition.longitude}}, "duration": $dureePartie, "hidingDuration": "$dureeCachette"}');
 
     try {
       // Wait for the game code response or an error
