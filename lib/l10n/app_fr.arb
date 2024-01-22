@@ -339,6 +339,18 @@
                 "example": "ABCDEF"
             }
         }
+    },
+    "cgu": "Conditions générales d'utilisation",
+    "@cgu": {
+        "description": "Bouton de conditions générales d'utilisation"
+    },
+    "cgv": "Conditions générales de vente",
+    "@cgv": {
+        "description": "Bouton de conditions générales de vente"
+    },
+    "privacy": "Politique de confidentialité",
+    "@privacy": {
+        "description": "Bouton de politique de confidentialité"
     }
 
 

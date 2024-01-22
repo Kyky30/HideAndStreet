@@ -9,6 +9,9 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'api/PremiumStatus.dart';
 
+import 'package:url_launcher/url_launcher.dart';
+
+
 class AccountSettingsPage extends StatefulWidget {
 
   const AccountSettingsPage();
@@ -22,6 +25,10 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
   String username = '';
   String DateCreation = '';
   String email = '';
+
+  String CGUUrl = 'https://hideandstreet.furrball.fr/CGU.html';
+  String CGVUrl = 'https://hideandstreet.furrball.fr/CGV.html';
+  String PrivacyUrl = 'https://hideandstreet.furrball.fr/Privacy.html';
 
   @override
   void initState() {
@@ -60,6 +67,12 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
 
     // Navigate to the login page
     Navigator.pushReplacementNamed(context, '/login');
+  }
+
+  Future<void> _launchUrl(_url) async {
+    if (!await launchUrl(_url)) {
+      throw Exception('Could not launch $_url');
+    }
   }
 
   @override
@@ -145,6 +158,35 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                 ),
                 height: 75,
               )
+            ,
+            Spacer(),
+            TextButton(
+              onPressed: () {
+                launchUrl(Uri.parse(CGUUrl));
+              },
+              child: Text(
+                AppLocalizations.of(context)!.cgu,
+                style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                launchUrl(Uri.parse(CGVUrl));
+              },
+              child: Text(
+                AppLocalizations.of(context)!.cgv,
+                style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                launchUrl(Uri.parse(PrivacyUrl));
+              },
+              child: Text(
+                AppLocalizations.of(context)!.privacy,
+                style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+              ),
+            ),
           ],
         ),
       ),
