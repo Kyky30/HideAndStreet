@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hide_and_street/api/AdmobHelper.dart';
+import 'package:hide_and_street/api/PurchaseApi.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+
+import 'api/PremiumStatus.dart';
 
 
 import 'home.dart';
@@ -16,8 +19,15 @@ import 'package:hide_and_street/api/AdmobHelper.dart';
 
 import 'package:material_symbols_icons/symbols.dart';
 
-void main() {
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+
+  await initPlatformState();
+
+  bool premium = await isPremium();
+  PremiumStatus().isPremium = premium;
+  print('Is Premium: $premium');
+
   runApp(const MyApp());
 }
 

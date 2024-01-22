@@ -12,10 +12,9 @@ import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hide_and_street/waitingScreen.dart';
 
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'dart:io' show Platform;
 import 'package:hide_and_street/api/AdmobHelper.dart';
-
+import 'package:hide_and_street/api/PurchaseApi.dart';
+import '/api/PremiumStatus.dart';
 
 
 class HomePage extends StatelessWidget {
@@ -146,8 +145,10 @@ class HomePage extends StatelessWidget {
                 // Boutons pour créer et rejoindre une partie
                 ElevatedButton(
                   onPressed: () {
-                    admobHelper.createInterstitialAd();
-                    admobHelper.showInterstitialAd();
+                    if (PremiumStatus().isPremium == false) {
+                      admobHelper.createInterstitialAd();
+                      admobHelper.showInterstitialAd();
+                    }
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -175,8 +176,10 @@ class HomePage extends StatelessWidget {
 
                 ElevatedButton(
                   onPressed: () {
-                    admobHelper.createInterstitialAd();
-                    admobHelper.showInterstitialAd();
+                    if (PremiumStatus().isPremium == false) {
+                      admobHelper.createInterstitialAd();
+                      admobHelper.showInterstitialAd();
+                    }
                     Navigator.push(
                       context,
                       MaterialPageRoute(
