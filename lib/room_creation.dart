@@ -157,7 +157,7 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
       buttonText: AppLocalizations.of(context)!.confirmer,
       logo: 'assets/logo_connect.png',
       fields: [
-        RoomCreationField(label: AppLocalizations.of(context)!.champ_conf_duree_cachette, hint: AppLocalizations.of(context)!.texte_champ_conf_duree_cachette, key: dureeKey[0], keyboardType: TextInputType.number),
+        RoomCreationField(label: AppLocalizations.of(context)!.champ_conf_duree_cachette, hint: AppLocalizations.of(context)!.texte_champ_conf_duree_cachette, key: dureeCachetteKey[0], keyboardType: TextInputType.number),
       ],
       onTap: () {
         var dureeCach = dureeCachetteKey[0].currentState?.value ?? "";
