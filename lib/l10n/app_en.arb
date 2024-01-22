@@ -58,7 +58,7 @@
   "waitingRoomTitle" : "Waiting room",
   "creationDateLabel" : "Creation date",
   "popup_titre_email_mdp_incorrect": "Incorrect email address or password",
-  "popup_texte_email_mdp_incorrect": "Please try again"
+  "popup_texte_email_mdp_incorrect": "Please try again",
   "partagerCodePartie" : "Share Game Code",
   "partagerCodePartieMessage" : "Hey ! Come join me on the game \"Hide & Street \" ! The code of the game is : ",
   "listeDesJoueurs" : "Players in the Game:",
