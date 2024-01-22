@@ -57,7 +57,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
 
   void _updatePlayerList() {
     // Envoyez une nouvelle demande pour obtenir la liste des joueurs mise à jour
-    _channel.sink.add('{"email":"$email","auth":"chatappauthkey231r4","cmd":"getPlayerlist", "gameCode":"${widget.gameCode}"}');
+    _channel.sink.add('{"email":"$email","auth":"chatappauthkey231r4","cmd":"UpdatePlayerlist", "gameCode":"${widget.gameCode}"}');
   }
 
   void _getPref() async {
