@@ -56,5 +56,7 @@
   "titre_popup_mdp_pas_insecure": "Password not secure enough !",
   "texte_popup_mdp_pas_insecure": "Your password must contain at least 8 characters, including at least one uppercase letter, one lowercase letter, one number and one special character !",
   "waitingRoomTitle" : "Waiting room",
-  "creationDateLabel" : "Creation date"
+  "creationDateLabel" : "Creation date",
+  "popup_titre_email_mdp_incorrect": "Incorrect email address or password",
+  "popup_texte_email_mdp_incorrect": "Please try again"
 }
