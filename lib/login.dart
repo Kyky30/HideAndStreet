@@ -82,6 +82,28 @@ class _LoginPageState extends State<LoginPage> {
         event = event.replaceAll(RegExp("'"), '"');
         var responseData = json.decode(event);
 
+        if (responseData["status"] == 'wrong_mail' || responseData["status"] == 'wrong_pass') {
+          await WebSocketManager.closeConnection();
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(AppLocalizations.of(context)!.popup_titre_email_mdp_incorrect),
+                content: Text(AppLocalizations.of(context)!.popup_texte_email_mdp_incorrect),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text("OK"),
+                  ),
+                ],
+              );
+            },
+          );
+          return;
+        }
+
         if (responseData["status"] == 'success') {
           await WebSocketManager.closeConnection();
 
