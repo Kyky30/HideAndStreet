@@ -59,5 +59,8 @@
   "creationDateLabel" : "Creation date",
   "partagerCodePartie" : "Share Game Code",
   "partagerCodePartieMessage" : "Hey ! Come join me on the game \"Hide & Street \" ! The code of the game is : ",
-  "listeDesJoueurs" : "Players in the Game:"
+  "listeDesJoueurs" : "Players in the Game:",
+  "titre_conf_duree_cachette": "Hidding duration",
+  "champ_conf_duree_cachette": "Hidding duration",
+  "texte_champ_conf_duree_cachette": "Hidding duration in minutes"
 }

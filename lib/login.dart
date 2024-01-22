@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:hide_and_street/home.dart';
 import 'package:hide_and_street/main.dart';
 import 'package:hide_and_street/password_forgoten.dart';
 import 'package:figma_squircle/figma_squircle.dart';
@@ -250,6 +251,27 @@ class _LoginPageState extends State<LoginPage> {
                           },
                           child: Text(
                             AppLocalizations.of(context)!.inscription,
+                            style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+                          ),
+                        ),
+                      ),
+
+
+
+                      // TODO: supprimer ce bouton avant version finale
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MyHomePage(),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            "Passer connexion -> dev",
                             style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
                           ),
                         ),

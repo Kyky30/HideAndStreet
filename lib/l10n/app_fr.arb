@@ -236,17 +236,17 @@
     "@texte_champ_conf_duree": {
         "description": "Texte de champ de durée de la partie"
     },
-    "titre_conf_chercheurs": "Nombre de chercheurs",
-    "@titre_conf_chercheurs": {
-        "description": "Titre de nombre de chercheurs"
+    "titre_conf_duree_cachette": "Durée de la cachette",
+    "@titre_conf_duree_cachette": {
+        "description": "Titre de durée de la cachette"
     },
-    "champ_conf_chercheurs": "Nombre de chercheurs",
-    "@champ_conf_chercheurs": {
-        "description": "Champ de nombre de chercheurs"
+    "champ_conf_duree_cachette": "Durée de la cachette",
+    "@champ_conf_duree_cachette": {
+        "description": "Champ de durée de la cachette"
     },
-    "texte_champ_conf_chercheurs": "Nombre de chercheurs",
-    "@texte_champ_conf_chercheurs": {
-        "description": "Texte de champ de nombre de chercheurs"
+    "texte_champ_conf_duree_cachette": "Durée de la cachette en minutes",
+    "@texte_champ_conf_duree_cachette": {
+        "description": "Texte de champ de durée de la cachette"
     },
 
     "profileTitle": "Profil",
@@ -281,4 +281,6 @@
     "@listeDesJoueurs": {
         "description": "label joueurs dans la partie"
     }
+
+
 }

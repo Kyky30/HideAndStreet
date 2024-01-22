@@ -7,6 +7,7 @@ import 'package:hide_and_street/PreferencesManager.dart';
 import 'package:hide_and_street/login.dart';
 import 'package:web_socket_channel/io.dart';
 
+
 import 'dart:developer' as developer;
 
 void signUp(BuildContext context, String emailValues, String pseudoValues, String passwordValues, String confirmPasswordValues) async {

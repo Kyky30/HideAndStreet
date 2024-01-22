@@ -45,7 +45,7 @@ dependencies:
   flutter_localization:
   intl: ^0.18.1
   purchases_flutter: ^6.6.0
-  purchases_ui_flutter: 6.15.0
+  purchases_ui_flutter: ^6.16.1
   flutter_map_location_marker: ^8.0.3
   flutter_countdown_timer: ^4.1.0
   http: ^1.1.2
@@ -56,6 +56,7 @@ dependencies:
   flutter_image_compress: ^2.1.0
   shared_preferences: ^2.2.2
   share: ^2.0.4
+  google_mobile_ads: ^4.0.0
 
 
 dev_dependencies:

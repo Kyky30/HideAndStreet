@@ -1,18 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:hide_and_street/api/AdmobHelper.dart';
+import 'package:hide_and_street/api/PurchaseApi.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+
+import 'api/PremiumStatus.dart';
+
 
 import 'home.dart';
 import 'l10n/l10n.dart';
 import 'login.dart';
 import 'shop.dart';
 import 'account_settings.dart';
-
+import 'package:hide_and_street/api/AdmobHelper.dart';
 
 import 'package:material_symbols_icons/symbols.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await initPlatformState();
+
+  bool premium = await isPremium();
+  PremiumStatus().isPremium = premium;
+  print('Is Premium: $premium');
+
   runApp(const MyApp());
 }
 
@@ -64,7 +79,7 @@ class MyApp extends StatelessWidget {
     bool? loggedIn = prefs.getBool('loggedin');
 
     if (loggedIn == true) {
-      return const MyHomePage();
+      return MyHomePage();
     } else {
       return LoginPage(); // Return the LoginPage widget
     }
@@ -83,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final List<Widget> _tabs = [
     const ShopPage(),
-    const HomePage(),
+    HomePage(),
     AccountSettingsPage(),
   ];
 
