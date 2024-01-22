@@ -268,7 +268,17 @@
     "creationDateLabel": "Date de création",
     "@creationDateLabel": {
         "description": "Label de date de création"
+    },
+    "partagerCodePartie": "Partager le code",
+    "@partagerCodePartie": {
+        "description": "Bouton de partager le code"
+    },
+    "partagerCodePartieMessage": "Rejoint moi sur hide & street avec le code : ",
+    "@partagerCodePartieMessage": {
+        "description": "Message de partager le code"
+    },
+    "listeDesJoueurs": "Joueurs dans la partie",
+    "@listeDesJoueurs": {
+        "description": "label joueurs dans la partie"
     }
-
-
 }
