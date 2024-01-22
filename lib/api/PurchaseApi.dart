@@ -1,5 +1,6 @@
 import 'dart:io' show Platform;
-import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:purchases_flutter/purchases_flutter.dart' ;
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 Future<void> initPlatformState() async {
@@ -13,4 +14,9 @@ Future<void> initPlatformState() async {
   }
   await Purchases.configure(configuration);
 
+}
+
+Future<bool> isPremium() async {
+  CustomerInfo purchaserInfo = await Purchases.getCustomerInfo();
+  return purchaserInfo.entitlements.all["premium"]?.isActive ?? false;
 }

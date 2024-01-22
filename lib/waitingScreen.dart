@@ -7,9 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-
-import 'dart:developer' as developer;
-
 class WaitingScreen extends StatefulWidget {
   final String gameCode;
 
@@ -23,6 +20,8 @@ class _WaitingScreenState extends State<WaitingScreen> {
   late WebSocketChannel _channel;
   late Future<List<String>> _playerList;
   String email = '';
+  List<String> selectedPlayers = [];
+  final _playerListController = StreamController<List<String>>();
 
   @override
   void initState() {
@@ -30,52 +29,77 @@ class _WaitingScreenState extends State<WaitingScreen> {
     _channel = IOWebSocketChannel.connect('wss://app.hideandstreet.furrball.fr/getPlayerlist');
     _getPref();
     _playerList = getPlayerList(widget.gameCode);
+    _initWebSocket();
   }
+
+  void _initWebSocket() {
+    _channel.stream.listen((message) {
+      final Map<String, dynamic> data = jsonDecode(message);
+      print('Received message from server: $message'); // Ajoutez cette ligne pour journaliser le message
+
+      if (data['cmd'] == 'getPlayerlist') {
+        if (data['status'] == 'success') {
+          List<dynamic> playersData = data['players'];
+          List<String> players =
+          playersData.map((player) => player.toString()).toList();
+          _playerListController.add(players);
+        } else {
+          // Gérer les erreurs ici
+          print('Error in response: ${data['message']}'); // Ajoutez cette ligne pour journaliser l'erreur
+        }
+      } else if (data['cmd'] == 'playerJoined') {
+        // Gérer la notification de joueur rejoint ici
+        // Vous pouvez mettre à jour la liste des joueurs à ce stade
+        _updatePlayerList();
+      }
+    });
+  }
+
+  void _updatePlayerList() {
+    // Envoyez une nouvelle demande pour obtenir la liste des joueurs mise à jour
+    _channel.sink.add('{"email":"$email","auth":"chatappauthkey231r4","cmd":"getPlayerlist", "gameCode":"${widget.gameCode}"}');
+  }
+
   void _getPref() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       email = prefs.getString('email')!;
     });
   }
+
   void _shareGameCode() {
-    Share.share('Join my game with code: ${widget.gameCode}');
+    Share.share('${AppLocalizations.of(context)!.partagerCodePartieMessage} ${widget.gameCode}');
   }
 
   Future<List<String>> getPlayerList(String gameCode) async {
-    // Send a request to the server
-    String auth = "chatappauthkey231r4";
-    _channel.sink.add('{"email":"$email","auth":"$auth","cmd":"getPlayerlist", "gameCode":"$gameCode"}');
-
-    // Create a StreamController to handle incoming messages
     final StreamController<List<String>> controller =
     StreamController<List<String>>();
 
-    // Listen for messages from the server
-    _channel.stream.listen((message) {
-      // Parse the incoming message
-      final Map<String, dynamic> data = jsonDecode(message);
+    _channel.sink.add('{"email":"$email","auth":"chatappauthkey231r4","cmd":"getPlayerlist", "gameCode":"${widget.gameCode}"}');
 
-      // Handle different types of messages
-      if (data['cmd'] == 'getPlayerlist') {
-        if (data['status'] == 'success') {
-          List<dynamic> playersData = data['players'];
-          developer.log(data['players'].toString(), name: 'my.app.category');
-          List<String> players =
-          playersData.map((player) => player.toString()).toList();
-          controller.add(players);
-        } else {
-          controller.addError(data['message']);
-        }
+    return controller.stream.first;
+  }
+
+  void _togglePlayerSelection(String playerName) {
+    setState(() {
+      if (selectedPlayers.contains(playerName)) {
+        selectedPlayers.remove(playerName);
+      } else {
+        selectedPlayers.add(playerName);
       }
     });
+  }
 
-    // Return the stream as a Future
-    return controller.stream.first;
+  void _startGame() {
+    // Envoyer la liste des joueurs sélectionnés au serveur avec la commande 'startGame'
+    String auth = "chatappauthkey231r4";
+    _channel.sink.add('{"email":"$email","auth":"$auth","cmd":"startGame", "selectedPlayers": ${jsonEncode(selectedPlayers)}}');
   }
 
   @override
   void dispose() {
     _channel.sink.close();
+    _playerListController.close();
     super.dispose();
   }
 
@@ -91,21 +115,26 @@ class _WaitingScreenState extends State<WaitingScreen> {
           Text('Game Code: ${widget.gameCode}'),
           ElevatedButton(
             onPressed: _shareGameCode,
-            child: Text('Share Game Code'),
+            child: Text(AppLocalizations.of(context)!.partagerCodePartie),
           ),
           SizedBox(height: 20),
-          Text('Players in the Game:'),
-          FutureBuilder<List<String>>(
-            future: _playerList,
+          Text(AppLocalizations.of(context)!.listeDesJoueurs),
+          StreamBuilder<List<String>>(
+            stream: _playerListController.stream,
+            initialData: [],
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return CircularProgressIndicator();
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else {
-                return PlayerList(players: snapshot.data!);
+                return PlayerList(players: snapshot.data!, onTogglePlayer: _togglePlayerSelection);
               }
             },
+          ),
+          ElevatedButton(
+            onPressed: _startGame,
+            child: Text('Start Game'),
           ),
         ],
       ),
@@ -115,28 +144,46 @@ class _WaitingScreenState extends State<WaitingScreen> {
 
 class PlayerList extends StatelessWidget {
   final List<String> players;
+  final Function(String) onTogglePlayer;
 
-  PlayerList({required this.players});
+  PlayerList({required this.players, required this.onTogglePlayer});
 
   @override
   Widget build(BuildContext context) {
     return ListView(
       shrinkWrap: true,
-      children: players.map((player) => PlayerListItem(playerName: player)).toList(),
+      children: players.map((player) => PlayerListItem(playerName: player, onTogglePlayer: onTogglePlayer)).toList(),
     );
   }
 }
 
-class PlayerListItem extends StatelessWidget {
+class PlayerListItem extends StatefulWidget {
   final String playerName;
+  final Function(String) onTogglePlayer;
 
-  PlayerListItem({required this.playerName});
+  PlayerListItem({required this.playerName, required this.onTogglePlayer, Key? key})
+      : super(key: key);
+
+  @override
+  _PlayerListItemState createState() => _PlayerListItemState();
+}
+
+class _PlayerListItemState extends State<PlayerListItem> {
+  bool isChecked = false;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(playerName),
-      // Add checkbox or any other widgets as needed
+      title: Text(widget.playerName),
+      trailing: Checkbox(
+        value: isChecked,
+        onChanged: (value) {
+          widget.onTogglePlayer(widget.playerName);
+          setState(() {
+            isChecked = value!;
+          });
+        },
+      ),
     );
   }
 }

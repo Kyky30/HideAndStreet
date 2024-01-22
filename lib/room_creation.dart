@@ -126,10 +126,10 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
     super.dispose();
   }
   int dureePartie = 0;
-  int nbChercheurs = 0;
+  int dureeCachette = 0;
 
   List<GlobalKey<FormFieldState<String>>> dureeKey = [GlobalKey<FormFieldState<String>>()];
-  List<GlobalKey<FormFieldState<String>>> nbChercheursKey = [GlobalKey<FormFieldState<String>>()];
+  List<GlobalKey<FormFieldState<String>>> dureeCachetteKey = [GlobalKey<FormFieldState<String>>()];
 
   List<RoomCreationStep> _steps(BuildContext context) => [
     RoomCreationStep(
@@ -147,6 +147,25 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
         } else {
           dureePartie = int.parse(duree);
           print(dureePartie);
+          _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+        }
+      },
+    ),
+    RoomCreationStep(
+      title: AppLocalizations.of(context)!.titre_conf_duree_cachette,
+      background: 'assets/background_white.jpg',
+      buttonText: AppLocalizations.of(context)!.confirmer,
+      logo: 'assets/logo_connect.png',
+      fields: [
+        RoomCreationField(label: AppLocalizations.of(context)!.champ_conf_duree_cachette, hint: AppLocalizations.of(context)!.texte_champ_conf_duree_cachette, key: dureeCachetteKey[0], keyboardType: TextInputType.number),
+      ],
+      onTap: () {
+        var dureeCach = dureeCachetteKey[0].currentState?.value ?? "";
+        if (dureeCach.isEmpty) {
+          _showEmptyFieldDialog(context);
+        } else {
+          dureeCachette = int.parse(dureeCach);
+          print(dureeCachette);
           _createGame();
           _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
         }

@@ -5,6 +5,7 @@ import 'package:hide_and_street/home.dart';
 import 'package:hide_and_street/main.dart';
 import 'package:hide_and_street/password_forgoten.dart';
 import 'package:figma_squircle/figma_squircle.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -270,6 +271,18 @@ class _LoginPageState extends State<LoginPage> {
                                 builder: (context) => RegisterPage(),
                               ),
                             );
+                          },
+                          child: Text(
+                            AppLocalizations.of(context)!.inscription,
+                            style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                        child: TextButton(
+                          onPressed: () {
+                            print('http://www.hideandstreet.furrball.fr/CGU');
                           },
                           child: Text(
                             AppLocalizations.of(context)!.inscription,

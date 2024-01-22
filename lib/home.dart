@@ -6,16 +6,12 @@ import 'package:hide_and_street/map_conf_screen.dart';
 
 import 'package:hide_and_street/room_joining.dart';
 
-import 'package:hide_and_street/premium_page.dart';
-
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hide_and_street/waitingScreen.dart';
 
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'dart:io' show Platform;
 import 'package:hide_and_street/api/AdmobHelper.dart';
-
+import '/api/PremiumStatus.dart';
 
 
 class HomePage extends StatelessWidget {
@@ -83,20 +79,6 @@ class HomePage extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const PremiumPage(),
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: Size(MediaQuery.of(context).size.width - 30, 50),
-                      ),
-                      child: const Text('Aller à la page premium'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
                             builder: (context) => WaitingScreen(gameCode: "ADFJHR"),
                           ),
                         );
@@ -146,8 +128,10 @@ class HomePage extends StatelessWidget {
                 // Boutons pour créer et rejoindre une partie
                 ElevatedButton(
                   onPressed: () {
-                    admobHelper.createInterstitialAd();
-                    admobHelper.showInterstitialAd();
+                    if (PremiumStatus().isPremium == false) {
+                      admobHelper.createInterstitialAd();
+                      admobHelper.showInterstitialAd();
+                    }
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -175,8 +159,10 @@ class HomePage extends StatelessWidget {
 
                 ElevatedButton(
                   onPressed: () {
-                    admobHelper.createInterstitialAd();
-                    admobHelper.showInterstitialAd();
+                    if (PremiumStatus().isPremium == false) {
+                      admobHelper.createInterstitialAd();
+                      admobHelper.showInterstitialAd();
+                    }
                     Navigator.push(
                       context,
                       MaterialPageRoute(
