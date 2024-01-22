@@ -6,6 +6,8 @@ import 'package:hide_and_street/waitingScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web_socket_channel/io.dart';
 
+import 'package:figma_squircle/figma_squircle.dart';
+
 class RoomJoiningPage extends StatefulWidget {
   const RoomJoiningPage({Key? key}) : super(key: key);
 
@@ -49,10 +51,22 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
       _channel.sink.add('{"email": "$email","auth":"$auth", "cmd":"joinGame","userId":"$userID", "gameCode":"$gameCode"}');
       print('{"email": "$email", "auth":"$auth", "cmd":"joinGame","gameCode":"$gameCode"}');
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Veuillez entrer un code de partie valide.'),
-        ),
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(AppLocalizations.of(context)!.titre_popup_code_partie_invalide),
+            content: Text(AppLocalizations.of(context)!.texte_popup_code_partie_invalide),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("OK"),
+              ),
+            ],
+          );
+        },
       );
     }
   }
@@ -73,18 +87,42 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
           );
         } else {
           // Gérer le cas où le serveur n'a pas renvoyé le code de la partie
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Réponse du serveur incomplète. Veuillez réessayer.'),
-            ),
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(AppLocalizations.of(context)!.titre_popup_reponse_incomplete_serveur),
+                content: Text(AppLocalizations.of(context)!.texte_popup_reponse_incomplete_serveur),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text("OK"),
+                  ),
+                ],
+              );
+            },
           );
         }
       } else {
         // Gérer d'autres états, par exemple, afficher un message d'erreur
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Impossible de rejoindre la partie. Vérifiez le code de la partie.'),
-          ),
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(AppLocalizations.of(context)!.titre_popup_autre_erreur),
+              content: Text(AppLocalizations.of(context)!.texte_popup_autre_erreur),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("OK"),
+                ),
+              ],
+            );
+          },
         );
       }
     }
@@ -101,16 +139,40 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Text(
+              AppLocalizations.of(context)!.codePartie,
+              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+            ),
             TextField(
               controller: _gameCodeController,
               decoration: InputDecoration(
-                labelText: 'Code de la partie',
+                filled: true,
+                fillColor: Colors.grey[300],
+                hintText: AppLocalizations.of(context)!.exempleCodePartie,
+                border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
               ),
             ),
             SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: _joinGame,
-              child: Text('Rejoindre la partie'),
+              style: ElevatedButton.styleFrom(
+                shape: SmoothRectangleBorder(
+                  borderRadius: SmoothBorderRadius(
+                    cornerRadius: 20,
+                    cornerSmoothing: 1,
+                  ),
+                ),
+                minimumSize: const Size(double.infinity, 80),
+                backgroundColor: const Color(0xFF373967),
+                foregroundColor: const Color(0xFF212348),
+              ),
+              child: Text(
+                AppLocalizations.of(context)!.rejoindre,
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
+              ),
             ),
           ],
         ),

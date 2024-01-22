@@ -282,7 +282,7 @@ class _LoginPageState extends State<LoginPage> {
                         padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                         child: TextButton(
                           onPressed: () {
-                            print('http://www.hideandstreet.furrball.fr/CGU');
+                            print('hideandstreet.furrball.fr/CGU');
                           },
                           child: Text(
                             AppLocalizations.of(context)!.inscription,

@@ -288,6 +288,42 @@
     "listeDesJoueurs": "Joueurs dans la partie",
     "@listeDesJoueurs": {
         "description": "label joueurs dans la partie"
+    },
+    "rejoindre": "Rejoindre",
+    "@rejoindre": {
+        "description": "Texte de rejoindre"
+    },
+    "codePartie": "Code de la partie",
+    "@codePartie": {
+        "description": "Label de code de la partie"
+    },
+    "exempleCodePartie": "Exemple : ABCDEF",
+    "@exempleCodePartie": {
+        "description": "Exemple de code de la partie"
+    },
+    "titre_popup_code_partie_invalide": "Code de la partie invalide",
+    "@titre_popup_code_partie_invalide": {
+        "description": "Titre de popup de code de la partie invalide"
+    },
+    "texte_popup_code_partie_invalide": "Veuillez rentrer un code valide",
+    "@texte_popup_code_partie_invalide": {
+        "description": "Texte de popup de code de la partie invalide"
+    },
+    "titre_popup_reponse_incomplete_serveur": "Réponse incomplète du serveur",
+    "@titre_popup_reponse_incomplete_serveur": {
+        "description": "Titre de popup de réponse incomplète du serveur"
+    },
+    "texte_popup_reponse_incomplete_serveur": "Réponse incomplète du serveur, veuillez réessayer.",
+    "@texte_popup_reponse_incomplete_serveur": {
+        "description": "Texte de popup de réponse incomplète du serveur"
+    },
+    "titre_popup_autre_erreur": "Erreur",
+    "@titre_popup_autre_erreur": {
+        "description": "Titre de popup d'autre erreur"
+    },
+    "texte_popup_autre_erreur": "Une erreur est survenue, veuillez réessayer. Pensez à vérifier votre code partie.",
+    "@texte_popup_autre_erreur": {
+        "description": "Texte de popup d'autre erreur"
     }
 
 
