@@ -11,7 +11,7 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
-/// Classe pour gérer le stockage local des messages
+// Classe pour gérer le stockage local des messages
 class ChatLocalStorage {
   static const String _key = 'chat_messages';
   static const String _welcomeKey = 'welcome_message';
@@ -85,7 +85,7 @@ class _ChatBodyState extends State<ChatBody> {
 
   _ChatBodyState({required this.partieId});
 
-  /// Fonction pour envoyer des données au serveur WebSocket
+  // Fonction pour envoyer des données au serveur WebSocket
   void sendToServer(Map<String, dynamic> data) {
     channel.sink.add(jsonEncode(data));
   }
@@ -110,19 +110,19 @@ class _ChatBodyState extends State<ChatBody> {
   void initState() {
     super.initState();
 
-    /// Initialiser le canal WebSocket et le contrôleur de défilement
+    // Initialiser le canal WebSocket et le contrôleur de défilement
     channel = IOWebSocketChannel.connect('ws://193.38.250.113:3000');
     _scrollController = ScrollController();
 
-    /// Charge les messages depuis le stockage local lorsque le widget est initialisé
+    // Charge les messages depuis le stockage local lorsque le widget est initialisé
     _loadMessages();
 
-    /// Déclenche le défilement vers le bas lors de l'entrée dans le chat
+    // Déclenche le défilement vers le bas lors de l'entrée dans le chat
     WidgetsBinding.instance.addPostFrameCallback((_) {
       scrollToBottom();
     });
 
-    /// Écoute les messages WebSocket du serveur
+    // Écoute les messages WebSocket du serveur
     channel.stream.listen((dynamic message) {
       print('Message reçu du serveur : $message');
 
@@ -140,13 +140,13 @@ class _ChatBodyState extends State<ChatBody> {
             timestamp: DateTime.parse(decodedMessage['timestamp'] ?? ''),
           ));
         } else if (message is Map<String, dynamic>) {
-          /// Message avec informations utilisateur (pseudo + contenu)
+          // Message avec informations utilisateur (pseudo + contenu)
           print('Message utilisateur reçu : $message');
           final userMessage = Message(
             text: message['text'],
             isUser: true,
             username: message['username'],
-            status: message['status'] == 'MessageStatus.received'
+            status: message['status'] == 'MessageStatus.sent'
                 ? MessageStatus.sent
                 : MessageStatus.received,
             timestamp: DateTime.parse(message['timestamp'] ?? ''),
@@ -156,27 +156,27 @@ class _ChatBodyState extends State<ChatBody> {
           // Message image
           messages.add(Message(
             imageBytes: message,
-            isUser: false,
+            isUser: true,
             username: 'Serveur',
             status: MessageStatus.received,
           ));
         }
       });
 
-      /// Affiche la liste de messages mise à jour dans la console
+      // Affiche la liste de messages mise à jour dans la console
       print('Liste de messages mise à jour :');
       messages.forEach((message) => print(message.toJson()));
 
-      /// Sauvegarde des messages en local
+      // Sauvegarde des messages en local
       _saveMessages();
 
-      /// Fait défiler les messages vers le bas
+      // Fait défiler les messages vers le bas
       WidgetsBinding.instance.addPostFrameCallback((_) {
         scrollToBottom();
       });
     });
 
-    /// Vérifie si l'utilisateur a déjà vu le message de bienvenue
+    // Vérifie si l'utilisateur a déjà vu le message de bienvenue
     ChatLocalStorage.hasSeenWelcomeMessage().then((hasSeenWelcome) {
       if (!hasSeenWelcome && !_isWelcomeMessageDisplayed) {
         setState(() {
@@ -187,12 +187,12 @@ class _ChatBodyState extends State<ChatBody> {
     });
   }
 
-  /// Fonction pour envoyer un message
+  // Fonction pour envoyer un message
   Future<void> _sendMessage() async {
     // Récupère le texte du message
     final messageText = _messageController.text.trim();
 
-    /// Vérifie si le message n'est pas vide
+    // Vérifie si le message n'est pas vide
     if (messageText.isNotEmpty) {
       // Crée un nouvel objet Message avec la date et l'heure actuelles
       final userMessage = Message(
@@ -207,10 +207,10 @@ class _ChatBodyState extends State<ChatBody> {
         messages.add(userMessage);
       });
 
-      /// Fait défiler la liste vers le bas
+      // Fait défiler la liste vers le bas
       scrollToBottom();
 
-      /// Envoie le message au serveur WebSocket
+      // Envoie le message au serveur WebSocket
       final messageWithTimestamp = {
         'text': messageText,
         'isUser': true,
@@ -222,16 +222,16 @@ class _ChatBodyState extends State<ChatBody> {
       print('Envoi du message au serveur : $messageWithTimestamp');
       channel.sink.add(utf8.encode(jsonEncode(messageWithTimestamp)));
 
-      /// Marquer le message comme "reçu" immédiatement
+      // Marquer le message comme "reçu" immédiatement
       setState(() {
         userMessage.status = MessageStatus.received;
         print('Message marqué comme reçu : ${userMessage.toJson()}');
       });
 
-      /// Sauvegarde des messages en local
+      // Sauvegarde des messages en local
       _saveMessages();
 
-      /// Fait défiler la liste vers le bas
+      // Fait défiler la liste vers le bas
       scrollToBottom();
     } else if (_capturedImage != null) {
       // Cas où une image a été capturée
@@ -246,13 +246,13 @@ class _ChatBodyState extends State<ChatBody> {
         messages.add(userPhotoMessage);
       });
 
-      /// Fait défiler la liste vers le bas
+      // Fait défiler la liste vers le bas
       scrollToBottom();
 
-      /// Envoie le message image au serveur WebSocket
+      // Envoie le message image au serveur WebSocket
       channel.sink.add(_capturedImage!);
 
-      /// Marquer le message image comme "reçu" immédiatement
+      // Marquer le message image comme "reçu" immédiatement
       setState(() {
         userPhotoMessage.status = MessageStatus.received;
         print('Message image marqué comme reçu : ${userPhotoMessage.toJson()}');
@@ -273,7 +273,6 @@ class _ChatBodyState extends State<ChatBody> {
     // Efface le texte du contrôleur
     _messageController.clear();
   }
-
 
   // Charge les messages localement
   Future<void> _loadMessages() async {
@@ -373,15 +372,14 @@ class _ChatBodyState extends State<ChatBody> {
     }
   }
 
-
-  Widget buildImageStatusIndicator(MessageStatus status, bool isUser) {
-    if (status == MessageStatus.sent && isUser) {
+  Widget buildImageStatusIndicator(MessageStatus status) {
+    if (status == MessageStatus.sent) {
       return Icon(
         Icons.done_all,
         color: Colors.grey,
         size: 16.0,
       );
-    //} else if (status == MessageStatus.received) {
+    } else if (status == MessageStatus.received) {
       return Icon(
         Icons.done_all,
         color: Colors.red,
@@ -391,11 +389,6 @@ class _ChatBodyState extends State<ChatBody> {
       return SizedBox.shrink();
     }
   }
-
-
-
-
-
 
   // Widget pour construire l'élément d'affichage d'un message
   Widget buildMessageWidget(Message message) {
@@ -421,10 +414,8 @@ class _ChatBodyState extends State<ChatBody> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                margin: EdgeInsets.only(
-                  left: message.isUser ? 0.0 : 20.0,
-                  right: message.isUser ? 20.0 : 0.0,
-                ),
+                margin: EdgeInsets.only(left: message.isUser ? 0.0 : 20.0,
+                    right: message.isUser ? 20.0 : 0.0),
                 padding: const EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
                   color: message.isUser ? Colors.blue : Colors.grey[200],
@@ -443,7 +434,10 @@ class _ChatBodyState extends State<ChatBody> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4.0),
                       child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.6,
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width * 0.6,
                         child: Hero(
                           tag: 'image_${message.timestamp}',
                           child: ClipRRect(
@@ -462,8 +456,8 @@ class _ChatBodyState extends State<ChatBody> {
                         fontSize: 12.0,
                       ),
                     ),
-                    // Utilisation de la nouvelle méthode pour construire l'indicateur
-                    buildImageStatusIndicator(message.status, message.isUser),
+                    buildImageStatusIndicator(message.status),
+
                   ],
                 ),
               ),
@@ -503,9 +497,7 @@ class _ChatBodyState extends State<ChatBody> {
                       color: message.isUser ? Colors.white : Colors.black,
                     ),
                   ),
-                  message.isUser
-                      ? buildStatusIndicator(message.status)
-                      : SizedBox.shrink(),
+                  buildStatusIndicator(message.status),
                 ],
               ),
             ),
@@ -524,7 +516,6 @@ class _ChatBodyState extends State<ChatBody> {
       );
     }
   }
-
 
   // Fonction de nettoyage lorsque le widget est détruit
   @override
@@ -578,7 +569,6 @@ class _ChatBodyState extends State<ChatBody> {
       ],
     );
   }
-
 }
 
 // Widget pour afficher une image en plein écran
@@ -603,7 +593,7 @@ class FullScreenImage extends StatelessWidget {
             minScale: PhotoViewComputedScale.contained,
             maxScale: PhotoViewComputedScale.covered * 2,
             backgroundDecoration: BoxDecoration(
-              color: Colors.transparent,
+              color: Colors.transparent,//df
             ),
           ),
         ),
@@ -668,8 +658,8 @@ class Message {
     this.imageBytes,
     this.username,
     required this.status,
-    DateTime? timestamp, // Ajout de la déclaration ici
-  }) : timestamp = timestamp ?? DateTime.now(); // Initialisation avec la valeur actuelle si elle est nulle
+    DateTime? timestamp,
+  }) : timestamp = timestamp ?? DateTime.now();
 
   Map<String, dynamic> toJson() {
     return {
@@ -678,10 +668,9 @@ class Message {
       'imageBytes': imageBytes,
       'username': username,
       'timestamp': timestamp.toIso8601String(),
-      'status': status.toString(), // Ajoutez cette ligne
+      'status': status.toString(),
     };
   }
-
 
   factory Message.fromJson(Map<String, dynamic> json) {
     List<int>? imageBytesList = json['imageBytes']?.cast<int>();
