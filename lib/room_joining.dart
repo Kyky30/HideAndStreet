@@ -82,7 +82,7 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => WaitingScreen(gameCode: gameCode),
+              builder: (context) => WaitingScreen(gameCode: gameCode, isAdmin: false),
             ),
           );
         } else {

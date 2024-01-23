@@ -94,7 +94,7 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => WaitingScreen(gameCode: receivedGameCode),
+            builder: (context) => WaitingScreen(gameCode: receivedGameCode, isAdmin: true),
           ),
         );
       } else {
