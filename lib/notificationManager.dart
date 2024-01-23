@@ -1,4 +1,7 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'dart:ui'; // Import ajouté
+import 'package:flutter/material.dart';
+
 
 class NotificationManager {
   static void initialize() {
@@ -9,8 +12,8 @@ class NotificationManager {
           channelKey: 'chat_channel',
           channelName: 'Chat Channel',
           channelDescription: 'Notifications for Chat',
-          defaultColor: Colors.green,
-          ledColor: Colors.green,
+          defaultColor: Colors.green, // Assurez-vous d'avoir importé Colors
+          ledColor: Colors.green, // Assurez-vous d'avoir importé Colors
           enableVibration: true,
         ),
       ],
