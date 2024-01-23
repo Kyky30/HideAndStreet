@@ -25,6 +25,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
   String id = '';
   List<String> selectedPlayers = [];
   final _playerListController = StreamController<List<String>>();
+  final _selectedPlayersController = StreamController<List<String>>.broadcast();
 
   @override
   void initState() {
@@ -50,8 +51,20 @@ class _WaitingScreenState extends State<WaitingScreen> {
         }
       } else if (data['cmd'] == 'playerJoined') {
         _updatePlayerList();
+      } else if (data['cmd'] == 'seekerStatusUpdated') {
+        print('Seeker status updated');
+        _handleSeekerStatusUpdated(data['selectedPlayers']);
       }
     });
+  }
+
+  void _handleSeekerStatusUpdated(List<dynamic> selectedPlayersData) {
+    List<String> updatedSelectedPlayers = selectedPlayersData.map((player) => player.toString()).toList();
+    print('Updated selected players: $updatedSelectedPlayers');
+    setState(() {
+      selectedPlayers = updatedSelectedPlayers;
+    });
+    _selectedPlayersController.add(updatedSelectedPlayers);
   }
 
   void _updatePlayerList() {
@@ -109,6 +122,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
   void dispose() {
     _channel.sink.close();
     _playerListController.close();
+    _selectedPlayersController.close();
     super.dispose();
   }
 
@@ -157,7 +171,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else {
-                return PlayerList(players: snapshot.data!, onTogglePlayer: _togglePlayerSelection, isAdmin: widget.isAdmin);
+                return PlayerList(players: snapshot.data!, onTogglePlayer: _togglePlayerSelection, isAdmin: widget.isAdmin, selectedPlayers: selectedPlayers, selectedPlayersStream: _selectedPlayersController.stream);
               }
             },
           ),
@@ -191,29 +205,36 @@ class _WaitingScreenState extends State<WaitingScreen> {
 class PlayerList extends StatelessWidget {
   final List<String> players;
   final Function(String) onTogglePlayer;
-  final bool isAdmin; // Add isAdmin as a parameter
+  final bool isAdmin;
+  final List<String> selectedPlayers;
+  final Stream<List<String>> selectedPlayersStream;
 
-  PlayerList({required this.players, required this.onTogglePlayer, required this.isAdmin});
+  PlayerList({required this.players, required this.onTogglePlayer, required this.isAdmin, required this.selectedPlayers, required this.selectedPlayersStream});
 
   @override
   Widget build(BuildContext context) {
     return ListView(
       shrinkWrap: true,
-      children: players.map((player) => PlayerListItem(playerName: player, onTogglePlayer: onTogglePlayer, isAdmin: isAdmin)).toList(),
+      children: players.map((player) => PlayerListItem(playerName: player, onTogglePlayer: onTogglePlayer, isAdmin: isAdmin, isSelectable: isAdmin, selectedPlayers: selectedPlayers, selectedPlayersStream: selectedPlayersStream)).toList(),
     );
   }
 }
 
-
 class PlayerListItem extends StatefulWidget {
   final String playerName;
   final Function(String) onTogglePlayer;
-  final bool isAdmin; // Add isAdmin as a parameter
+  final bool isAdmin;
+  final bool isSelectable;
+  final List<String> selectedPlayers;
+  final Stream<List<String>> selectedPlayersStream;
 
   PlayerListItem({
     required this.playerName,
     required this.onTogglePlayer,
-    required this.isAdmin, // Pass isAdmin when creating PlayerListItem
+    required this.isAdmin,
+    required this.isSelectable,
+    required this.selectedPlayers,
+    required this.selectedPlayersStream,
     Key? key,
   }) : super(key: key);
 
@@ -222,7 +243,25 @@ class PlayerListItem extends StatefulWidget {
 }
 
 class _PlayerListItemState extends State<PlayerListItem> {
-  bool isChecked = false;
+  late bool isChecked;
+  late StreamSubscription _selectedPlayersSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    isChecked = widget.selectedPlayers.contains(widget.playerName);
+    _selectedPlayersSubscription = widget.selectedPlayersStream.listen((selectedPlayers) {
+      setState(() {
+        isChecked = selectedPlayers.contains(widget.playerName);
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _selectedPlayersSubscription.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -231,17 +270,16 @@ class _PlayerListItemState extends State<PlayerListItem> {
         widget.playerName,
         style: const TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
       ),
-      trailing: widget.isAdmin
-          ? Checkbox(
+      trailing: Checkbox(
         value: isChecked,
-        onChanged: (value) {
+        onChanged: widget.isAdmin ? (value) {
           widget.onTogglePlayer(widget.playerName);
           setState(() {
             isChecked = value!;
+            print('Checkbox state updated for ${widget.playerName}: $isChecked');
           });
-        },
-      )
-          : SizedBox(),
+        } : null,
+      ),
     );
   }
 }
