@@ -79,7 +79,7 @@ class _ChatBodyState extends State<ChatBody> {
   final List<Message> messages = [];
   late ScrollController _scrollController;
   late String username;
-  final int partieId;
+  int partieId = 0;
   bool _isWelcomeMessageDisplayed = false;
   Uint8List? _capturedImage;
 
@@ -110,10 +110,24 @@ class _ChatBodyState extends State<ChatBody> {
   void initState() {
     super.initState();
 
-
     // Initialiser le canal WebSocket et le contrôleur de défilement
     channel = IOWebSocketChannel.connect('ws://193.38.250.113:3000');
     _scrollController = ScrollController();
+
+    // Récupère l'ID de la partie lors de la connexion à la salle
+    channel.stream.listen((dynamic message) {
+      if (message is String) {
+        // Analyse le message JSON Serveur
+        Map<String, dynamic> decodedMessage = json.decode(message);
+
+        // Vérifie si le message contient L'iD de la salle
+        if (decodedMessage.containsKey('partieId')) {
+          setState(() {
+            partieId = decodedMessage['partieId'];
+          });
+        }
+      }
+    });
 
     // Récupère le pseudo de l'utilisateur depuis les SharedPreferences
     getUsername().then((userPseudo) {
@@ -125,7 +139,8 @@ class _ChatBodyState extends State<ChatBody> {
     });
 
 
-    // Charge les messages depuis le stockage local lorsque le widget est initialisé
+
+  // Charge les messages depuis le stockage local lorsque le widget est initialisé
     _loadMessages();
 
     // Déclenche le défilement vers le bas lors de l'entrée dans le chat
@@ -577,7 +592,7 @@ class _ChatBodyState extends State<ChatBody> {
             itemCount: messages.length,
             itemBuilder: (context, index) {
               final message = messages[index];
-              return buildMessageWidget(message);
+              return message.belongsToPartie(partieId) ? buildMessageWidget(message) : SizedBox.shrink();
             },
           ),
         ),
@@ -692,6 +707,12 @@ class Message {
   final DateTime timestamp;
   final String? username;
   MessageStatus status;
+
+  bool belongsToPartie(int partieId) {
+    // Logique pour déterminer si le message appartient à la partie
+    // Retourne true si le message appartient à la partie, sinon false
+    return true; // Remplacez par votre logique réelle
+  }
 
   Message({
     this.text,

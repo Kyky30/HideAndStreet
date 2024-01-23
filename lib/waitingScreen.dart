@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:hide_and_street/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -157,6 +158,21 @@ class _WaitingScreenState extends State<WaitingScreen> {
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
             ),
           ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const Chat(partieId: partieId,)
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              minimumSize: Size(MediaQuery.of(context).size.width - 30, 50),
+            ),
+            child: const Text('Chat'),
+          ),
+          const SizedBox(height: 6),
           Spacer(),
           Text(
             AppLocalizations.of(context)!.listeDesJoueurs,
