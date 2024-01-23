@@ -14,6 +14,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 void main() {
   runApp(const MyApp());
+  NotificationManager.initialize();
 }
 
 class MyApp extends StatelessWidget {

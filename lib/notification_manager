@@ -1,0 +1,30 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
+
+class NotificationManager {
+  static void initialize() {
+    AwesomeNotifications().initialize(
+      'resource://drawable/app_icon',
+      [
+        NotificationChannel(
+          channelKey: 'chat_channel',
+          channelName: 'Chat Channel',
+          channelDescription: 'Notifications for Chat',
+          defaultColor: Colors.green,
+          ledColor: Colors.green,
+          enableVibration: true,
+        ),
+      ],
+    );
+  }
+
+  static void showChatNotification(String title, String body) {
+    AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: DateTime.now().millisecondsSinceEpoch,
+        channelKey: 'chat_channel',
+        title: title,
+        body: body,
+      ),
+    );
+  }
+}
