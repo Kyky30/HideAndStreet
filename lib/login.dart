@@ -280,7 +280,18 @@ class _LoginPageState extends State<LoginPage> {
                       ),
 
 
-
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                        child: TextButton(
+                          onPressed: () {
+                            print('https://hideandstreet.furrball.fr/CGU');
+                          },
+                          child: Text(
+                            AppLocalizations.of(context)!.inscription,
+                            style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+                          ),
+                        ),
+                      ),
 
                       // TODO: supprimer ce bouton avant version finale
                       Padding(
