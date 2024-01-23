@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_countdown_timer/current_remaining_time.dart';
+// import 'package:flutter_countdown_timer/current_remaining_time.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
@@ -12,11 +12,17 @@ import 'PreferencesManager.dart';
 class GameMap extends StatefulWidget {
   final LatLng center;
   final double radius;
+  final int tempsDePartie;
+  final int tempsDeCachette;
+  final int timeStampDebutPartie;
 
   const GameMap({
     Key? key,
     required this.center,
     required this.radius,
+    required this.tempsDePartie,
+    required this.tempsDeCachette,
+    required this.timeStampDebutPartie,
   }) : super(key: key);
 
   @override
@@ -27,6 +33,9 @@ class _GameMapState extends State<GameMap> {
   //Positions
   late Position latestPositionSentToServer;
   late Position currentPosition;
+  late int timeStampDebutPartie;
+  late int tempsDePartie;
+  late int tempsDeCachette;
 
   //Zone
   late LatLng tapPosition;
@@ -41,13 +50,6 @@ class _GameMapState extends State<GameMap> {
   //Timer
   late Timer timer1seconde;
   late Timer timer5secondes;
-
-  //Temps de partie
-  //TODO: Récupérer le temps de partie depuis le serveur
-  int timeStampDebutPartie = DateTime.now().millisecondsSinceEpoch; //En milisecondes
-  //TODO: Récupérer le temps de cachette et de partie depuis le serveur
-  int tempsDePartie = 300; // 5 minutes
-  int tempsDeCachette = 60; // 1 minute
 
 
 
@@ -70,8 +72,9 @@ class _GameMapState extends State<GameMap> {
         currentPosition = position;
         latestPositionSentToServer = position;
         //TODO: Envoyer la position au serveur
-
-
+        timeStampDebutPartie = widget.timeStampDebutPartie;
+        tempsDePartie = widget.tempsDePartie;
+        tempsDeCachette = widget.tempsDeCachette;
         tapPosition = widget.center;
         radius = widget.radius; //en mètres
         isLoading = false;
@@ -191,8 +194,9 @@ class _GameMapState extends State<GameMap> {
     print("⭕ Radius : $radius");
     print("📍 Pos actuelle : $currentPosition");
     print("🔀 Joueur en dehors : $isOutsideZoneNotifier.value");
-    print(" ");
-    print(" ");
+    print("‼️Temps de partie : $tempsDePartie");
+    print(" ??️Temps de cachette : $tempsDeCachette");
+    print(" timestamp debut partie : $timeStampDebutPartie");
 
   }
 

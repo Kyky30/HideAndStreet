@@ -77,7 +77,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
           // Navigate to the GameMap screen with the received center and radius
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => GameMap(center: center, radius: radius)),
+            MaterialPageRoute(builder: (context) => GameMap(center: center, radius: radius, tempsDePartie: data['data']['duration'], tempsDeCachette: data['data']['hidingDuration'], timeStampDebutPartie: data['data']['startingTimeStamp'])),
                 (Route<dynamic> route) => false,
           );
         }
