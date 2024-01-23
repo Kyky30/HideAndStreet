@@ -11,20 +11,53 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hide_and_street/waitingScreen.dart';
 
 import 'package:hide_and_street/api/AdmobHelper.dart';
-import '/api/PremiumStatus.dart';
+import 'package:hide_and_street/api/PremiumStatus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
 
-class HomePage extends StatelessWidget {
+class _HomePageState extends State<HomePage> {
 
-  AdmobHelper admobHelper = new AdmobHelper();
+  @override
+  void initState() {
+    super.initState();
+    _showFirstLaunchDialog();
+  }
+
+  Future<void> _showFirstLaunchDialog() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
+    if (isFirstLaunch) {
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Bienvenue'),
+            content: Text('Ceci est votre premier lancement de l\'application.'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+      await prefs.setBool('isFirstLaunch', false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
       body: Stack(
         children: [
+
           // Image de fond
           Positioned.fill(
             child: Image.asset(
@@ -113,10 +146,6 @@ class HomePage extends StatelessWidget {
                 // Boutons pour créer et rejoindre une partie
                 ElevatedButton(
                   onPressed: () {
-                    if (PremiumStatus().isPremium == false) {
-                      admobHelper.createInterstitialAd();
-                      admobHelper.showInterstitialAd();
-                    }
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -144,10 +173,6 @@ class HomePage extends StatelessWidget {
 
                 ElevatedButton(
                   onPressed: () {
-                    if (PremiumStatus().isPremium == false) {
-                      admobHelper.createInterstitialAd();
-                      admobHelper.showInterstitialAd();
-                    }
                     Navigator.push(
                       context,
                       MaterialPageRoute(

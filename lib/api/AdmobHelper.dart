@@ -1,4 +1,5 @@
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'dart:async';
 
 class AdmobHelper {
 
@@ -12,31 +13,35 @@ class AdmobHelper {
     }
   }
 
-  void createInterstitialAd() {
+  Future<void> createInterstitialAd() {
+    Completer<void> completer = Completer<void>();
 
     InterstitialAd.load(
       adUnitId: "ca-app-pub-3940256099942544/1033173712",
       request: AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
-          onAdLoaded: (InterstitialAd ad) {
-            print('$ad loaded');
-            _interstitialAd = ad;
-            numInterstitialLoadAttempts = 0;
-          },
-          onAdFailedToLoad: (LoadAdError error) {
-            print('InterstitialAd failed to load: $error');
-            numInterstitialLoadAttempts += 1;
-            _interstitialAd = null;
-            if (numInterstitialLoadAttempts <= 2) {
-              createInterstitialAd();
-            }
-          }),
+        onAdLoaded: (ad) {
+          _interstitialAd = ad;
+          numInterstitialLoadAttempts = 0;
+          completer.complete(); // Completer le Future lorsque la publicité est chargée
+        },
+        onAdFailedToLoad: (error) {
+          print('Failed to load interstitial ad: $error');
+          numInterstitialLoadAttempts += 1;
+          _interstitialAd = null;
+          if (numInterstitialLoadAttempts <= 5) {
+            createInterstitialAd();
+          }
+          completer.completeError(error); // Completer le Future avec une erreur si la publicité n'a pas pu être chargée
+        },
+      ),
     );
 
-  }
+    return completer.future; // Retourner le Future
+}
 
   void showInterstitialAd() {
-    if(_interstitialAd == null) {
+    if (_interstitialAd == null) {
       return;
     }
 
@@ -46,12 +51,12 @@ class AdmobHelper {
       onAdDismissedFullScreenContent: (InterstitialAd ad) {
         print('$ad onAdDismissedFullScreenContent.');
         ad.dispose();
-        createInterstitialAd();
+        // Ne pas appeler createInterstitialAd() ici
       },
       onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
         print('$ad onAdFailedToShowFullScreenContent: $error');
         ad.dispose();
-        createInterstitialAd();
+        // Ne pas appeler createInterstitialAd() ici
       },
     );
 

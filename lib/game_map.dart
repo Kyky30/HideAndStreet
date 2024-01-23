@@ -18,17 +18,32 @@ class GameMap extends StatefulWidget {
 }
 
 class _GameMapState extends State<GameMap> {
+
+  //Positions
+  late Position latestPositionSentToServer;
   late Position currentPosition;
+
+  //Zone
   late LatLng tapPosition;
-  bool isLoading = true; // Suivre l'état de chargement
   late double radius;
-  int countdownSeconds = 600;
+
+  //Checks
+  bool isLoading = true; // Suivre l'état de chargement
   bool isBlindModeEnabled = true;
   bool isOutsideZone = false; // Indicateur si le joueur est en dehors de la zone
-
-  late Timer timer;
-
   ValueNotifier<bool> isOutsideZoneNotifier = ValueNotifier<bool>(false);
+
+  //Timer
+  late Timer timer1seconde;
+  late Timer timer5secondes;
+
+  //Temps de partie
+  //TODO: Récupérer le temps de partie depuis le serveur
+  int timeStampDebutPartie = DateTime.now().millisecondsSinceEpoch; //En milisecondes
+  //TODO: Récupérer le temps de cachette et de partie depuis le serveur
+  int tempsDePartie = 300; // 5 minutes
+  int tempsDeCachette = 60; // 1 minute
+
 
 
   @override
@@ -39,7 +54,8 @@ class _GameMapState extends State<GameMap> {
 
   @override
   void dispose() {
-    timer.cancel(); // Annulez le timer lorsqu'il n'est plus nécessaire
+    timer1seconde.cancel();
+    timer5secondes.cancel();
     super.dispose();
   }
 
@@ -48,9 +64,13 @@ class _GameMapState extends State<GameMap> {
     await _determinePosition().then((position) {
       setState(() {
         currentPosition = position;
+        latestPositionSentToServer = position;
+        //TODO: Envoyer la position au serveur
+
+        //TODO: Récupérer la position du centre de la zone depuis le serveur
         tapPosition = LatLng(currentPosition.latitude, currentPosition.longitude);
+        radius = 5; //en mètres
         isLoading = false;
-        radius = 5;
       });
     });
     _startLocationCheckTimer();
@@ -91,13 +111,63 @@ class _GameMapState extends State<GameMap> {
     _checkPlayerLocation();
   }
 
+  void _sendPosToServer() {
+    double distance = Geolocator.distanceBetween(
+      latestPositionSentToServer.latitude,
+      latestPositionSentToServer.longitude,
+      currentPosition.latitude,
+      currentPosition.longitude,
+    );
+    print(" ");
+    print("🚨 CHECK D'ENVOI DE POS AU SERVEUR 🚨 ------------------");
+    print("⏲️ Dernière pos au serveur : $latestPositionSentToServer");
+    print("📍 Pos actuelle : $currentPosition");
+    print("📏 Distance : $distance");
+
+    if (distance >= 2.5) {
+      latestPositionSentToServer = currentPosition;
+      print("📡 Envoi de la position au serveur...");
+      //TODO: Envoyer la position au serveur
+
+
+      print("📡 Position envoyée: $latestPositionSentToServer");
+    }
+    print(" ");
+    print(" ");
+
+  }
+
+  _lancerTempsDeCachette() {
+    CountdownTimer hideTimer = CountdownTimer(
+      endTime: timeStampDebutPartie + tempsDeCachette * 1000,
+      onEnd: () {
+        print('Temps de cachette terminé');
+        //TODO: Afficher un message de fin de temps de cachette et lancer le temps de partie
+      },
+    );
+  }
+
+  _lancerTempsDePartie() {
+    CountdownTimer gameTimer = CountdownTimer(
+        endTime: timeStampDebutPartie + tempsDePartie * 1000,
+        onEnd: () {
+          print('Temps de partie terminé');
+          //TODO: Afficher un message de fin de partie et lancer la procédure de fin de partie
+        }
+    );
+  }
+
   void _startLocationCheckTimer() {
-    print("Starting timer...");
-    timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      print("Timer tick...");
+    timer1seconde = Timer.periodic(Duration(seconds: 5), (timer) {
+      print("1️⃣ Timer tick...  ------------------");
       _updatePosition();
       _checkPlayerLocation();
     });
+    timer5secondes = Timer.periodic(Duration(seconds: 5), (timer) {
+      print("5️⃣ Timer tick...  ------------------");
+      _sendPosToServer();
+    });
+
   }
 
 
@@ -111,10 +181,15 @@ class _GameMapState extends State<GameMap> {
 
     isOutsideZoneNotifier.value = distance > radius;
 
-    print("Distance: $distance");
-    print("Radius: $radius");
-    print(currentPosition);
-    print(isOutsideZoneNotifier.value);
+    print(" ");
+    print("🚨 CHECK DE ZONE 🚨 ------------------");
+    print("📏 Distance du centre : $distance");
+    print("⭕ Radius : $radius");
+    print("📍 Pos actuelle : $currentPosition");
+    print("🔀 Joueur en dehors : $isOutsideZoneNotifier.value");
+    print(" ");
+    print(" ");
+
   }
 
 
@@ -129,20 +204,6 @@ class _GameMapState extends State<GameMap> {
         body: Column(
           children: [
             SizedBox(height: 20),
-            CountdownTimer(
-              endTime: DateTime.now().millisecondsSinceEpoch + countdownSeconds * 1000,
-              widgetBuilder: (_, CurrentRemainingTime? time) {
-                if (time == null) {
-                  return const Text("00:00",
-                    style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
-                  );
-                }
-                return Text(
-                  '${time.min}:${time.sec}',
-                  style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold, fontFamily: "Poppins"),
-                );
-              },
-            ),
             Expanded(
               child: FlutterMap(
                 options: MapOptions(

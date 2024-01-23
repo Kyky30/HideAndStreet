@@ -8,17 +8,24 @@ import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 
+import 'package:hide_and_street/api/AdmobHelper.dart';
+import 'package:hide_and_street/api/PremiumStatus.dart';
+
 class WaitingScreen extends StatefulWidget {
   final String gameCode;
   final bool isAdmin;
+
 
   WaitingScreen({required this.gameCode, required this.isAdmin});
 
   @override
   _WaitingScreenState createState() => _WaitingScreenState();
+
 }
 
 class _WaitingScreenState extends State<WaitingScreen> {
+  AdmobHelper admobHelper = new AdmobHelper();
+
   late WebSocketChannel _channel;
   late Future<List<String>> _playerList;
   String email = '';
@@ -27,9 +34,17 @@ class _WaitingScreenState extends State<WaitingScreen> {
   final _playerListController = StreamController<List<String>>();
   final _selectedPlayersController = StreamController<List<String>>.broadcast();
 
+
   @override
   void initState() {
     super.initState();
+
+    if (!PremiumStatus().isPremium) {
+      admobHelper.createInterstitialAd().then((_) {
+        admobHelper.showInterstitialAd();
+      });
+    }
+
     _channel = IOWebSocketChannel.connect('wss://app.hideandstreet.furrball.fr/getPlayerlist');
     _getPref();
     _playerList = getPlayerList(widget.gameCode);

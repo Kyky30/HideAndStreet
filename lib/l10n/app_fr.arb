@@ -355,6 +355,14 @@
     "parametres": "Paramètres",
     "@parametres": {
         "description": "Bouton de paramètres"
+    },
+    "titre_popup_avertissement": "Sois toujours à l'affut et regarde autour de toi !",
+    "@titre_popup_avertissement": {
+        "description": "Titre de popup d'avertissement"
+    },
+    "texte_popup_avertissement": "Respecte la propriété d'autrui en jouant à Hide & Street.",
+    "@texte_popup_avertissement": {
+        "description": "Texte de popup d'avertissement"
     }
 
 
