@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/current_remaining_time.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
@@ -11,12 +10,18 @@ import 'chat.dart';
 import 'PreferencesManager.dart';
 
 class GameMap extends StatefulWidget {
-  const GameMap({Key? key}) : super(key: key);
+  final LatLng center;
+  final double radius;
+
+  const GameMap({
+    Key? key,
+    required this.center,
+    required this.radius,
+  }) : super(key: key);
 
   @override
   State<GameMap> createState() => _GameMapState();
 }
-
 class _GameMapState extends State<GameMap> {
   late Position currentPosition;
   late LatLng tapPosition;
@@ -30,13 +35,11 @@ class _GameMapState extends State<GameMap> {
 
   ValueNotifier<bool> isOutsideZoneNotifier = ValueNotifier<bool>(false);
 
-
   @override
   void initState() {
     super.initState();
     _initializeState();
   }
-
   @override
   void dispose() {
     timer.cancel(); // Annulez le timer lorsqu'il n'est plus nécessaire
@@ -48,9 +51,9 @@ class _GameMapState extends State<GameMap> {
     await _determinePosition().then((position) {
       setState(() {
         currentPosition = position;
-        tapPosition = LatLng(currentPosition.latitude, currentPosition.longitude);
+        tapPosition = widget.center; // Set tapPosition to the center passed to the widget
         isLoading = false;
-        radius = 5;
+        radius = widget.radius; // Set radius to the radius passed to the widget
       });
     });
     _startLocationCheckTimer();

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:hide_and_street/game_map.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:share/share.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -40,7 +42,6 @@ class _WaitingScreenState extends State<WaitingScreen> {
     _channel.stream.listen((message) {
       final Map<String, dynamic> data = jsonDecode(message);
       print('Received message from server: $message');
-
       if (data['cmd'] == 'getPlayerlist' || data['cmd'] == 'UpdatePlayerlist') {
         if (data['status'] == 'success') {
           List<dynamic> playersData = data['players'];
@@ -49,13 +50,35 @@ class _WaitingScreenState extends State<WaitingScreen> {
         } else {
           print('Error in response: ${data['message']}');
         }
-      } else if (data['cmd'] == 'playerJoined') {
+      }
+      else if (data['cmd'] == 'partyStartInfo') {
+        print("🔊🔊,");
+        if (data.containsKey('data') && data['data'].containsKey('center') && data['data'].containsKey('radius')) {
+          // Parse the center and radius values
+          Map<String, double> centerCoordinates = Map<String, double>.from(data['data']['center']);
+          LatLng center = LatLng(centerCoordinates['lat']!, centerCoordinates['lng']!);
+          double radius = (data['data']['radius'] as num).toDouble();
+
+          // Navigate to the GameMap screen with the received center and radius
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => GameMap(center: center, radius: radius)),
+                (Route<dynamic> route) => false,
+          );
+        }
+      }
+      else if (data['cmd'] == 'playerJoined') {
         _updatePlayerList();
       } else if (data['cmd'] == 'seekerStatusUpdated') {
         print('Seeker status updated');
         _handleSeekerStatusUpdated(data['selectedPlayers']);
       }
     });
+  }
+
+  void _startGame() {
+  String auth = "chatappauthkey231r4";
+  _channel.sink.add('{"email":"$email","auth":"$auth","cmd":"startGame", "gameCode":"${widget.gameCode}", "startingTimeStamp": ${DateTime.now().millisecondsSinceEpoch}}');
   }
 
   void _handleSeekerStatusUpdated(List<dynamic> selectedPlayersData) {
@@ -113,10 +136,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
     _channel.sink.add('{"email":"$email","auth":"$auth","cmd":"updateSeekerStatus","gameCode":"${widget.gameCode}", "selectedPlayers": ${jsonEncode(selectedPlayers)}}');
   }
 
-  void _startGame() {
-    String auth = "chatappauthkey231r4";
-    _channel.sink.add('{"email":"$email","auth":"$auth","cmd":"startGame", "selectedPlayers": ${jsonEncode(selectedPlayers)}}');
-  }
+
 
   @override
   void dispose() {

@@ -8,9 +8,9 @@ import 'package:hide_and_street/room_joining.dart';
 
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:hide_and_street/waitingScreen.dart';
 
 import 'package:hide_and_street/api/AdmobHelper.dart';
+import 'package:latlong2/latlong.dart';
 import '/api/PremiumStatus.dart';
 
 
@@ -95,7 +95,10 @@ class HomePage extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const GameMap(),
+                            builder: (context) => GameMap(
+                                center: LatLng(48.8534, 2.3488),
+                                radius: 250.0
+                            ),
                           ),
                         );
                       },
