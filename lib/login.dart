@@ -173,18 +173,22 @@ class _LoginPageState extends State<LoginPage> {
                         style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
                       ),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                        child: TextField(
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.grey[300],
-                            hintText: AppLocalizations.of(context)!.mail,
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                              borderRadius: BorderRadius.circular(20.0),
+                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        child: Container(
+                          height: 80,
+                          width: MediaQuery.of(context).size.width - 30,
+                          child: TextField(
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.grey[300],
+                              hintText: AppLocalizations.of(context)!.mail,
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
                             ),
+                            onChanged: (e) => email = e,
                           ),
-                          onChanged: (e) => email = e,
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -193,22 +197,27 @@ class _LoginPageState extends State<LoginPage> {
                         style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
                       ),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(15, 8, 15, 0),
-                        child: TextField(
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.grey[300],
-                            hintText: AppLocalizations.of(context)!.mdp,
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                              borderRadius: BorderRadius.circular(20.0),
+                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        child: Container(
+                          height: 80,
+                          width: MediaQuery.of(context).size.width - 30,
+                          child: TextField(
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.grey[300],
+                              hintText: AppLocalizations.of(context)!.mdp,
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
                             ),
+                            onChanged: (e) => password = e,
                           ),
-                          onChanged: (e) => password = e,
                         ),
                       ),
                       const SizedBox(height: 16),
+
+
                     ],
                   ),
                 ),
@@ -222,7 +231,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                         child: ElevatedButton(
                           onPressed: () {
                             login(context);
@@ -234,7 +243,7 @@ class _LoginPageState extends State<LoginPage> {
                                 cornerSmoothing: 1,
                               ),
                             ),
-                            minimumSize: const Size(double.infinity, 80),
+                            minimumSize: Size(MediaQuery.of(context).size.width - 30, 80),
                             backgroundColor: const Color(0xFF373967),
                             foregroundColor: const Color(0xFF212348),
                           ),
@@ -244,47 +253,47 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                        child: TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const ForgotenPassword(),
+                      Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center, // Ajoutez cette ligne
+                          children: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => RegisterPage(),
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                AppLocalizations.of(context)!.inscription,
+                                style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
                               ),
-                            );
-                          },
-                          child: Text(
-                            AppLocalizations.of(context)!.mdpoublie,
-                            style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
-                          ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const ForgotenPassword(),
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                AppLocalizations.of(context)!.mdpoublie,
+                                style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                        child: TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => RegisterPage(),
-                              ),
-                            );
-                          },
-                          child: Text(
-                            AppLocalizations.of(context)!.inscription,
-                            style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
-                          ),
-                        ),
-                      ),
-
 
 
 
                       // TODO: supprimer ce bouton avant version finale
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                         child: TextButton(
                           onPressed: () {
                             Navigator.pushReplacement(

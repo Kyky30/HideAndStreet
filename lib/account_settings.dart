@@ -83,145 +83,102 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Spacer(),
-            Row(
-              children: [
-                Icon(Symbols.account_box_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
-                Text(
-                  ' ' + AppLocalizations.of(context)!.profileTitle + ' : ',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 20),
+              if (PremiumStatus().isPremium == false)
+                Container(
+                  child: AdWidget(
+                    ad: AdmobHelper.getBannerAd()..load(),
+                    key: UniqueKey(),
+                  ),
+                  height: 75,
                 ),
-              ],
-            ),
-            Row(
-              children: [
-                Text(
-                  AppLocalizations.of(context)!.usernameLabel + ' : ',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, fontFamily: 'Poppins'),
+              Card(
+                child: ListTile(
+                  leading: Icon(Symbols.account_box_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
+                  title: Text(username, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
+                  subtitle: Text(email, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, fontFamily: 'Poppins')),
                 ),
-                Text(
-                  username,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400, fontFamily: 'Poppins'),
+              ),
+              Card(
+                child: ListTile(
+                  leading: Icon(Symbols.calendar_today_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
+                  title: Text(AppLocalizations.of(context)!.creationDateLabel, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
+                  subtitle: Text(DateCreation, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, fontFamily: 'Poppins')),
                 ),
-              ],
-            ),
-            Row(
-              children: [
-                Text(
-                  AppLocalizations.of(context)!.emailLabel + ' : ',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, fontFamily: 'Poppins'),
-                ),
-                Text(
-                  email,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400, fontFamily: 'Poppins'),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Text(
-                  AppLocalizations.of(context)!.creationDateLabel + ' : ',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, fontFamily: 'Poppins'),
-                ),
-                Text(
-                  DateCreation,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400, fontFamily: 'Poppins'),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Icon(Symbols.settings_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
-                Text(
-                  ' ' + AppLocalizations.of(context)!.parametres + ' : ',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Text(
-                  AppLocalizations.of(context)!.blind_toggle_label + ' : ',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, fontFamily: 'Poppins'),
-                ),
-                Switch(
+              ),
+              Card(
+                child: SwitchListTile(
+                  title: Text(AppLocalizations.of(context)!.blind_toggle_label, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
                   value: isBlindModeEnabled,
                   onChanged: (value) {
                     setState(() {
                       isBlindModeEnabled = value;
                     });
-                    _saveBlindMode(); // Enregistre la valeur du mode aveugle lorsque le toggle change
+                    _saveBlindMode();
                   },
                 ),
-              ],
-            ),
-            Spacer(),
-            if (PremiumStatus().isPremium == false)
-              Container(
-                child: AdWidget(
-                  ad: AdmobHelper.getBannerAd()..load(),
-                  key: UniqueKey(),
-                ),
-                height: 75,
-              )
-            ,
-            ElevatedButton(
-              onPressed: () => _logout(context),
-              style: ElevatedButton.styleFrom(
-                shape: SmoothRectangleBorder(
-                  borderRadius: SmoothBorderRadius(
-                    cornerRadius: 20,
-                    cornerSmoothing: 1,
-                  ),
-                ),
-                minimumSize: Size(MediaQuery.of(context).size.width - 30, 60),
-                backgroundColor: const Color(0xFF373967),
-                foregroundColor: const Color(0xFF212348),
               ),
-              child: Text(
-                AppLocalizations.of(context)!.deconnexion,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white),
+              Spacer(),
+              ElevatedButton(
+                onPressed: () => _logout(context),
+                style: ElevatedButton.styleFrom(
+                  shape: SmoothRectangleBorder(
+                    borderRadius: SmoothBorderRadius(
+                      cornerRadius: 20,
+                      cornerSmoothing: 1,
+                    ),
+                  ),
+                  minimumSize: Size(MediaQuery.of(context).size.width - 30, 80),
+                  backgroundColor: const Color(0xFF373967),
+                  foregroundColor: const Color(0xFF212348),
+                ),
+                child: Text(
+                  AppLocalizations.of(context)!.deconnexion,
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white),
+                ),
               ),
-            ),
-            Spacer(),
-            Row(
-              children: [
-                TextButton(
-                  onPressed: () {
-                    launchUrl(Uri.parse(CGUUrl));
-                  },
-                  child: Text(
-                    AppLocalizations.of(context)!.cgu,
-                    style: const TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      launchUrl(Uri.parse(CGUUrl));
+                    },
+                    child: Text(
+                      AppLocalizations.of(context)!.cgu,
+                      style: const TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+                    ),
                   ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    launchUrl(Uri.parse(CGVUrl));
-                  },
-                  child: Text(
-                    AppLocalizations.of(context)!.cgv,
-                    style: const TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+                  TextButton(
+                    onPressed: () {
+                      launchUrl(Uri.parse(CGVUrl));
+                    },
+                    child: Text(
+                      AppLocalizations.of(context)!.cgv,
+                      style: const TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+                    ),
                   ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    launchUrl(Uri.parse(PrivacyUrl));
-                  },
-                  child: Text(
-                    AppLocalizations.of(context)!.privacy,
-                    style: const TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+                  TextButton(
+                    onPressed: () {
+                      launchUrl(Uri.parse(PrivacyUrl));
+                    },
+                    child: Text(
+                      AppLocalizations.of(context)!.privacy,
+                      style: const TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+                    ),
                   ),
-                ),
-              ]
-            ),
-
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
