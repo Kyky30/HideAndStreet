@@ -92,7 +92,9 @@ Future<void> _initializeState() async {
   await _getPref();
   _sendPosToServer();
   _startLocationCheckTimer();
+
 }
+
 
   Future<void> _getPref() async {
     print("🔎 Récupération des préférences... ------------------");
@@ -154,11 +156,9 @@ Future<void> _initializeState() async {
       isFirsUpdate = false;
       latestPositionSentToServer = currentPosition;
       print("📡 Envoi de la position au serveur...");
-      //TODO: Envoyer la position au serveur
       String auth = "chatappauthkey231r4";
       String position = currentPosition.toString(); // Convert the Position object to a string
       String gameCode = widget.gameCode;
-      print("🔎 userID : $userId");
       // Prepare the command
       Map<String, String> command = {
         'email': email,
@@ -178,6 +178,8 @@ Future<void> _initializeState() async {
     print(" ");
 
   }
+
+
 
   _lancerTempsDeCachette() {
     CountdownTimer hideTimer = CountdownTimer(
@@ -223,6 +225,10 @@ Future<void> _initializeState() async {
 
     isOutsideZoneNotifier.value = distance > radius;
 
+    if (isOutsideZoneNotifier.value) {
+      _sendOutOfZoneCommand();
+    }
+
     print(" ");
     print("🚨 CHECK DE ZONE 🚨 ------------------");
     print("📏 Distance du centre : $distance");
@@ -234,6 +240,28 @@ Future<void> _initializeState() async {
     print("♻️Timestamp debut partie : $timeStampDebutPartie");
     print("🌱 GameCode : ${widget.gameCode}");
 
+  }
+
+  void _sendOutOfZoneCommand() {
+    print("📡 Envoi de la commande SetOutOfZone...");
+    String auth = "chatappauthkey231r4";
+    String position = currentPosition.toString(); // Convert the Position object to a string
+    String gameCode = widget.gameCode;
+
+    // Prepare the command
+    Map<String, String> command = {
+      'email': email,
+      'auth': auth,
+      'cmd': 'setOutOfZone',
+      'position': currentPosition.toString(),
+      'gameCode': gameCode,
+      'playerId': userId,
+    };
+
+    // Send the command
+    _channel.sink.add(jsonEncode(command));
+
+    print("📡 Commande SetOutOfZone envoyée");
   }
 
 
