@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/current_remaining_time.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
@@ -11,12 +10,18 @@ import 'chat.dart';
 import 'PreferencesManager.dart';
 
 class GameMap extends StatefulWidget {
-  const GameMap({Key? key}) : super(key: key);
+  final LatLng center;
+  final double radius;
+
+  const GameMap({
+    Key? key,
+    required this.center,
+    required this.radius,
+  }) : super(key: key);
 
   @override
   State<GameMap> createState() => _GameMapState();
 }
-
 class _GameMapState extends State<GameMap> {
 
   //Positions
@@ -51,7 +56,6 @@ class _GameMapState extends State<GameMap> {
     super.initState();
     _initializeState();
   }
-
   @override
   void dispose() {
     timer1seconde.cancel();
@@ -67,9 +71,9 @@ class _GameMapState extends State<GameMap> {
         latestPositionSentToServer = position;
         //TODO: Envoyer la position au serveur
 
-        //TODO: Récupérer la position du centre de la zone depuis le serveur
-        tapPosition = LatLng(currentPosition.latitude, currentPosition.longitude);
-        radius = 5; //en mètres
+
+        tapPosition = widget.center;
+        radius = widget.radius; //en mètres
         isLoading = false;
       });
     });

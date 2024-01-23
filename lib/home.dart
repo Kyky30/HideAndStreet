@@ -8,7 +8,6 @@ import 'package:hide_and_street/room_joining.dart';
 
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:hide_and_street/waitingScreen.dart';
 
 import 'package:hide_and_street/api/AdmobHelper.dart';
 import 'package:hide_and_street/api/PremiumStatus.dart';
@@ -123,20 +122,7 @@ class _HomePageState extends State<HomePage> {
                       child: const Text('Chat'),
                     ),
                     const SizedBox(height: 6),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const GameMap(),
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: Size(MediaQuery.of(context).size.width - 30, 50),
-                      ),
-                      child: const Text('Game Map'),
-                    ),
+          
                   ],
                 ),
 
