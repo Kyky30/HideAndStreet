@@ -9,12 +9,13 @@ import 'package:web_socket_channel/io.dart';
 
 import 'dart:developer' as developer;
 
+String auth = "chatappauthkey231r4";
+
 void signUp(BuildContext context, String emailValues, String pseudoValues, String passwordValues, String confirmPasswordValues) async {
   // Check if email is valid.
   bool isValid = RegExp(
       r"^[a-zA-Z0-9.a-zA-Z0-9!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
       .hasMatch(emailValues);
-  String auth = "chatappauthkey231r4";
   // Check if email is valid
   if (isValid) {
     if (passwordValues == confirmPasswordValues) {
@@ -22,14 +23,12 @@ void signUp(BuildContext context, String emailValues, String pseudoValues, Strin
       try {
         // Create connection.
         channel = IOWebSocketChannel.connect('wss://app.hideandstreet.furrball.fr/signup$emailValues');
-        print("Connexion réussie inshallah");
       } catch (e) {
         print("Error on connecting to websocket: " + e.toString());
         return;
       }
       // Data that will be sent to Node.js
-      String signUpData =
-          "{'auth':'$auth','cmd':'signup','email':'$emailValues','username':'$pseudoValues','hash':'$confirmPasswordValues'}";
+      String signUpData = "{'auth':'$auth','cmd':'signup','email':'$emailValues','username':'$pseudoValues','hash':'$confirmPasswordValues'}";
       // Send data to Node.js
       channel.sink.add(signUpData);
       // Listen for data from the server
@@ -119,7 +118,7 @@ class _RegisterPageState extends State<RegisterPage> {
       ],
       validate: () {
         if (_selectedDate == null) {
-          _showEmptyFieldDialog(context, AppLocalizations.of(context)!.datedenaissance);
+          _showEmptyFieldDialog(context, "Date of Birth");
         } else {
           var currentDate = DateTime.now();
           var age = currentDate.year - _selectedDate!.year - ((_selectedDate!.month > currentDate.month || (_selectedDate!.month == currentDate.month && _selectedDate!.day > currentDate.day)) ? 1 : 0);
@@ -136,26 +135,7 @@ class _RegisterPageState extends State<RegisterPage> {
         dateOfBirthValues = dateOfBirth;
         print(dateOfBirthValues);
       },
-    ),
-    RegistrationStep(
-      title: AppLocalizations.of(context)!.titre_pseudo,
-      background: 'assets/background_white.jpg',
-      buttonText: AppLocalizations.of(context)!.confirmer,
-      logo: 'assets/logo_connect.png',
-      fields: [
-        RegistrationField(label: AppLocalizations.of(context)!.pseudo, hint: AppLocalizations.of(context)!.pseudo, key: pseudoKey[0]),
-      ],
-      onTap: () {
-        var pseudo = pseudoKey[0].currentState?.value ?? "";
-        if (pseudo.isEmpty) {
-          _showEmptyFieldDialog(context, AppLocalizations.of(context)!.pseudo);
-        } else {
-          pseudoValues = pseudo;
-          print(pseudoValues);
-          _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
-        }
-      },
-    ),
+    ),  //Date of Birth
     RegistrationStep(
       title: AppLocalizations.of(context)!.titre_email,
       background: 'assets/background_white.jpg',
@@ -167,14 +147,35 @@ class _RegisterPageState extends State<RegisterPage> {
       onTap: () {
         var email = emailKey[0].currentState?.value ?? "";
         if (email.isEmpty) {
-          _showEmptyFieldDialog(context, AppLocalizations.of(context)!.mail);
-        } else {
+          _showEmptyFieldDialog(context, "Email");
+        }
+        else {
           emailValues = email;
           print(emailValues);
           _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
         }
       },
-    ),
+    ), //Email
+    RegistrationStep(
+      title: AppLocalizations.of(context)!.titre_pseudo,
+      background: 'assets/background_white.jpg',
+      buttonText: AppLocalizations.of(context)!.confirmer,
+      logo: 'assets/logo_connect.png',
+      fields: [
+        RegistrationField(label: AppLocalizations.of(context)!.pseudo, hint: AppLocalizations.of(context)!.pseudo, key: pseudoKey[0]),
+      ],
+      onTap: () {
+        var pseudo = pseudoKey[0].currentState?.value ?? "";
+        if (pseudo.isEmpty) {
+          _showEmptyFieldDialog(context, "Pseudo");
+        }
+        else {
+          pseudoValues = pseudo;
+          print(pseudoValues);
+          _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+        }
+      },
+    ), //Pseudo
     RegistrationStep(
       title: AppLocalizations.of(context)!.titre_mdp,
       background: 'assets/background_white.jpg',
@@ -189,7 +190,7 @@ class _RegisterPageState extends State<RegisterPage> {
         var confirmPassword = passwordKeys[1].currentState?.value ?? "";
 
         if (password.isEmpty || confirmPassword.isEmpty) {
-          _showEmptyFieldDialog(context, AppLocalizations.of(context)!.mdp);
+          _showEmptyFieldDialog(context, "Password");
         } else if (password != confirmPassword) {
           _showPasswordMismatchDialog(context);
         } else if (!isPasswordSecure(password)) {
@@ -201,7 +202,7 @@ class _RegisterPageState extends State<RegisterPage> {
           _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
         }
       },
-    ),
+    ), //Password
     RegistrationStep(
       title: AppLocalizations.of(context)!.titre_blind_toggle,
       background: 'assets/background_white.jpg',
@@ -216,7 +217,7 @@ class _RegisterPageState extends State<RegisterPage> {
         _saveBlindToggle();
         signUp(context, emailValues, pseudoValues, passwordValues, confirmPasswordValues);
       },
-    ),
+    ), //Blind Toggle
   ];
 
   Widget build(BuildContext context) {
@@ -460,7 +461,7 @@ void _showPasswordInsecureDialog(BuildContext context) {
 
 bool isPasswordSecure(String password) {
   // Vérifie si le mot de passe a au moins 8 caractères, une majuscule, un chiffre et un caractère spécial.
-  RegExp passwordRegex = RegExp(r'^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$&*~]).{8,}$');
+  RegExp passwordRegex = RegExp(r'^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!.@#$&*~]).{8,}$');
   return passwordRegex.hasMatch(password);
 }
 

@@ -184,7 +184,9 @@ class _GameMapState extends State<GameMap> {
             // Naviguer vers l'écran Chat
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => Chat()),
+              MaterialPageRoute(
+                builder: (context) => Chat(partieId: 0),
+              ),
             );
           },
           child: Icon(Icons.chat),
