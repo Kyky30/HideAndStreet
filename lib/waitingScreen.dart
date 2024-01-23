@@ -35,30 +35,30 @@ class _WaitingScreenState extends State<WaitingScreen> {
   void _initWebSocket() {
     _channel.stream.listen((message) {
       final Map<String, dynamic> data = jsonDecode(message);
-      print('Received message from server: $message'); // Ajoutez cette ligne pour journaliser le message
+      print('Received message from server: $message');
 
-      if (data['cmd'] == 'getPlayerlist') {
+      if (data['cmd'] == 'getPlayerlist' || data['cmd'] == 'UpdatePlayerlist') {
         if (data['status'] == 'success') {
           List<dynamic> playersData = data['players'];
-          List<String> players =
-          playersData.map((player) => player.toString()).toList();
+          List<String> players = playersData.map((player) => player.toString()).toList();
           _playerListController.add(players);
         } else {
-          // Gérer les erreurs ici
-          print('Error in response: ${data['message']}'); // Ajoutez cette ligne pour journaliser l'erreur
+          print('Error in response: ${data['message']}');
         }
       } else if (data['cmd'] == 'playerJoined') {
-        // Gérer la notification de joueur rejoint ici
-        // Vous pouvez mettre à jour la liste des joueurs à ce stade
         _updatePlayerList();
       }
     });
   }
 
   void _updatePlayerList() {
-    // Envoyez une nouvelle demande pour obtenir la liste des joueurs mise à jour
-    _channel.sink.add('{"email":"$email","auth":"chatappauthkey231r4","cmd":"UpdatePlayerlist", "gameCode":"${widget.gameCode}"}');
+    if (_channel.closeCode == null) {
+      _channel.sink.add('{"email":"$email","auth":"chatappauthkey231r4","cmd":"UpdatePlayerlist", "gameCode":"${widget.gameCode}"}');
+    } else {
+      print('WebSocket connection is closed. Cannot update player list.');
+    }
   }
+
 
   void _getPref() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
