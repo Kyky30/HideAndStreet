@@ -40,11 +40,10 @@ class _WaitingScreenState extends State<WaitingScreen> {
       final Map<String, dynamic> data = jsonDecode(message);
       print('Received message from server: $message');
 
-      if (data['cmd'] == 'getPlayerlist') {
+      if (data['cmd'] == 'getPlayerlist' || data['cmd'] == 'UpdatePlayerlist') {
         if (data['status'] == 'success') {
           List<dynamic> playersData = data['players'];
-          List<String> players =
-          playersData.map((player) => player.toString()).toList();
+          List<String> players = playersData.map((player) => player.toString()).toList();
           _playerListController.add(players);
         } else {
           print('Error in response: ${data['message']}');
@@ -56,7 +55,11 @@ class _WaitingScreenState extends State<WaitingScreen> {
   }
 
   void _updatePlayerList() {
-    _channel.sink.add('{"email":"$email","auth":"chatappauthkey231r4","cmd":"UpdatePlayerlist", "gameCode":"${widget.gameCode}"}');
+    if (_channel.closeCode == null) {
+      _channel.sink.add('{"email":"$email","auth":"chatappauthkey231r4","cmd":"UpdatePlayerlist", "gameCode":"${widget.gameCode}"}');
+    } else {
+      print('WebSocket connection is closed. Cannot update player list.');
+    }
   }
 
   void _getPref() async {
