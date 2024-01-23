@@ -67,8 +67,9 @@
   "texte_champ_conf_duree_cachette": "Hidding duration in minutes",
   "start_game" : "Start game",
   "game_code" : "Game code : {code}",
-  "cgu" : "Terms of use",
-  "cgv" : "Terms and conditions of sale",
-  "privacy" : "Privacy policy"
+  "cgu" : "GTCU",
+  "cgv" : "GTCS",
+  "privacy" : "Privacy policy",
+  "parametres" : "Settings"
 
 }

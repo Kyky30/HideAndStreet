@@ -128,6 +128,7 @@ class _GameMapState extends State<GameMap> {
       return Scaffold(
         body: Column(
           children: [
+            SizedBox(height: 20),
             CountdownTimer(
               endTime: DateTime.now().millisecondsSinceEpoch + countdownSeconds * 1000,
               widgetBuilder: (_, CurrentRemainingTime? time) {
@@ -138,7 +139,7 @@ class _GameMapState extends State<GameMap> {
                 }
                 return Text(
                   '${time.min}:${time.sec}',
-                  style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold, fontFamily: "Poppins"),
                 );
               },
             ),
@@ -172,7 +173,7 @@ class _GameMapState extends State<GameMap> {
               builder: (context, isOutsideZone, child) {
                 return Text(
                   isOutsideZone ? "Vous êtes en dehors de la zone" : "Vous êtes dans la zone",
-                  style: TextStyle(fontSize: 24.0, fontFamily: "Poppins", fontWeight: FontWeight.w600,color: isOutsideZone ? Colors.red : Colors.green),
+                  style: TextStyle(fontSize: 26.0, fontFamily: "Poppins", fontWeight: FontWeight.w600,color: isOutsideZone ? Colors.red : Colors.green),
                 );
               },
             ),
