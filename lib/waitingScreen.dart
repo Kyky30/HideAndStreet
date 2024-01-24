@@ -170,10 +170,51 @@ class _WaitingScreenState extends State<WaitingScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            AppLocalizations.of(context)!.game_code(widget.gameCode),
-            style: const TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+          SizedBox(height: 20),
+
+          Center(
+            child:Container(
+              width:MediaQuery.of(context).size.width - 30,
+              child:
+                  Column(
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width - 30,
+                        child:
+                        Row(
+                          children: [
+                            Text(
+                              "Joueurs",
+                              style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+                            ),
+                            Spacer(),
+                            Text(
+                              "Chercheur ?",
+                              style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+                            ),
+                          ],
+                        )
+                        ,
+                      ),
+                      StreamBuilder<List<String>>(
+                        stream: _playerListController.stream,
+                        initialData: [],
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else {
+                            return PlayerList(players: snapshot.data!, onTogglePlayer: _togglePlayerSelection, isAdmin: widget.isAdmin, selectedPlayers: selectedPlayers, selectedPlayersStream: _selectedPlayersController.stream);
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+            ),
           ),
+          Spacer(),
+
           ElevatedButton(
             onPressed: _shareGameCode,
             style: ElevatedButton.styleFrom(
@@ -187,30 +228,31 @@ class _WaitingScreenState extends State<WaitingScreen> {
               backgroundColor: const Color(0xFF5A5C98),
               foregroundColor: const Color(0xFF212348),
             ),
-            child: Text(
-              AppLocalizations.of(context)!.partagerCodePartie,
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
-            ),
+            child: Container(
+                width: MediaQuery.of(context).size.width - 80,
+                child:
+                Center(
+                  child:
+                  Row (
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.partagerCodePartie + ' : ',
+                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Poppins', color: Colors.white),
+                      ),
+                      Text(
+                        widget.gameCode,
+                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, fontFamily: 'Poppins', color: Colors.white),
+                      ),
+                    ],
+                  ),
+                )
+
+            )
           ),
-          Spacer(),
-          Text(
-            AppLocalizations.of(context)!.listeDesJoueurs,
-            style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
-          ),
-          StreamBuilder<List<String>>(
-            stream: _playerListController.stream,
-            initialData: [],
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              } else if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              } else {
-                return PlayerList(players: snapshot.data!, onTogglePlayer: _togglePlayerSelection, isAdmin: widget.isAdmin, selectedPlayers: selectedPlayers, selectedPlayersStream: _selectedPlayersController.stream);
-              }
-            },
-          ),
-          Spacer(),
+
+          SizedBox(height: 16),
+
           // Afficher le bouton "Start Game" et les cases à cocher si l'utilisateur est un administrateur
           if (widget.isAdmin)
             ElevatedButton(
@@ -231,6 +273,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
                 foregroundColor: const Color(0xFF212348),
               ),
             ),
+          SizedBox(height: 20),
         ],
       ),
     );
@@ -285,11 +328,12 @@ class _PlayerListItemState extends State<PlayerListItem> {
   void initState() {
     super.initState();
     isChecked = widget.selectedPlayers.contains(widget.playerName);
-    _selectedPlayersSubscription = widget.selectedPlayersStream.listen((selectedPlayers) {
-      setState(() {
-        isChecked = selectedPlayers.contains(widget.playerName);
-      });
-    });
+    _selectedPlayersSubscription =
+        widget.selectedPlayersStream.listen((selectedPlayers) {
+          setState(() {
+            isChecked = selectedPlayers.contains(widget.playerName);
+          });
+        });
   }
 
   @override
@@ -300,20 +344,26 @@ class _PlayerListItemState extends State<PlayerListItem> {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(
-        widget.playerName,
-        style: const TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
-      ),
-      trailing: Checkbox(
-        value: isChecked,
-        onChanged: widget.isAdmin ? (value) {
-          widget.onTogglePlayer(widget.playerName);
-          setState(() {
-            isChecked = value!;
-            print('Checkbox state updated for ${widget.playerName}: $isChecked');
-          });
-        } : null,
+    return Card(
+      child: ListTile(
+        title: Text(
+          widget.playerName,
+          style: const TextStyle(color: Colors.black,
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+              fontFamily: 'Poppins',),
+        ),
+        trailing: Checkbox(
+          value: isChecked,
+          onChanged: widget.isAdmin ? (value) {
+            widget.onTogglePlayer(widget.playerName);
+            setState(() {
+              isChecked = value!;
+              print('Checkbox state updated for ${widget
+                  .playerName}: $isChecked');
+            });
+          } : null,
+        ),
       ),
     );
   }

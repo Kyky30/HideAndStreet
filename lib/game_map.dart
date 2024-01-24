@@ -164,8 +164,30 @@ Future<void> _initializeState() async {
         point: LatLng(latitude, longitude),
         width: 80,
         height: 80,
-        child: FlutterLogo(),
+        child: Container(
+          child: Stack(
+            children: <Widget>[
+              Align(
+                alignment: Alignment.center,
+                child: Icon(Symbols.location_on_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24, color: Colors.red, size: 30),
+              ),
+              Align(
+                alignment: Alignment.topCenter,
+                child: Text(
+                  data['playerName'],
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: "Poppins",
+                    color: Colors.red,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       );
+
       print('Adding marker: $marker');
       setState(() {
         markers.add(marker);

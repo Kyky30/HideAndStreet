@@ -86,46 +86,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 const SizedBox(height: 3),
-
-                // Boutons de navigation
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const MapConfScreen(),
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: Size(MediaQuery.of(context).size.width - 30, 50),
-                      ),
-                      child: const Text('Aller à la carte'),
-                    ),
-                    const SizedBox(height: 6),
-
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const Chat(),
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: Size(MediaQuery.of(context).size.width - 30, 50),
-                      ),
-                      child: const Text('Chat'),
-                    ),
-                    const SizedBox(height: 6),
-          
-                  ],
-                ),
-
                 // Spacer to fill the available space
                 const Spacer(),
 
