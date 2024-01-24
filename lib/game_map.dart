@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-// import 'package:flutter_countdown_timer/current_remaining_time.dart';
+import 'package:material_symbols_icons/symbols.dart';
+
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
+
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:geolocator/geolocator.dart';
@@ -57,6 +59,14 @@ class _GameMapState extends State<GameMap> {
   late Timer timer1seconde;
   late Timer timer5secondes;
 
+  //Countdowns
+  late Timer timerCachette;
+  late Timer timerPartie;
+  late int endTimeCachette;
+  late int endTimePartie;
+  late bool isCachetteActive;
+
+  //Sockets
   late WebSocketChannel _channel;
   late String email;
   late String userId;
@@ -67,8 +77,44 @@ class _GameMapState extends State<GameMap> {
     super.initState();
     _initializeState();
   }
+
+  void _startTimers() {
+    // Set endTime for timerCachette
+    endTimeCachette = DateTime.now().millisecondsSinceEpoch +
+        (tempsDeCachette * 60 * 1000);
+
+    // Start timerCachette
+    timerCachette = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        if (DateTime.now().millisecondsSinceEpoch >= endTimeCachette) {
+          // Timer cachette ended, switch to timerPartie
+          isCachetteActive = false;
+          endTimePartie = endTimeCachette +
+              (tempsDePartie * 60 * 1000);
+          timerCachette.cancel(); // Stop timerCachette
+          _startTimerPartie();
+        }
+      });
+    });
+  }
+
+  void _startTimerPartie() {
+    // Start timerPartie
+    timerPartie = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        if (DateTime.now().millisecondsSinceEpoch >= endTimePartie) {
+          // Timer partie ended, do something
+          print('Game Over!');
+          timerPartie.cancel(); // Stop timerPartie
+        }
+      });
+    });
+  }
+
   @override
   void dispose() {
+    timerCachette.cancel();
+    timerPartie.cancel();
     timer1seconde.cancel();
     timer5secondes.cancel();
     super.dispose();
@@ -86,15 +132,17 @@ Future<void> _initializeState() async {
       tempsDeCachette = widget.tempsDeCachette;
       tapPosition = widget.center;
       radius = widget.radius; //en mètres
+
       isLoading = false;
+        isCachetteActive = true;
+
     });
   });
   await _getPref();
   _sendPosToServer();
   _startLocationCheckTimer();
-
+    _startTimers();
 }
-
 
   Future<void> _getPref() async {
     print("🔎 Récupération des préférences... ------------------");
@@ -275,6 +323,42 @@ Future<void> _initializeState() async {
       return Scaffold(
         body: Column(
           children: [
+            Center(
+              child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 40),
+                  Center(
+                    child:
+                    Row (
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          isCachetteActive ? 'Timer Cachette : ' : 'Timer Partie : ' ,
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: "Poppins"),
+                        ),
+                        CountdownTimer(
+                          endTime: isCachetteActive ? endTimeCachette : endTimePartie,
+                          textStyle: TextStyle(fontSize: 25, color: Colors.red, fontWeight: FontWeight.bold, fontFamily: "Poppins"),
+                          onEnd: () {
+                            print('Timer ${isCachetteActive ? 'Cachette' : 'Partie'} ended');
+                            if (!isCachetteActive) {
+                              //TODO: Procédure de fin de partie
+                              print("🚨🚨🚨FIN DE PARTIE🚨🚨🚨");
+                            }
+                            else {
+                              //TODO: Procédure de fin de cachette
+                              print("🚨🚨FIN DE CACHETTE🚨🚨");
+                            }
+
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
             SizedBox(height: 20),
             Expanded(
               child: FlutterMap(
@@ -306,24 +390,42 @@ Future<void> _initializeState() async {
               builder: (context, isOutsideZone, child) {
                 return Text(
                   isOutsideZone ? "Vous êtes en dehors de la zone" : "Vous êtes dans la zone",
-                  style: TextStyle(fontSize: 26.0, fontFamily: "Poppins", fontWeight: FontWeight.w600,color: isOutsideZone ? Colors.red : Colors.green),
+                  style: TextStyle(fontSize: 22.0, fontFamily: "Poppins", fontWeight: FontWeight.w600,color: isOutsideZone ? Colors.red : Colors.green),
                 );
               },
             ),
           ],
         ),
         floatingActionButton: isBlindModeEnabled == false
-            ? FloatingActionButton(
-          onPressed: () {
-            // Naviguer vers l'écran Chat
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Chat()),
-            );
-          },
-          child: Icon(Icons.chat),
+            ? Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FloatingActionButton(
+              onPressed: () {
+                // Naviguer vers l'écran Chat
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Chat()),
+                );
+              },
+              child: const Icon(Symbols.chat_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
+            ),
+            SizedBox(height: 10),
+            FloatingActionButton(
+              onPressed: () {
+                // Naviguer vers l'écran Chat
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Chat()),
+                );
+              },
+              child: const Icon(Symbols.people_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
+            ),
+            SizedBox(height: 40),
+          ],
         )
             : null,
+
       );
     }
   }
