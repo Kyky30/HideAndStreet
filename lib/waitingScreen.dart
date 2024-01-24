@@ -93,12 +93,12 @@ class _WaitingScreenState extends State<WaitingScreen> {
   }
 
   void _startGame() {
-    if (playersData.length < 2) {
-      return;
-    } else {
+    //if (_playerList.asStream().length < 2 ) {
+    //  return;
+    //} else {
     String auth = "chatappauthkey231r4";
     _channel.sink.add('{"email":"$email","auth":"$auth","cmd":"startGame", "gameCode":"${widget.gameCode}", "startingTimeStamp": ${DateTime.now().millisecondsSinceEpoch}}');
-    }
+    //}
   }
 
   void _handleSeekerStatusUpdated(List<dynamic> selectedPlayersData) {
