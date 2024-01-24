@@ -22,7 +22,7 @@ class GameMap extends StatefulWidget {
   final int tempsDeCachette;
   final int timeStampDebutPartie;
   final String gameCode;
-  final Map<String, dynamic> playerList;
+  final Map<String, bool> playerList;
 
   const GameMap({
     Key? key,
@@ -190,6 +190,30 @@ Future<void> _initializeState() async {
     userId = prefs.getString('userId') ?? '';
   }
 
+  Future<List<Position>> getPositionForId(List<String> ids) async {
+    // Créer la requête au serveur
+    String auth = "chatappauthkey231r4";
+    Map<String, dynamic> command = {
+      'email': email,
+      'auth': auth,
+      'cmd': 'getPositionForId',
+      'gameCode': widget.gameCode,
+      'ids': ids,
+    };
+
+    // Envoyer la requête au serveur
+    _channel.sink.add(jsonEncode(command));
+
+    // Attendre la réponse du serveur
+    String serverResponse = await _channel.stream.first;
+    print("📡 Réponse du serveur: $serverResponse");
+    // Extraire la liste des positions à partir de la réponse du serveur
+    Map<String, dynamic> data = jsonDecode(serverResponse);
+    List<Position> positions = data['positions'].map((position) => Position.fromMap(position)).toList();
+
+    // Retourner la liste des positions
+    return positions;
+  }
 
   Future<void> _loadBlindModeStatus() async {
     isBlindModeEnabled = await PreferencesManager.getBlindToggle();
@@ -302,7 +326,7 @@ Future<void> _initializeState() async {
   }
 
 
-  void _checkPlayerLocation() {
+  Future<void> _checkPlayerLocation() async {
     double distance = Geolocator.distanceBetween(
       currentPosition.latitude,
       currentPosition.longitude,
