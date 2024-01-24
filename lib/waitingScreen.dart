@@ -35,6 +35,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
   List<String> selectedPlayers = [];
   final _playerListController = StreamController<List<String>>();
   final _selectedPlayersController = StreamController<List<String>>.broadcast();
+  late List<dynamic> playersData;
 
 
   @override
@@ -59,7 +60,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
       print('Received message from server: $message');
       if (data['cmd'] == 'getPlayerlist' || data['cmd'] == 'UpdatePlayerlist') {
         if (data['status'] == 'success') {
-          List<dynamic> playersData = data['players'];
+          playersData = data['players'];
           List<String> players = playersData.map((player) => player.toString()).toList();
           _playerListController.add(players);
         } else {
@@ -93,9 +94,46 @@ class _WaitingScreenState extends State<WaitingScreen> {
   }
 
   void _startGame() {
-    //if (_playerList.asStream().length < 2 ) {
-    //  return;
-    //} else {
+    if(playersData.length < 2){
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(AppLocalizations.of(context)!.titre_popup_champ_vide),
+            content: Text(AppLocalizations.of(context)!.texte_popup_champ_vide),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("OK"),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+    else if(selectedPlayers.length < 1){
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(AppLocalizations.of(context)!.accueil),
+            content: Text(AppLocalizations.of(context)!.partagerCodePartie),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("OK"),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
     String auth = "chatappauthkey231r4";
     _channel.sink.add('{"email":"$email","auth":"$auth","cmd":"startGame", "gameCode":"${widget.gameCode}", "startingTimeStamp": ${DateTime.now().millisecondsSinceEpoch}}');
     //}
