@@ -604,7 +604,7 @@ class _ChatBodyState extends State<ChatBody> {
     );
   }
 
-  // Construction de l'interface utilisateur pour l'écran de cha
+  // Construction de l'interface utilisateur pour l'écran de chat
   @override
   Widget build(BuildContext context) {
     print('Building chat screen...');
