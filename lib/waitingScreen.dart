@@ -105,7 +105,9 @@ class _WaitingScreenState extends State<WaitingScreen> {
   }
 
   void _startGame() {
+
     if(playersData.length < 1){ // TODO: remettre à 2
+      print("🚷 Il manque des joueurs");
       showDialog(
         context: context,
         builder: (BuildContext context) {

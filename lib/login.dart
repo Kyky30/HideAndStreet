@@ -53,6 +53,8 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> login(BuildContext context) async {
     if (email.isEmpty || password.isEmpty) {
+      print("❓ Champ vide");
+
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -101,11 +103,14 @@ class _LoginPageState extends State<LoginPage> {
               );
             },
           );
+
+          print("🚫 " + responseData["status"]);
           return;
         }
 
         if (responseData["status"] == 'success') {
           await WebSocketManager.closeConnection();
+          print("✅ " + "connexion " + responseData["status"]);
 
           // Mettez à jour les SharedPreferences avec le statut de connexion
           SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -125,9 +130,8 @@ class _LoginPageState extends State<LoginPage> {
           );
         } else {
           await WebSocketManager.closeConnection();
+          print("🚫 " + "connexion " + responseData["status"]);
           print("Erreur lors de la connexion");
-          // Facultatif : fournir des commentaires à l'utilisateur sur la tentative de connexion échouée
-          // Vous pouvez afficher un snackbar ou définir une variable pour afficher un message d'erreur dans l'interface utilisateur
         }
       });
 
@@ -202,6 +206,7 @@ class _LoginPageState extends State<LoginPage> {
                           height: 80,
                           width: MediaQuery.of(context).size.width - 30,
                           child: TextField(
+                            obscureText: true,
                             decoration: InputDecoration(
                               filled: true,
                               fillColor: Colors.grey[300],

@@ -68,7 +68,7 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
         }
       },
       onError: (error) {
-        print('WebSocket stream error: $error');
+        print("❓ WebSocket error: $error");
 
         // Complete the Completer with an error
         gameCodeCompleter.completeError(error);
@@ -77,7 +77,7 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
         streamSubscription?.cancel();
       },
       onDone: () {
-        print('WebSocket stream closed');
+        print('❌ WebSocket connection closed');
       },
     );
 
@@ -100,7 +100,7 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
       } else {
         // Handle the case where the game code is null (error scenario)
         // You can show an error message or take appropriate action
-        print('Error: Received null game code');
+        print('🤳 Game code is null');
       }
     } catch (error) {
       // Handle errors thrown during the waiting process
@@ -283,6 +283,7 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
   }
 
   void _showEmptyFieldDialog(BuildContext context) {
+    print("🚫 Champ vide");
     showDialog(
       context: context,
       builder: (BuildContext context) {
