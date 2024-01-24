@@ -26,14 +26,15 @@ class _inGamePlayerlist extends State<inGamePlayerlist> {
   Map<String, dynamic> playerList = {};
 
   @override
-  void initState() async {
+  void initState() {
     super.initState();
-    await _getPref();
-    _channel = IOWebSocketChannel.connect('wss://app.hideandstreet.furrball.fr/getPlayerlist');
-    _channel.sink.add('{"cmd":"getInGamePlayerlist","auth":"chatappauthkey231r4", "email":"$email" , "gameCode":"${widget.gameCode}"}');
-    _channel.stream.listen((message) {
-      setState(() {
-        playerList = jsonDecode(message);
+    _getPref().then((_) {
+      _channel = IOWebSocketChannel.connect('wss://app.hideandstreet.furrball.fr/getPlayerlist');
+      _channel.sink.add('{"cmd":"getInGamePlayerlist","auth":"chatappauthkey231r4", "email":"$email" , "gameCode":"${widget.gameCode}"}');
+      _channel.stream.listen((message) {
+        setState(() {
+          playerList = jsonDecode(message);
+        });
       });
     });
   }
