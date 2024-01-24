@@ -42,7 +42,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
   void initState() {
     super.initState();
 
-    if (!PremiumStatus().isPremium) {
+    if (PremiumStatus().isPremium) { //TODO : Remettre les pubs
       admobHelper.createInterstitialAd().then((_) {
         admobHelper.showInterstitialAd();
       });
@@ -68,18 +68,29 @@ class _WaitingScreenState extends State<WaitingScreen> {
         }
       }
       else if (data['cmd'] == 'partyStartInfo') {
-        print("🔊🔊,");
-        if (data.containsKey('data') && data['data'].containsKey('center') && data['data'].containsKey('radius')) {
+        if (data.containsKey('data') && data['data'].containsKey('center') &&
+            data['data'].containsKey('radius')) {
           // Parse the center and radius values
-          Map<String, double> centerCoordinates = Map<String, double>.from(data['data']['center']);
-          LatLng center = LatLng(centerCoordinates['lat']!, centerCoordinates['lng']!);
+          Map<String, double> centerCoordinates = Map<String, double>.from(
+              data['data']['center']);
+          LatLng center = LatLng(
+              centerCoordinates['lat']!, centerCoordinates['lng']!);
           double radius = (data['data']['radius'] as num).toDouble();
-
-          // Navigate to the GameMap screen with the received center and radius
-          Map<String, bool> playerList = data['players'] ?? {};
+          print("⛷️⛷️⛷️⛷️⛷️");
+          Map<String, bool> playerList = Map<String, bool>.from(
+              data['data']['players']);
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => GameMap(center: center, radius: radius, tempsDePartie: data['data']['duration'], tempsDeCachette: data['data']['hidingDuration'], timeStampDebutPartie: data['data']['startingTimeStamp'], gameCode: widget.gameCode,playerList: playerList,)),
+            MaterialPageRoute(builder: (context) =>
+                GameMap(
+                  center: center,
+                  radius: radius,
+                  tempsDePartie: data['data']['duration'],
+                  tempsDeCachette: data['data']['hidingDuration'],
+                  timeStampDebutPartie: data['data']['startingTimeStamp'],
+                  gameCode: widget.gameCode,
+                  playerList: playerList,
+                )),
                 (Route<dynamic> route) => false,
           );
         }
@@ -94,7 +105,8 @@ class _WaitingScreenState extends State<WaitingScreen> {
   }
 
   void _startGame() {
-    if(playersData.length < 2){
+
+    if(playersData.length < 1){ // TODO: remettre à 2
       print("🚷 Il manque des joueurs");
       showDialog(
         context: context,
