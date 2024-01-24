@@ -14,6 +14,7 @@ import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'chat.dart';
 import 'PreferencesManager.dart';
+import 'inGamePlayerList.dart';
 
 class GameMap extends StatefulWidget {
   final LatLng center;
@@ -534,7 +535,7 @@ Future<void> _initializeState() async {
                 //TODO: Naviguer vers la liste des joueurs
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Chat()),
+                  MaterialPageRoute(builder: (context) => inGamePlayerlist(gameCode: widget.gameCode,)),
                 );
               },
               child: const Icon(Symbols.people_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),

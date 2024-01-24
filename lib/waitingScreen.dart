@@ -42,7 +42,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
   void initState() {
     super.initState();
 
-    if (!PremiumStatus().isPremium) {
+    if (PremiumStatus().isPremium) { //TODO : Remettre les pubs
       admobHelper.createInterstitialAd().then((_) {
         admobHelper.showInterstitialAd();
       });
@@ -94,7 +94,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
   }
 
   void _startGame() {
-    if(playersData.length < 2){
+    if(playersData.length < 1){ // TODO: remettre à 2
       showDialog(
         context: context,
         builder: (BuildContext context) {
