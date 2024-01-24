@@ -281,7 +281,46 @@ Future<void> _initializeState() async {
     _checkPlayerLocation();
   }
 
+  Future<List<Position>> getSeekersPositions(List<String> seekerIds) async {
+    String auth = "chatappauthkey231r4";
+    Map<String, dynamic> command = {
+      'email': email,
+      'auth': auth,
+      'cmd': 'getPositionForId',
+      'gameCode': widget.gameCode,
+      'ids': seekerIds,
+    };
 
+    // Send the command
+    _channel.sink.add(jsonEncode(command));
+
+    // Wait for the server response
+    String serverResponse = await _channel.stream.first;
+    Map<String, dynamic> data = jsonDecode(serverResponse);
+
+    // Extract the list of positions from the server response
+    List<Position> positions = data['positions'].map((position) => Position.fromMap(position)).toList();
+
+    // Clear the old seeker markers
+    seekerMarkers.clear();
+
+    // Add new markers for each position
+    for (Position position in positions) {
+      seekerMarkers.add(
+        Marker(
+          point: LatLng(position.latitude, position.longitude),
+          width: 80,
+          height: 80,
+          child: Icon(Icons.location_on, color: Colors.blue), // Change the color to blue for seekers
+        ),
+      );
+    }
+
+    // Update the state to reflect the changes in the UI
+    setState(() {});
+
+    return positions;
+  }
   void _sendPosToServer() {
     double distance = Geolocator.distanceBetween(
       latestPositionSentToServer.latitude,
@@ -318,6 +357,15 @@ Future<void> _initializeState() async {
     }
     print(" ");
     print(" ");
+
+    print("📡 Je suis le seeker: $amITheSeeker");
+    if(amITheSeeker)
+    {
+      print("📡 Je suis le seeker, je récupère les positions des autres seekers...");
+        // Get the positions of other seekers
+        List<String> seekerIds = widget.playerList.keys.where((id) => widget.playerList[id] == true).toList();
+        getSeekersPositions(seekerIds);
+    }
 
   }
 
@@ -381,6 +429,7 @@ Future<void> _initializeState() async {
     print("☎️Temps de cachette : $tempsDeCachette");
     print("♻️Timestamp debut partie : $timeStampDebutPartie");
     print("🌱 GameCode : ${widget.gameCode}");
+
 
   }
 
