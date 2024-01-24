@@ -22,6 +22,7 @@ class GameMap extends StatefulWidget {
   final int tempsDeCachette;
   final int timeStampDebutPartie;
   final String gameCode;
+  final Map<String, dynamic> playerList;
 
   const GameMap({
     Key? key,
@@ -31,6 +32,7 @@ class GameMap extends StatefulWidget {
     required this.tempsDeCachette,
     required this.timeStampDebutPartie,
     required this.gameCode,
+    required this.playerList,
   }) : super(key: key);
 
   @override
