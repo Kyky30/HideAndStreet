@@ -59,6 +59,7 @@ dependencies:
   path_provider: ^2.0.14
   share: ^2.0.4
   awesome_notifications: ^0.8.2
+  workmanager: ^0.5.2
 
 
 dev_dependencies:

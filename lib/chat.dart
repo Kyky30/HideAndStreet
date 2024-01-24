@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'dart:convert';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:web_socket_channel/io.dart';
@@ -10,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+
 
 // Classe pour gérer le stockage local des messages
 class ChatLocalStorage {
@@ -80,10 +82,16 @@ class _ChatBodyState extends State<ChatBody> {
   late ScrollController _scrollController;
   late String username;
   final int partieId;
+  bool isUserInChat = false;
   bool _isWelcomeMessageDisplayed = false;
   Uint8List? _capturedImage;
 
   _ChatBodyState({required this.partieId});
+
+
+
+
+
 
   // Fonction pour envoyer des données au serveur WebSocket
   void sendToServer(Map<String, dynamic> data) {
@@ -108,6 +116,20 @@ class _ChatBodyState extends State<ChatBody> {
 
   @override
   void initState() {
+
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed){
+      if(!isAllowed){
+        AwesomeNotifications().requestPermissionToSendNotifications();
+      }
+    });
+
+    void fetchUnreadMessages() {
+      // Envoie une requête au serveur pour récupérer les messages non lus
+      channel.sink.add(jsonEncode({'type': 'getUnreadMessages'}));
+    }
+
+
+
     super.initState();
 
 
@@ -152,6 +174,10 @@ class _ChatBodyState extends State<ChatBody> {
             timestamp: DateTime.parse(decodedMessage['timestamp'] ?? ''),
             isUser: username != 'Serveur', // Correction ici
           ));
+          // Émettre une notification pour le nouveau message
+          triggerNotification('Nouveau message', decodedMessage['text']);
+
+
         } else if (message is Map<String, dynamic>) {
           // Message avec informations utilisateur (pseudo + contenu)
           print('Message utilisateur reçu : $message');
@@ -168,6 +194,9 @@ class _ChatBodyState extends State<ChatBody> {
             isUser: username != 'Serveur', // Correction ici
           );
           messages.add(userMessage);
+
+          // Émettre une notification pour le nouveau message
+          triggerNotification('Nouveau message', message['text']);
         } else if (message is Uint8List) {
           // Message image
           String username = 'Serveur';
@@ -178,6 +207,8 @@ class _ChatBodyState extends State<ChatBody> {
             timestamp: DateTime.now(),
             isUser: username != 'Serveur', // Correction ici
           ));
+          // Émettre une notification pour la nouvelle image
+          triggerNotification('Nouvelle image', 'Vous avez reçu une nouvelle image');
         }
       });
 
@@ -228,6 +259,7 @@ class _ChatBodyState extends State<ChatBody> {
       setState(() {
         messages.add(userMessage);
       });
+
 
       // Fait défiler la liste vers le bas
       scrollToBottom();
@@ -423,17 +455,6 @@ class _ChatBodyState extends State<ChatBody> {
     }
   }
 
-
-
-
-
-
-
-
-
-
-
-
 // Widget pour construire l'élément d'affichage d'un message
   Widget buildMessageWidget(Message message) {
     if (message.imageBytes != null) {
@@ -571,6 +592,18 @@ class _ChatBodyState extends State<ChatBody> {
     super.dispose();
   }
 
+
+  void triggerNotification(String title, String body) {
+    AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 10,
+        channelKey: 'basic_channel',
+        title: title,
+        body: body,
+      ),
+    );
+  }
+
   // Construction de l'interface utilisateur pour l'écran de chat
   @override
   Widget build(BuildContext context) {
@@ -705,7 +738,8 @@ class Message {
     this.username,
     required this.status,
     DateTime? timestamp, // Ajout de la déclaration ici
-  }) : timestamp = timestamp ?? DateTime.now(); // Initialisation avec la valeur actuelle si elle est nulle
+  }) : timestamp = timestamp ?? DateTime
+      .now(); // Initialisation avec la valeur actuelle si elle est nulle
 
   Map<String, dynamic> toJson() {
     return {
@@ -721,18 +755,18 @@ class Message {
 
   factory Message.fromJson(Map<String, dynamic> json) {
     List<int>? imageBytesList = json['imageBytes']?.cast<int>();
-    Uint8List? imageBytes = imageBytesList != null ? Uint8List.fromList(imageBytesList) : null;
+    Uint8List? imageBytes = imageBytesList != null ? Uint8List.fromList(
+        imageBytesList) : null;
 
     return Message(
       text: json['text'],
       isUser: json['isUser'],
       imageBytes: imageBytes,
       username: json['username'],
-      status: json['status'] == 'MessageStatus.sent' ? MessageStatus.sent : MessageStatus.received,
+      status: json['status'] == 'MessageStatus.sent'
+          ? MessageStatus.sent
+          : MessageStatus.received,
       timestamp: DateTime.parse(json['timestamp'] ?? ''),
     );
   }
-
-
 }
-

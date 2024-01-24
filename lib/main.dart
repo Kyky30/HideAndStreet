@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_gen/gen_l10n/notificationManager.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:web_socket_channel/io.dart';
+
+
 
 import 'home.dart';
 import 'l10n/l10n.dart';
@@ -11,11 +14,21 @@ import 'shop.dart';
 import 'account_settings.dart';
 
 
+
+
 import 'package:material_symbols_icons/symbols.dart';
 
 void main() {
+  AwesomeNotifications().initialize(null,
+      [NotificationChannel(
+          channelKey: 'basic_channel',
+          channelName: 'basic notification',
+          channelDescription: 'notification channel for basic test',
+      ),
+      ],
+      debug:true,
+  );
   runApp(const MyApp());
-  NotificationManager.initialize();
 }
 
 class MyApp extends StatelessWidget {
@@ -23,6 +36,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       title: 'Mon Application',
       theme: ThemeData(
@@ -94,6 +108,8 @@ class _MyHomePageState extends State<MyHomePage> {
       _selectedIndex = index;
     });
   }
+
+
 
   @override
   Widget build(BuildContext context) {
