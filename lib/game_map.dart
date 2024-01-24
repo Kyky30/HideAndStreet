@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
-
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:geolocator/geolocator.dart';
@@ -456,6 +456,27 @@ Future<void> _initializeState() async {
                 );
               },
             ),
+            if (isBlindModeEnabled == true)
+              ElevatedButton(
+                onPressed: () {
+                  print("���");
+                },
+                style: ElevatedButton.styleFrom(
+                  shape: SmoothRectangleBorder(
+                    borderRadius: SmoothBorderRadius(
+                      cornerRadius: 20,
+                      cornerSmoothing: 1,
+                    ),
+                  ),
+                  minimumSize: Size(MediaQuery.of(context).size.width - 30, 80),
+                  backgroundColor: const Color(0xFF373967),
+                  foregroundColor: const Color(0xFF212348),
+                ),
+                child: Text(
+                  AppLocalizations.of(context)!.connexion,
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
+                ),
+              ),
           ],
         ),
         floatingActionButton: isBlindModeEnabled == false
@@ -464,7 +485,18 @@ Future<void> _initializeState() async {
           children: [
             FloatingActionButton(
               onPressed: () {
-                // Naviguer vers l'écran Chat
+                //TODO: Signaler qu'on a été trouvé
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Chat()),
+                );
+              },
+              child: const Icon(Symbols.emoji_people_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
+            ),
+            SizedBox(height: 10),
+            FloatingActionButton(
+              onPressed: () {
+                //TODO: Naviguer vers l'écran Chat
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => Chat()),
@@ -475,7 +507,7 @@ Future<void> _initializeState() async {
             SizedBox(height: 10),
             FloatingActionButton(
               onPressed: () {
-                // Naviguer vers l'écran Chat
+                //TODO: Naviguer vers la liste des joueurs
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => Chat()),
