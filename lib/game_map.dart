@@ -73,6 +73,7 @@ class _GameMapState extends State<GameMap> {
   late WebSocketChannel _channel;
   late String email;
   late String userId;
+  late Stream broadcastStream;
 
   //Joueur
   bool amITheSeeker = false;
@@ -123,6 +124,21 @@ class _GameMapState extends State<GameMap> {
     });
   }
 
+  void _checkSeekers() async {
+    print(widget.playerList);
+    //Parcourir la liste des joueurs selectionnés
+    widget.playerList.forEach((player, value) {
+      if (player == userId && value == true) {
+        amITheSeeker = true;
+        seekersIds.add(player);
+      } else if (player != userId && value == true) {
+        seekersIds.add(player);
+      }
+    });
+    print("🔎 Je suis le seeker : $amITheSeeker");
+    print("🔎 Liste des seekers : $seekersIds");
+  }
+
   @override
   void dispose() {
     timerCachette.cancel();
@@ -132,87 +148,90 @@ class _GameMapState extends State<GameMap> {
     super.dispose();
   }
 
-Future<void> _initializeState() async {
-  await _loadBlindModeStatus();
-  await _determinePosition().then((position) {
-    setState(() {
-      currentPosition = position;
-      latestPositionSentToServer = position;
-      _channel = IOWebSocketChannel.connect('wss://app.hideandstreet.furrball.fr/getPlayerlist');
-      timeStampDebutPartie = widget.timeStampDebutPartie;
-      tempsDePartie = widget.tempsDePartie;
-      tempsDeCachette = widget.tempsDeCachette;
-      tapPosition = widget.center;
-      radius = widget.radius; //en mètres
+  Future<void> _initializeState() async {
+    await _loadBlindModeStatus();
+    await _determinePosition().then((position) {
+      setState(() {
+        currentPosition = position;
+        latestPositionSentToServer = position;
+        _channel = IOWebSocketChannel.connect('wss://app.hideandstreet.furrball.fr/getPlayerlist');
+        timeStampDebutPartie = widget.timeStampDebutPartie;
+        tempsDePartie = widget.tempsDePartie;
+        tempsDeCachette = widget.tempsDeCachette;
+        tapPosition = widget.center;
+        radius = widget.radius; //en mètres
 
-      isLoading = false;
+        isLoading = false;
         isCachetteActive = true;
-
+      });
     });
-  });
-  await _getPref();
-  _sendPosToServer();
-  _startLocationCheckTimer();
-  _startTimers();
+    await _getPref();
+    _sendPosToServer();
+    _checkSeekers();
+    _startLocationCheckTimer();
+    _startTimers();
 
-  _channel.stream.listen((message) {
-    print('Received message: $message');
-    Map<String, dynamic> data = jsonDecode(message);
-    if (data['cmd'] == 'playerOutOfZone' && data['playerId'] != userId) {
-      print('Player out of zone: ${data['playerId']}');
+    // Convert the stream to a broadcast stream
+    broadcastStream = _channel.stream.asBroadcastStream();
 
-      // Parse latitude and longitude from the position string
-      String positionString = data['position'];
-      List<String> positionParts = positionString.split(', ');
+    broadcastStream.listen((message) {
+      print('Received message: $message');
+      Map<String, dynamic> data = jsonDecode(message);
+      if (data['cmd'] == 'playerOutOfZone' && data['playerId'] != userId) {
+        print('Player out of zone: ${data['playerId']}');
 
-      String latitudePart = positionParts[0];
-      double latitude = double.parse(latitudePart.split(': ')[1]);
+        // Parse latitude and longitude from the position string
+        String positionString = data['position'];
+        List<String> positionParts = positionString.split(', ');
 
-      String longitudePart = positionParts[1];
-      double longitude = double.parse(longitudePart.split(': ')[1]);
+        String latitudePart = positionParts[0];
+        double latitude = double.parse(latitudePart.split(': ')[1]);
 
-      Marker marker = Marker(
-        point: LatLng(latitude, longitude),
-        width: 80,
-        height: 80,
-        child: Container(
-          child: Stack(
-            children: <Widget>[
-              Align(
-                alignment: Alignment.center,
-                child: Icon(Symbols.location_on_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24, color: Colors.red, size: 30),
-              ),
-              Align(
-                alignment: Alignment.topCenter,
-                child: Text(
-                  data['playerName'],
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: "Poppins",
-                    color: Colors.red,
+        String longitudePart = positionParts[1];
+        double longitude = double.parse(longitudePart.split(': ')[1]);
+
+        Marker marker = Marker(
+          point: LatLng(latitude, longitude),
+          width: 80,
+          height: 80,
+          child: Container(
+            child: Stack(
+              children: <Widget>[
+                Align(
+                  alignment: Alignment.center,
+                  child: Icon(Symbols.location_on_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24, color: Colors.red, size: 30),
+                ),
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Text(
+                    data['playerName'],
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "Poppins",
+                      color: Colors.red,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      );
+        );
 
-      print('Adding marker: $marker');
-      setState(() {
-        markers.add(marker);
-      });
-
-      Timer(Duration(seconds: 5), () {
-        print('Removing marker: $marker');
+        print('Adding marker: $marker');
         setState(() {
-          markers.remove(marker);
+          markers.add(marker);
         });
-      });
-    }
-  });
-}
+
+        Timer(Duration(seconds: 5), () {
+          print('Removing marker: $marker');
+          setState(() {
+            markers.remove(marker);
+          });
+        });
+      }
+    });
+  }
 
   Future<void> _getPref() async {
     print("🔎 Récupération des préférences... ------------------");
@@ -281,7 +300,8 @@ Future<void> _initializeState() async {
     _checkPlayerLocation();
   }
 
-  Future<List<Position>> getSeekersPositions(List<String> seekerIds) async {
+  Future<void> getSeekersPositions(List<String> seekerIds) async {
+    print("📡 Récupération des positions des seekers... ------------------");
     String auth = "chatappauthkey231r4";
     Map<String, dynamic> command = {
       'email': email,
@@ -295,32 +315,72 @@ Future<void> _initializeState() async {
     _channel.sink.add(jsonEncode(command));
 
     // Wait for the server response
-    String serverResponse = await _channel.stream.first;
+    String serverResponse = await broadcastStream.first;
     Map<String, dynamic> data = jsonDecode(serverResponse);
-
-    // Extract the list of positions from the server response
-    List<Position> positions = data['positions'].map((position) => Position.fromMap(position)).toList();
+    print("📡 Server response get SEEker: $serverResponse");
 
     // Clear the old seeker markers
     seekerMarkers.clear();
 
-    // Add new markers for each position
-    for (Position position in positions) {
-      seekerMarkers.add(
-        Marker(
-          point: LatLng(position.latitude, position.longitude),
-          width: 80,
-          height: 80,
-          child: Icon(Icons.location_on, color: Colors.blue), // Change the color to blue for seekers
-        ),
-      );
+    // Iterate over each position in the 'positions' list
+    for (var positionData in data['positions']) {
+      // Check if the current user's id is not equal to the user id of the marker
+      print((userId != positionData['userId'].toString()) == true);
+      if ((userId != positionData['userId'].toString()) == true) {
+        // Extract the list of positions from the server response
+        String positionString = positionData['position'];
+        List<String> positionParts = positionString.split(', ');
+
+        String latitudePart = positionParts[0];
+        double latitude = double.parse(latitudePart.split(': ')[1]);
+
+        String longitudePart = positionParts[1];
+        double longitude = double.parse(longitudePart.split(': ')[1]);
+
+        // Add new markers for each position
+        seekerMarkers.add(
+          Marker(
+            point: LatLng(latitude, longitude),
+            width: 80,
+            height: 80,
+            child: Container(
+              child: Stack(
+                children: <Widget>[
+                  Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      width: 15,
+                      height: 15,
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: Text(
+                      positionData['username'].toString(), // replace with the actual username
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }
     }
 
+    print("📡 Seeker markers: ${seekerMarkers.length}");
     // Update the state to reflect the changes in the UI
     setState(() {});
-
-    return positions;
   }
+
   void _sendPosToServer() {
     double distance = Geolocator.distanceBetween(
       latestPositionSentToServer.latitude,
@@ -357,15 +417,6 @@ Future<void> _initializeState() async {
     }
     print(" ");
     print(" ");
-
-    print("📡 Je suis le seeker: $amITheSeeker");
-    if(amITheSeeker)
-    {
-      print("📡 Je suis le seeker, je récupère les positions des autres seekers...");
-        // Get the positions of other seekers
-        List<String> seekerIds = widget.playerList.keys.where((id) => widget.playerList[id] == true).toList();
-        getSeekersPositions(seekerIds);
-    }
 
   }
 
@@ -415,8 +466,16 @@ Future<void> _initializeState() async {
 
     isOutsideZoneNotifier.value = distance > radius;
 
-    if (isOutsideZoneNotifier.value) {
+    if (isOutsideZoneNotifier.value && amITheSeeker == false) {
       _sendOutOfZoneCommand();
+    }
+    print("📡 Je suis le seeker: $amITheSeeker");
+    if(amITheSeeker == true)
+    {
+      print("📡 Je suis le seeker, je récupère les positions des autres seekers...");
+      // Get the positions of other seekers
+      List<String> seekerIds = widget.playerList.keys.where((id) => widget.playerList[id] == true).toList();
+      getSeekersPositions(seekerIds);
     }
 
     print(" ");
@@ -516,6 +575,7 @@ Future<void> _initializeState() async {
                   ),
                   CurrentLocationLayer(),
                   MarkerLayer(markers: markers),
+                  MarkerLayer(markers: seekerMarkers),
                   CircleLayer(circles: [
                     CircleMarker(
                       point: tapPosition,
@@ -565,53 +625,57 @@ Future<void> _initializeState() async {
             ? Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            FloatingActionButton(
-              heroTag: 'button2',
-              onPressed: () async {
-                bool? result = await showDialog<bool>(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text('Confirmation'),
-                      content: Text('Have you been found?'),
-                      actions: <Widget>[
-                        TextButton(
-                          child: Text('No'),
-                          onPressed: () {
-                            Navigator.of(context).pop(false);
-                          },
-                        ),
-                        TextButton(
-                          child: Text('Yes'),
-                          onPressed: () {
-                            Navigator.of(context).pop(true);
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                );
+            if (amITheSeeker == false && amIFound == false)
+              FloatingActionButton(
+                heroTag: 'button2',
+                onPressed: () async {
+                  bool? result = await showDialog<bool>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Confirmation'),
+                        content: Text('Have you been found?'),
+                        actions: <Widget>[
+                          TextButton(
+                            child: Text('No'),
+                            onPressed: () {
+                              Navigator.of(context).pop(false);
+                            },
+                          ),
+                          TextButton(
+                            child: Text('Yes'),
+                            onPressed: () {
+                              Navigator.of(context).pop(true);
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
 
-                if (result == true) {
-                  // Send 'ihavebeenfound' command to the server
-                  String auth = "chatappauthkey231r4";
-                  String gameCode = widget.gameCode;
+                  if (result == true) {
+                    // Send 'ihavebeenfound' command to the server
+                    String auth = "chatappauthkey231r4";
+                    String gameCode = widget.gameCode;
 
-                  // Prepare the command
-                  Map<String, String> command = {
-                    'email': email,
-                    'auth': auth,
-                    'cmd': 'setFoundStatus',
-                    'gameCode': gameCode,
-                    'playerId': userId,
-                  };
+                    // Prepare the command
+                    Map<String, String> command = {
+                      'email': email,
+                      'auth': auth,
+                      'cmd': 'setFoundStatus',
+                      'gameCode': gameCode,
+                      'playerId': userId,
+                    };
 
-                  // Send the command
-                  _channel.sink.add(jsonEncode(command));
-                }
-              },
-              child: const Icon(Symbols.hand_gesture, fill: 1, weight: 700, grade: 200, opticalSize: 24),
-            ),
+                    // Send the command
+                    _channel.sink.add(jsonEncode(command));
+
+                    //Local
+                    amIFound = true;
+                  }
+                },
+                child: const Icon(Symbols.hand_gesture, fill: 1, weight: 700, grade: 200, opticalSize: 24),
+              ),
             SizedBox(height: 10),
             FloatingActionButton(
               heroTag: 'button2',
