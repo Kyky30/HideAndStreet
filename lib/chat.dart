@@ -93,7 +93,7 @@ class _ChatBodyState extends State<ChatBody> {
 
 
 
-  // Fonction pour envoyer des données au serveur WebSocke
+  // Fonction pour envoyer des données au serveur WebSocket
   void sendToServer(Map<String, dynamic> data) {
     channel.sink.add(jsonEncode(data));
   }

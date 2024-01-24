@@ -82,7 +82,7 @@ class MyApp extends StatelessWidget {
     if (loggedIn == true) {
       return const MyHomePage();
     } else {
-      return LoginPage(); // Return the LoginPage widget
+      return LoginPage(); // Return the LoginPage widge
     }
   }
 }
