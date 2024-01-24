@@ -74,6 +74,13 @@ class _GameMapState extends State<GameMap> {
   late String email;
   late String userId;
 
+  //Joueur
+  bool amITheSeeker = false;
+  bool amIFound = false;
+
+  //Joueurs
+  late List<String> seekersIds = [];
+
   List<Marker> markers = [];
 
   @override
@@ -115,6 +122,21 @@ class _GameMapState extends State<GameMap> {
     });
   }
 
+  void _checkSeekers() async {
+    print(widget.playerList);
+    //Parcourir la liste des joueurs selectionnés
+    widget.playerList.forEach((player, value) {
+      if (player == userId && value == true) {
+        amITheSeeker = true;
+        seekersIds.add(player);
+      } else if (player != userId && value == true) {
+        seekersIds.add(player);
+      }
+    });
+    print("🔎 Je suis le seeker : $amITheSeeker");
+    print("🔎 Liste des seekers : $seekersIds");
+  }
+
   @override
   void dispose() {
     timerCachette.cancel();
@@ -143,6 +165,7 @@ Future<void> _initializeState() async {
     });
   });
   await _getPref();
+  _checkSeekers();
   _sendPosToServer();
   _startLocationCheckTimer();
   _startTimers();
@@ -508,53 +531,57 @@ Future<void> _initializeState() async {
             ? Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            FloatingActionButton(
-              heroTag: 'button2',
-              onPressed: () async {
-                bool? result = await showDialog<bool>(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text('Confirmation'),
-                      content: Text('Have you been found?'),
-                      actions: <Widget>[
-                        TextButton(
-                          child: Text('No'),
-                          onPressed: () {
-                            Navigator.of(context).pop(false);
-                          },
-                        ),
-                        TextButton(
-                          child: Text('Yes'),
-                          onPressed: () {
-                            Navigator.of(context).pop(true);
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                );
+            if (amITheSeeker == false && amIFound == false)
+              FloatingActionButton(
+                heroTag: 'button2',
+                onPressed: () async {
+                  bool? result = await showDialog<bool>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Confirmation'),
+                        content: Text('Have you been found?'),
+                        actions: <Widget>[
+                          TextButton(
+                            child: Text('No'),
+                            onPressed: () {
+                              Navigator.of(context).pop(false);
+                            },
+                          ),
+                          TextButton(
+                            child: Text('Yes'),
+                            onPressed: () {
+                              Navigator.of(context).pop(true);
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
 
-                if (result == true) {
-                  // Send 'ihavebeenfound' command to the server
-                  String auth = "chatappauthkey231r4";
-                  String gameCode = widget.gameCode;
+                  if (result == true) {
+                    // Send 'ihavebeenfound' command to the server
+                    String auth = "chatappauthkey231r4";
+                    String gameCode = widget.gameCode;
 
-                  // Prepare the command
-                  Map<String, String> command = {
-                    'email': email,
-                    'auth': auth,
-                    'cmd': 'setFoundStatus',
-                    'gameCode': gameCode,
-                    'playerId': userId,
-                  };
+                    // Prepare the command
+                    Map<String, String> command = {
+                      'email': email,
+                      'auth': auth,
+                      'cmd': 'setFoundStatus',
+                      'gameCode': gameCode,
+                      'playerId': userId,
+                    };
 
-                  // Send the command
-                  _channel.sink.add(jsonEncode(command));
-                }
-              },
-              child: const Icon(Symbols.hand_gesture, fill: 1, weight: 700, grade: 200, opticalSize: 24),
-            ),
+                    // Send the command
+                    _channel.sink.add(jsonEncode(command));
+
+                    //Local
+                    amIFound = true;
+                  }
+                },
+                child: const Icon(Symbols.hand_gesture, fill: 1, weight: 700, grade: 200, opticalSize: 24),
+              ),
             SizedBox(height: 10),
             FloatingActionButton(
               heroTag: 'button2',
