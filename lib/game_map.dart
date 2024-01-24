@@ -71,6 +71,7 @@ class _GameMapState extends State<GameMap> {
   late String email;
   late String userId;
 
+  List<Marker> markers = [];
 
   @override
   void initState() {
@@ -141,7 +142,43 @@ Future<void> _initializeState() async {
   await _getPref();
   _sendPosToServer();
   _startLocationCheckTimer();
-    _startTimers();
+  _startTimers();
+
+  _channel.stream.listen((message) {
+    print('Received message: $message');
+    Map<String, dynamic> data = jsonDecode(message);
+    if (data['cmd'] == 'playerOutOfZone' && data['playerId'] != userId) {
+      print('Player out of zone: ${data['playerId']}');
+
+      // Parse latitude and longitude from the position string
+      String positionString = data['position'];
+      List<String> positionParts = positionString.split(', ');
+
+      String latitudePart = positionParts[0];
+      double latitude = double.parse(latitudePart.split(': ')[1]);
+
+      String longitudePart = positionParts[1];
+      double longitude = double.parse(longitudePart.split(': ')[1]);
+
+      Marker marker = Marker(
+        point: LatLng(latitude, longitude),
+        width: 80,
+        height: 80,
+        child: FlutterLogo(),
+      );
+      print('Adding marker: $marker');
+      setState(() {
+        markers.add(marker);
+      });
+
+      Timer(Duration(seconds: 5), () {
+        print('Removing marker: $marker');
+        setState(() {
+          markers.remove(marker);
+        });
+      });
+    }
+  });
 }
 
   Future<void> _getPref() async {
@@ -372,6 +409,7 @@ Future<void> _initializeState() async {
                     urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                   ),
                   CurrentLocationLayer(),
+                  MarkerLayer(markers: markers),
                   CircleLayer(circles: [
                     CircleMarker(
                       point: tapPosition,
