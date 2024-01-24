@@ -75,7 +75,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
           double radius = (data['data']['radius'] as num).toDouble();
 
           // Navigate to the GameMap screen with the received center and radius
-          Map<String, dynamic> playerList = data['players'];
+          Map<String, bool> playerList = data['players'] ?? {};
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => GameMap(center: center, radius: radius, tempsDePartie: data['data']['duration'], tempsDeCachette: data['data']['hidingDuration'], timeStampDebutPartie: data['data']['startingTimeStamp'], gameCode: widget.gameCode,playerList: playerList,)),
