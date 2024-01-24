@@ -130,6 +130,7 @@ class _LoginPageState extends State<LoginPage> {
           );
         } else {
           await WebSocketManager.closeConnection();
+          print("🚫 " + "connexion " + responseData["status"]);
           print("Erreur lors de la connexion");
         }
       });
@@ -205,6 +206,7 @@ class _LoginPageState extends State<LoginPage> {
                           height: 80,
                           width: MediaQuery.of(context).size.width - 30,
                           child: TextField(
+                            obscureText: true,
                             decoration: InputDecoration(
                               filled: true,
                               fillColor: Colors.grey[300],
