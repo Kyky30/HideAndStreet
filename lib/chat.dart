@@ -342,7 +342,7 @@ class _ChatBodyState extends State<ChatBody> {
     // Load messages from local storage
     List<Message> loadedMessages = await ChatLocalStorage.loadMessages();
     setState(() {
-      messages.clear(); // Clear existing messages
+      messages.clear(); // Clear existing message
       messages.addAll(loadedMessages);
     });
 
