@@ -105,25 +105,6 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
             },
           );
         }
-      } else {
-        // Gérer d'autres états, par exemple, afficher un message d'erreur
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text(AppLocalizations.of(context)!.titre_popup_autre_erreur),
-              content: Text(AppLocalizations.of(context)!.texte_popup_autre_erreur),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text("OK"),
-                ),
-              ],
-            );
-          },
-        );
       }
     }
   }

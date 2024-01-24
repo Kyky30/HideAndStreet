@@ -75,9 +75,10 @@ class _WaitingScreenState extends State<WaitingScreen> {
           double radius = (data['data']['radius'] as num).toDouble();
 
           // Navigate to the GameMap screen with the received center and radius
+          Map<String, dynamic> playerList = data['players'];
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => GameMap(center: center, radius: radius, tempsDePartie: data['data']['duration'], tempsDeCachette: data['data']['hidingDuration'], timeStampDebutPartie: data['data']['startingTimeStamp'], gameCode: widget.gameCode,)),
+            MaterialPageRoute(builder: (context) => GameMap(center: center, radius: radius, tempsDePartie: data['data']['duration'], tempsDeCachette: data['data']['hidingDuration'], timeStampDebutPartie: data['data']['startingTimeStamp'], gameCode: widget.gameCode,playerList: playerList,)),
                 (Route<dynamic> route) => false,
           );
         }
@@ -368,3 +369,5 @@ class _PlayerListItemState extends State<PlayerListItem> {
     );
   }
 }
+
+//TODO: Ajouter des contrainte des contrainte sur le bouton start du waiting screen (au moins 2 joueurs, au moins 1 seeker, etc.)
