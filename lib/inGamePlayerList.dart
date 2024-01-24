@@ -1,6 +1,5 @@
+import 'dart:async';
 import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web_socket_channel/io.dart';
@@ -9,66 +8,83 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 class inGamePlayerlist extends StatefulWidget {
   final String gameCode;
 
-  const inGamePlayerlist({
-    Key? key,
-    required this.gameCode,
-  }) : super(key: key);
+  inGamePlayerlist({required this.gameCode});
 
   @override
-  State<inGamePlayerlist> createState() => _inGamePlayerlist();
+  _inGamePlayerlist createState() => _inGamePlayerlist();
 }
 
 class _inGamePlayerlist extends State<inGamePlayerlist> {
   late WebSocketChannel _channel;
-  late String email;
-  late String userId;
-
-  Map<String, dynamic> playerList = {};
+  String email = '';
+  final _playerListController = StreamController<List<dynamic>>();
 
   @override
   void initState() {
     super.initState();
-    _getPref().then((_) {
-      _channel = IOWebSocketChannel.connect('wss://app.hideandstreet.furrball.fr/getPlayerlist');
-      _channel.sink.add('{"cmd":"getInGamePlayerlist","auth":"chatappauthkey231r4", "email":"$email" , "gameCode":"${widget.gameCode}"}');
-      _channel.stream.listen((message) {
-        setState(() {
-          playerList = jsonDecode(message);
-        });
-      });
+    _channel = IOWebSocketChannel.connect('wss://app.hideandstreet.furrball.fr/getInGamePlayerlist');
+    _getPref();
+    _initWebSocket();
+  }
+
+  void _initWebSocket() {
+    _channel.stream.listen((message) {
+      print('📥 Received message: $message'); // Print incoming message
+      final Map<String, dynamic> data = jsonDecode(message);
+      if (data['cmd'] == 'returnPlayerList') {
+          print('🎉 Success! Players data: ${data['players']}'); // Print success message and players data
+          _playerListController.add(data['players']);
+      }
     });
+    print('📤 Sending request to server...'); // Print outgoing message
+    _channel.sink.add('{"email":"$email","auth":"chatappauthkey231r4","cmd":"getInGamePlayerlist", "gameCode":"${widget.gameCode}"}');
   }
 
-  Future<void> _getPref() async {
-    print("🔎 Récupération des préférences...");
+  void _getPref() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    email = prefs.getString('email') ?? '';
-    userId = prefs.getString('userId') ?? '';
-  }
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('In Game Player List'),
-      ),
-      body: ListView.builder(
-        itemCount: playerList.length,
-        itemBuilder: (context, index) {
-          String key = playerList.keys.elementAt(index);
-          return ListTile(
-            title: Text('Pseudo: $key'),
-            subtitle: Text('Seeker: ${playerList[key]['Seeker']}, Found: ${playerList[key]['Found']}'),
-          );
-        },
-      ),
-    );
+    setState(() {
+      email = prefs.getString('email')!;
+    });
   }
 
   @override
   void dispose() {
     _channel.sink.close();
+    _playerListController.close();
     super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('In-Game Player List'),
+      ),
+      body: StreamBuilder<List<dynamic>>(
+        stream: _playerListController.stream,
+        initialData: [],
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child : CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                var player = snapshot.data![index];
+                return Hero(
+                  tag: 'playerItem$index',
+                  child: ListTile(
+                    title: Text('Username: ${player['username']}'),
+                    subtitle: Text('Seeker: ${player['seeker']}, Found: ${player['found']}'),
+                  ),
+                );
+              },
+            );
+          }
+        },
+      ),
+    );
   }
 }

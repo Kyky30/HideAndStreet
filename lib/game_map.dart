@@ -509,17 +509,55 @@ Future<void> _initializeState() async {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             FloatingActionButton(
-              onPressed: () {
-                //TODO: Signaler qu'on a été trouvé
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Chat()),
+              heroTag: 'button2',
+              onPressed: () async {
+                bool? result = await showDialog<bool>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Confirmation'),
+                      content: Text('Have you been found?'),
+                      actions: <Widget>[
+                        TextButton(
+                          child: Text('No'),
+                          onPressed: () {
+                            Navigator.of(context).pop(false);
+                          },
+                        ),
+                        TextButton(
+                          child: Text('Yes'),
+                          onPressed: () {
+                            Navigator.of(context).pop(true);
+                          },
+                        ),
+                      ],
+                    );
+                  },
                 );
+
+                if (result == true) {
+                  // Send 'ihavebeenfound' command to the server
+                  String auth = "chatappauthkey231r4";
+                  String gameCode = widget.gameCode;
+
+                  // Prepare the command
+                  Map<String, String> command = {
+                    'email': email,
+                    'auth': auth,
+                    'cmd': 'setFoundStatus',
+                    'gameCode': gameCode,
+                    'playerId': userId,
+                  };
+
+                  // Send the command
+                  _channel.sink.add(jsonEncode(command));
+                }
               },
-              child: const Icon(Symbols.emoji_people_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
+              child: const Icon(Symbols.hand_gesture, fill: 1, weight: 700, grade: 200, opticalSize: 24),
             ),
             SizedBox(height: 10),
             FloatingActionButton(
+              heroTag: 'button2',
               onPressed: () {
                 //TODO: Naviguer vers l'écran Chat
                 Navigator.push(
@@ -531,6 +569,7 @@ Future<void> _initializeState() async {
             ),
             SizedBox(height: 10),
             FloatingActionButton(
+              heroTag: 'button3',
               onPressed: () {
                 //TODO: Naviguer vers la liste des joueurs
                 Navigator.push(
