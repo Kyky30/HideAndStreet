@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hide_and_street/api/PurchaseApi.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'api/PremiumStatus.dart';
 
+import 'chat_model.dart';
 import 'home.dart';
 import 'l10n/l10n.dart';
 import 'login.dart';
@@ -24,7 +26,15 @@ void main() async{
 
   print('Is Premium: $premium');
 
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ChatModel()),
+        // Ajoutez d'autres providers si nécessaire
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

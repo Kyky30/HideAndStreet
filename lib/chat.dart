@@ -1,41 +1,50 @@
-import 'package:flutter/material.dart';
-import 'package:web_socket_channel/io.dart';
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+import 'chatWebSocket.dart';
+import 'chat_model.dart';
+
+
 class Chat extends StatefulWidget {
+  final String email;
+  final String gameCode;
+  final Stream broadcastChannel;
+
+  const Chat({
+    Key? key,
+    required this.email,
+    required this.gameCode,
+    required this.broadcastChannel,
+  }) : super(key: key);
+
   @override
-  final email;
-  final gameCode;
-  final Stream broadcastStream;
-
-
-  const Chat({super.key, this.email, this.gameCode, required this.broadcastStream});
-  _Chat createState() => _Chat();
+  _ChatState createState() => _ChatState();
 }
 
-class _Chat extends State<Chat> {
+class _ChatState extends State<Chat> {
   final TextEditingController _controller = TextEditingController();
-  final WebSocketChannel _channel = IOWebSocketChannel.connect('wss://app.hideandstreet.furrball.fr/getPlayerlist');
-  final List<String> _messages = [];
+  late final WebSocketChannel _channel;
 
   @override
   void initState() {
+    _channel = WebSocketManager().channel;
     super.initState();
-    widget.broadcastStream.listen((message) {
-      print("🎈🥳 Message received: $message");
-      final Map<String, dynamic> data = jsonDecode(message);
-      if (data['cmd'] == 'ReceiveMessage') {
-        setState(() {
-          _messages.add(data['message']);
-        });
-      }
-    });
+    // N'écoutez pas les messages dans initState, cela sera géré ailleurs
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Utiliser la même instance de WebSocketChannel partagée
   }
 
   @override
   Widget build(BuildContext context) {
+    var chatModel = Provider.of<ChatModel>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Chat Page'),
@@ -44,10 +53,10 @@ class _Chat extends State<Chat> {
         children: [
           Expanded(
             child: ListView.builder(
-              itemCount: _messages.length,
+              itemCount: chatModel.messages.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(_messages[index]),
+                  title: Text(chatModel.messages[index]),
                 );
               },
             ),

@@ -10,11 +10,14 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'chat.dart';
 import 'PreferencesManager.dart';
+import 'chatWebSocket.dart';
+import 'chat_model.dart';
 import 'inGamePlayerList.dart';
 
 class GameMap extends StatefulWidget {
@@ -155,7 +158,7 @@ class _GameMapState extends State<GameMap> {
       setState(() {
         currentPosition = position;
         latestPositionSentToServer = position;
-        _channel = IOWebSocketChannel.connect('wss://app.hideandstreet.furrball.fr/getPlayerlist');
+        _channel = WebSocketManager().channel;
         timeStampDebutPartie = widget.timeStampDebutPartie;
         tempsDePartie = widget.tempsDePartie;
         tempsDeCachette = widget.tempsDeCachette;
@@ -176,8 +179,14 @@ class _GameMapState extends State<GameMap> {
     broadcastStream = _channel.stream.asBroadcastStream();
 
     broadcastStream.listen((message) {
+
       print('Received message: $message');
       Map<String, dynamic> data = jsonDecode(message);
+      if (data['cmd'] == 'ReceiveMessage') {
+        // Utilisez le modèle de chat existant pour ajouter le message
+        print("?? ${data['message']}");
+        Provider.of<ChatModel>(context, listen: false).addMessage(data['message']);
+      }
       if (data['cmd'] == 'playerOutOfZone' && data['playerId'] != userId) {
         print('Player out of zone: ${data['playerId']}');
 
@@ -526,200 +535,242 @@ class _GameMapState extends State<GameMap> {
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
-    } else {
-      return Scaffold(
-        body: Column(
-          children: [
-            Center(
-              child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(height: 40),
-                  Center(
-                    child:
-                    Row (
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          isCachetteActive ? 'Timer Cachette : ' : 'Timer Partie : ' ,
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: "Poppins"),
-                        ),
-                        CountdownTimer(
-                          endTime: isCachetteActive ? endTimeCachette : endTimePartie,
-                          textStyle: TextStyle(fontSize: 25, color: Colors.red, fontWeight: FontWeight.bold, fontFamily: "Poppins"),
-                          onEnd: () {
-                            print('Timer ${isCachetteActive ? 'Cachette' : 'Partie'} ended');
-                            if (!isCachetteActive) {
-                              //TODO: Procédure de fin de partie
-                              Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(builder: (context) => winPage(isSeekerWin: false)),
-                                    (Route<dynamic> route) => false,
-                              );
-                              print("🚨🚨🚨FIN DE PARTIE🚨🚨🚨");
-                            }
-                            else {
-                              //TODO: Procédure de fin de cachette
-                              print("🚨🚨FIN DE CACHETTE🚨🚨");
-                            }
-
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 20),
-            Expanded(
-              child: FlutterMap(
-                options: MapOptions(
-                  initialCenter: LatLng(
-                      currentPosition.latitude, currentPosition.longitude),
-                  initialZoom: 15,
-                ),
-                children: [
-                  TileLayer(
-                    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  ),
-                  CurrentLocationLayer(),
-                  MarkerLayer(markers: markers),
-                  MarkerLayer(markers: seekerMarkers),
-                  CircleLayer(circles: [
-                    CircleMarker(
-                      point: tapPosition,
-                      color: Colors.grey.withOpacity(0.5),
-                      borderColor: Colors.black,
-                      borderStrokeWidth: 2,
-                      useRadiusInMeter: true,
-                      radius: radius, //en mètres
-                    ),
-                  ]),
-                ],
-              ),
-            ),
-            ValueListenableBuilder<bool>(
-              valueListenable: isOutsideZoneNotifier,
-              builder: (context, isOutsideZone, child) {
-                return Text(
-                  isOutsideZone ? "Vous êtes en dehors de la zone" : "Vous êtes dans la zone",
-                  style: TextStyle(fontSize: 22.0, fontFamily: "Poppins", fontWeight: FontWeight.w600,color: isOutsideZone ? Colors.red : Colors.green),
-                );
-              },
-            ),
-            if (isBlindModeEnabled == true)
-              ElevatedButton(
-                onPressed: () {
-                  print("���");
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: SmoothRectangleBorder(
-                    borderRadius: SmoothBorderRadius(
-                      cornerRadius: 20,
-                      cornerSmoothing: 1,
-                    ),
-                  ),
-                  minimumSize: Size(MediaQuery.of(context).size.width - 30, 80),
-                  backgroundColor: const Color(0xFF373967),
-                  foregroundColor: const Color(0xFF212348),
-                ),
-                child: Text(
-                  AppLocalizations.of(context)!.connexion,
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
-                ),
-              ),
-          ],
-        ),
-        floatingActionButton: isBlindModeEnabled == false
-            ? Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            if (amITheSeeker == false && amIFound == false)
-              FloatingActionButton(
-                heroTag: 'button2',
-                onPressed: () async {
-                  bool? result = await showDialog<bool>(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text('Confirmation'),
-                        content: Text('Have you been found?'),
-                        actions: <Widget>[
-                          TextButton(
-                            child: Text('No'),
-                            onPressed: () {
-                              Navigator.of(context).pop(false);
-                            },
-                          ),
-                          TextButton(
-                            child: Text('Yes'),
-                            onPressed: () {
-                              Navigator.of(context).pop(true);
-                            },
+      return Consumer<ChatModel>(
+          builder: (context, chatModel, child) {
+            if (isLoading) {
+              return const Scaffold(
+                body: Center(child: CircularProgressIndicator()),
+              );
+            } else {
+              return Scaffold(
+                body: Column(
+                  children: [
+                    Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(height: 40),
+                          Center(
+                            child:
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  isCachetteActive
+                                      ? 'Timer Cachette : '
+                                      : 'Timer Partie : ',
+                                  style: TextStyle(fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Poppins"),
+                                ),
+                                CountdownTimer(
+                                  endTime: isCachetteActive
+                                      ? endTimeCachette
+                                      : endTimePartie,
+                                  textStyle: TextStyle(fontSize: 25,
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Poppins"),
+                                  onEnd: () {
+                                    print('Timer ${isCachetteActive
+                                        ? 'Cachette'
+                                        : 'Partie'} ended');
+                                    if (!isCachetteActive) {
+                                      //TODO: Procédure de fin de partie
+                                      Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(builder: (context) =>
+                                            winPage(isSeekerWin: false)),
+                                            (Route<dynamic> route) => false,
+                                      );
+                                      print("🚨🚨🚨FIN DE PARTIE🚨🚨🚨");
+                                    }
+                                    else {
+                                      //TODO: Procédure de fin de cachette
+                                      print("🚨🚨FIN DE CACHETTE🚨🚨");
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
                         ],
-                      );
-                    },
-                  );
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Expanded(
+                      child: FlutterMap(
+                        options: MapOptions(
+                          initialCenter: LatLng(
+                              currentPosition.latitude,
+                              currentPosition.longitude),
+                          initialZoom: 15,
+                        ),
+                        children: [
+                          TileLayer(
+                            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                          ),
+                          CurrentLocationLayer(),
+                          MarkerLayer(markers: markers),
+                          MarkerLayer(markers: seekerMarkers),
+                          CircleLayer(circles: [
+                            CircleMarker(
+                              point: tapPosition,
+                              color: Colors.grey.withOpacity(0.5),
+                              borderColor: Colors.black,
+                              borderStrokeWidth: 2,
+                              useRadiusInMeter: true,
+                              radius: radius, //en mètres
+                            ),
+                          ]),
+                        ],
+                      ),
+                    ),
+                    ValueListenableBuilder<bool>(
+                      valueListenable: isOutsideZoneNotifier,
+                      builder: (context, isOutsideZone, child) {
+                        return Text(
+                          isOutsideZone
+                              ? "Vous êtes en dehors de la zone"
+                              : "Vous êtes dans la zone",
+                          style: TextStyle(fontSize: 22.0,
+                              fontFamily: "Poppins",
+                              fontWeight: FontWeight.w600,
+                              color: isOutsideZone ? Colors.red : Colors.green),
+                        );
+                      },
+                    ),
+                    if (isBlindModeEnabled == true)
+                      ElevatedButton(
+                        onPressed: () {
+                          print("���");
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: SmoothRectangleBorder(
+                            borderRadius: SmoothBorderRadius(
+                              cornerRadius: 20,
+                              cornerSmoothing: 1,
+                            ),
+                          ),
+                          minimumSize: Size(MediaQuery
+                              .of(context)
+                              .size
+                              .width - 30, 80),
+                          backgroundColor: const Color(0xFF373967),
+                          foregroundColor: const Color(0xFF212348),
+                        ),
+                        child: Text(
+                          AppLocalizations.of(context)!.connexion,
+                          style: const TextStyle(fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'Poppins',
+                              color: Colors.white),
+                        ),
+                      ),
+                  ],
+                ),
+                floatingActionButton: isBlindModeEnabled == false
+                    ? Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    if (amITheSeeker == false && amIFound == false)
+                      FloatingActionButton(
+                        heroTag: 'button2',
+                        onPressed: () async {
+                          bool? result = await showDialog<bool>(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('Confirmation'),
+                                content: Text('Have you been found?'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: Text('No'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop(false);
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: Text('Yes'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop(true);
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
 
-                  if (result == true) {
-                    // Send 'ihavebeenfound' command to the server
-                    String auth = "chatappauthkey231r4";
-                    String gameCode = widget.gameCode;
+                          if (result == true) {
+                            // Send 'ihavebeenfound' command to the server
+                            String auth = "chatappauthkey231r4";
+                            String gameCode = widget.gameCode;
 
-                    // Prepare the command
-                    Map<String, String> command = {
-                      'email': email,
-                      'auth': auth,
-                      'cmd': 'setFoundStatus',
-                      'gameCode': gameCode,
-                      'playerId': userId,
-                    };
+                            // Prepare the command
+                            Map<String, String> command = {
+                              'email': email,
+                              'auth': auth,
+                              'cmd': 'setFoundStatus',
+                              'gameCode': gameCode,
+                              'playerId': userId,
+                            };
 
-                    // Send the command
-                    _channel.sink.add(jsonEncode(command));
+                            // Send the command
+                            _channel.sink.add(jsonEncode(command));
 
-                    //Local
-                    amIFound = true;
-                  }
-                },
-                child: const Icon(Symbols.hand_gesture, fill: 1, weight: 700, grade: 200, opticalSize: 24),
-              ),
-            SizedBox(height: 10),
-            FloatingActionButton(
-              heroTag: 'button2',
-              onPressed: () {
-                //TODO: Naviguer vers l'écran Chat
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Chat(email: email, gameCode: widget.gameCode, broadcastStream: broadcastStream)),
-                );
-              },
-              child: const Icon(Symbols.chat_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
-            ),
-            SizedBox(height: 10),
-            FloatingActionButton(
-              heroTag: 'button3',
-              onPressed: () {
-                //TODO: Naviguer vers la liste des joueurs
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => inGamePlayerlist(gameCode: widget.gameCode,)),
-                );
-              },
-              child: const Icon(Symbols.people_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
-            ),
-            SizedBox(height: 40),
-          ],
-        )
-            : null,
+                            //Local
+                            amIFound = true;
+                          }
+                        },
+                        child: const Icon(Symbols.hand_gesture, fill: 1,
+                            weight: 700,
+                            grade: 200,
+                            opticalSize: 24),
+                      ),
+                    SizedBox(height: 10),
+                    FloatingActionButton(
+                      heroTag: 'button2',
+                      onPressed: () {
+                        // Naviguer vers l'écran Chat
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Chat(
+                              email: email,
+                              gameCode: widget.gameCode,
+                              broadcastChannel: broadcastStream,
+                            ),
+                          ),
+                        );
+                      },
+                      child: const Icon(Symbols.chat_rounded, fill: 1,
+                          weight: 700,
+                          grade: 200,
+                          opticalSize: 24),
+                    ),
+                    SizedBox(height: 10),
+                    FloatingActionButton(
+                      heroTag: 'button3',
+                      onPressed: () {
+                        //TODO: Naviguer vers la liste des joueurs
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) =>
+                              inGamePlayerlist(gameCode: widget.gameCode,)),
+                        );
+                      },
+                      child: const Icon(Symbols.people_rounded, fill: 1,
+                          weight: 700,
+                          grade: 200,
+                          opticalSize: 24),
+                    ),
+                    SizedBox(height: 40),
+                  ],
+                )
+                    : null,
 
-      );
-    }
+              );
+            }
+          });
   }
 }
