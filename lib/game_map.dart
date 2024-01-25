@@ -740,11 +740,13 @@ class _GameMapState extends State<GameMap> {
                     children: [
                       FloatingActionButton(
                         heroTag: 'button2',
-                        onPressed: () {
+                        onPressed: () async {
                           // Naviguer vers l'écran Chat
                           chatIsOpen = true;
                           newMessage = false;
-                          Navigator.push(
+                          setState(() {}); // Mettre à jour l'interface utilisateur
+
+                          await Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => Chat(
@@ -754,6 +756,10 @@ class _GameMapState extends State<GameMap> {
                               ),
                             ),
                           );
+
+                          // Mettre à jour l'état après le retour du Chat
+                          chatIsOpen = false;
+                          setState(() {});
                         },
                         child: const Icon(Symbols.chat_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
                       ),

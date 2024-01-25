@@ -49,7 +49,14 @@ class _ChatState extends State<Chat> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat Page'),
+        title: Text('Chat Screen'),
+        leading: IconButton(
+        icon: Icon(Icons.arrow_back),
+        onPressed: () {
+        // Autres logiques si nécessaire...
+        Navigator.pop(context); // Utilisez Navigator.pop pour revenir à l'écran précédent
+        },
+        ),
       ),
       body: Column(
         children: [
