@@ -57,6 +57,9 @@ dependencies:
   shared_preferences: ^2.2.2
   share: ^2.0.4
   google_mobile_ads: ^4.0.0
+  awesome_notifications: ^0.8.2
+  image_gallery_saver: ^2.0.3
+  path_provider: ^2.1.2
 
 
 dev_dependencies:
