@@ -89,6 +89,9 @@ class _GameMapState extends State<GameMap> {
   List<Marker> seekerMarkers = [];
   List<Marker> markers = [];
 
+  bool chatIsOpen = false;
+  bool newMessage = false;
+
   @override
   void initState() {
     super.initState();
@@ -185,6 +188,11 @@ class _GameMapState extends State<GameMap> {
       if (data['cmd'] == 'ReceiveMessage') {
         // Utilisez le modèle de chat existant pour ajouter le message
         print("?? ${data['message']}");
+        if(chatIsOpen == false)
+        {
+          newMessage = true;
+          setState(() {});
+        }
         Provider.of<ChatModel>(context, listen: false).addMessage(data['message'], data['email'], data['username']);
       }
       if (data['cmd'] == 'playerOutOfZone' && data['playerId'] != userId) {
@@ -565,7 +573,6 @@ class _GameMapState extends State<GameMap> {
                                     fontFamily: "Poppins",
                                   ),
                                 ),
-
                                 CountdownTimer(
                                   endTime: isCachetteActive
                                       ? endTimeCachette
@@ -737,7 +744,7 @@ class _GameMapState extends State<GameMap> {
                                     },
                                   ),
                                   TextButton(
-                                    child: Text(AppLocalizations.of(context)!.oui),
+                                    child: Text('Yes'),
                                     onPressed: () {
                                       Navigator.of(context).pop(true);
                                     },
@@ -747,76 +754,92 @@ class _GameMapState extends State<GameMap> {
                             },
                           );
 
-                          if (result == true) {
-                            // Send 'ihavebeenfound' command to the server
-                            String auth = "chatappauthkey231r4";
-                            String gameCode = widget.gameCode;
+                        if (result == true) {
+                          // Send 'ihavebeenfound' command to the server
+                          String auth = "chatappauthkey231r4";
+                          String gameCode = widget.gameCode;
 
-                            // Prepare the command
-                            Map<String, String> command = {
-                              'email': email,
-                              'auth': auth,
-                              'cmd': 'setFoundStatus',
-                              'gameCode': gameCode,
-                              'playerId': userId,
-                            };
+                          // Prepare the command
+                          Map<String, String> command = {
+                            'email': email,
+                            'auth': auth,
+                            'cmd': 'setFoundStatus',
+                            'gameCode': gameCode,
+                            'playerId': userId,
+                          };
 
-                            // Send the command
-                            _channel.sink.add(jsonEncode(command));
+                          // Send the command
+                          _channel.sink.add(jsonEncode(command));
 
-                            //Local
-                            amIFound = true;
-                          }
+                          //Local
+                          amIFound = true;
+                        }
+                      },
+                      child: const Icon(Symbols.hand_gesture, fill: 1,
+                          weight: 700,
+                          grade: 200,
+                          opticalSize: 24),
+                    ),
+                  SizedBox(height: 10),
+                  Stack(
+                    children: [
+                      FloatingActionButton(
+                        heroTag: 'button2',
+                        onPressed: () {
+                          // Naviguer vers l'écran Chat
+                          chatIsOpen = true;
+                          newMessage = false;
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Chat(
+                                email: email,
+                                gameCode: widget.gameCode,
+                                broadcastChannel: broadcastStream,
+                              ),
+                            ),
+                          );
                         },
-                        child: const Icon(Symbols.hand_gesture, fill: 1,
-                            weight: 700,
-                            grade: 200,
-                            opticalSize: 24),
+                        child: const Icon(Symbols.chat_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
                       ),
-                    SizedBox(height: 10),
-                    FloatingActionButton(
-                      heroTag: 'button2',
-                      onPressed: () {
-                        // Naviguer vers l'écran Chat
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Chat(
-                              email: email,
-                              gameCode: widget.gameCode,
-                              broadcastChannel: broadcastStream,
+                      if (newMessage)
+                        Positioned(
+                          top: 8,
+                          right: 8,
+                          child: Container(
+                            width: 10,
+                            height: 10,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.red,
                             ),
                           ),
-                        );
-                      },
-                      child: const Icon(Symbols.chat_rounded, fill: 1,
-                          weight: 700,
-                          grade: 200,
-                          opticalSize: 24),
-                    ),
-                    SizedBox(height: 10),
-                    FloatingActionButton(
-                      heroTag: 'button3',
-                      onPressed: () {
-                        //TODO: Naviguer vers la liste des joueurs
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) =>
-                              inGamePlayerlist(gameCode: widget.gameCode,)),
-                        );
-                      },
-                      child: const Icon(Symbols.people_rounded, fill: 1,
-                          weight: 700,
-                          grade: 200,
-                          opticalSize: 24),
-                    ),
-                    SizedBox(height: 40),
-                  ],
-                )
-                    : null,
+                        ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  FloatingActionButton(
+                    heroTag: 'button3',
+                    onPressed: () {
+                      //TODO: Naviguer vers la liste des joueurs
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>
+                            inGamePlayerlist(gameCode: widget.gameCode,)),
+                      );
+                    },
+                    child: const Icon(Symbols.people_rounded, fill: 1,
+                        weight: 700,
+                        grade: 200,
+                        opticalSize: 24),
+                  ),
+                  SizedBox(height: 40),
+                ],
+              )
+                  : null,
 
-              );
-            }
-          });
+            );
+          }
+        });
   }
 }

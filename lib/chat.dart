@@ -148,10 +148,4 @@ class _ChatState extends State<Chat> {
       );
     }
   }
-
-  @override
-  void dispose() {
-    _channel.sink.close();
-    super.dispose();
-  }
 }
