@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'chatWebSocket.dart';
 import 'chat_model.dart';
