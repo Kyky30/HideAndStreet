@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'home.dart';
-import 'package:hide_and_street/map_conf_screen.dart';
+import 'map_conf_screen.dart';
+import 'room_joining.dart';
+import 'package:figma_squircle/figma_squircle.dart';
 
 class winPage extends StatefulWidget {
   final bool isSeekerWin;
@@ -28,18 +30,24 @@ class _winPage extends State<winPage> {
             ),
             SizedBox(height: 20),
             // Bouton "Retour à l'accueil" dans un fond blanc
-            Container(
-              color: Colors.white,
-              padding: EdgeInsets.all(10),
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/home');
-                },
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.blue, // Couleur du bouton
-                  onPrimary: Colors.white, // Couleur du texte
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/home');
+              },
+              style: ElevatedButton.styleFrom(
+                shape: SmoothRectangleBorder(
+                  borderRadius: SmoothBorderRadius(
+                    cornerRadius: 20,
+                    cornerSmoothing: 1,
+                  ),
                 ),
-                child: Text('Retour à l\'accueil'),
+                minimumSize: Size(MediaQuery.of(context).size.width - 30, 80),
+                backgroundColor: const Color(0xFF373967),
+                foregroundColor: const Color(0xFF212348),
+              ),
+              child: Text(
+                'Retour à l\'accueil',
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
               ),
             ),
             SizedBox(height: 20),
@@ -54,11 +62,47 @@ class _winPage extends State<winPage> {
                 );
               },
               style: ElevatedButton.styleFrom(
-                minimumSize: Size(150, 50),
-                primary: Colors.blue, // Couleur du bouton
-                onPrimary: Colors.white, // Couleur du texte
+                shape: SmoothRectangleBorder(
+                  borderRadius: SmoothBorderRadius(
+                    cornerRadius: 20,
+                    cornerSmoothing: 1,
+                  ),
+                ),
+                minimumSize: Size(MediaQuery.of(context).size.width - 30, 80),
+                backgroundColor: const Color(0xFF373967),
+                foregroundColor: const Color(0xFF212348),
               ),
-              child: Text('Rejouer'),
+              child: Text(
+                'Rejoindre une nouvelle partie',
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
+              ),
+            ),
+            SizedBox(height: 20),
+            // Bouton pour rejoindre une nouvelle partie
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RoomJoiningPage(),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                shape: SmoothRectangleBorder(
+                  borderRadius: SmoothBorderRadius(
+                    cornerRadius: 20,
+                    cornerSmoothing: 1,
+                  ),
+                ),
+                minimumSize: Size(MediaQuery.of(context).size.width - 30, 80),
+                backgroundColor: const Color(0xFF373967),
+                foregroundColor: const Color(0xFF212348),
+              ),
+              child: Text(
+                'Rejoindre une nouvelle partie',
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
+              ),
             ),
           ],
         ),
@@ -66,17 +110,3 @@ class _winPage extends State<winPage> {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
