@@ -6,7 +6,8 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'chatWebSocket.dart';
 import 'chat_model.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 class Chat extends StatefulWidget {
   final String email;
@@ -49,7 +50,7 @@ class _ChatState extends State<Chat> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat Page'),
+        title: Text(AppLocalizations.of(context)!.titre_page_chat),
       ),
       body: Column(
         children: [
@@ -112,11 +113,11 @@ class _ChatState extends State<Chat> {
                   child: TextField(
                     controller: _controller,
                     textInputAction: TextInputAction.go,
-                    decoration: InputDecoration(hintText: 'Send a message'),
+                    decoration: InputDecoration(hintText: AppLocalizations.of(context)!.hint_send_message),
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.send),
+                  icon: const Icon(Symbols.send_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
                   onPressed: _sendMessage,
                 ),
               ],

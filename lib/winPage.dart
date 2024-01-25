@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hide_and_street/map_conf_screen.dart';
+import 'package:hide_and_street/room_joining.dart';
+import 'package:figma_squircle/figma_squircle.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class winPage extends StatefulWidget {
   final bool isSeekerWin;
@@ -13,12 +18,84 @@ class _winPage extends State<winPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text(
-          widget.isSeekerWin ? 'Seeker Win' : 'Hider Win',
-          style: TextStyle(fontSize: 24),
+      body: Column(
+        children : [
+          SizedBox(height: 40),
+          Text(
+            AppLocalizations.of(context)!.game_over,
+            style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.black),
+          ),
+          Text(
+          widget.isSeekerWin ? AppLocalizations.of(context)!.victoire_chercheur : AppLocalizations.of(context)!.victoire_cacheur,
+            style: const TextStyle(fontSize: 25, fontWeight: FontWeight.w500, fontFamily: 'Poppins', color: Colors.blue),
         ),
+
+
+        Spacer(),
+
+        Center(
+          child: Column(
+            children : [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MapConfScreen(),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  shape: SmoothRectangleBorder(
+                    borderRadius: SmoothBorderRadius(
+                      cornerRadius: 20,
+                      cornerSmoothing: 1,
+                    ),
+                  ),
+                  minimumSize: Size(MediaQuery.of(context).size.width - 30, 80),
+                  backgroundColor: const Color(0xFF373967),
+                  foregroundColor: const Color(0xFF212348),
+                ),
+                child: Text(
+                  AppLocalizations.of(context)!.creerpartie,
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RoomJoiningPage(),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  shape: SmoothRectangleBorder(
+                    borderRadius: SmoothBorderRadius(
+                      cornerRadius: 20,
+                      cornerSmoothing: 1,
+                    ),
+                  ),
+                  minimumSize: Size(MediaQuery.of(context).size.width - 30, 80),
+                  backgroundColor: const Color(0xFF373967),
+                  foregroundColor: const Color(0xFF212348),
+                ),
+                child: Text(
+                  AppLocalizations.of(context)!.rejoindrepartie,
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
+                ),
+              ),
+              SizedBox(height: 20),
+            ]
+          ),
+        ),
+        ],
+
       ),
+
     );
   }
 }

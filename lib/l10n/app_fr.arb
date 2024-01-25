@@ -363,8 +363,119 @@
     "texte_popup_avertissement": "Respecte la propriété d'autrui en jouant à Hide & Street.",
     "@texte_popup_avertissement": {
         "description": "Texte de popup d'avertissement"
+    },
+    "titre_popup_pas_assez_joueurs": "Pas assez de joueurs",
+    "@titre_popup_pas_assez_joueurs": {
+        "description": "Titre de popup de pas assez de joueurs"
+    },
+    "texte_popup_pas_assez_joueurs": "Il faut au moins 2 joueurs pour commencer une partie !",
+    "@texte_popup_pas_assez_joueurs": {
+        "description": "Texte de popup de pas assez de joueurs"
+    },
+    "titre_popup_pas_assez_chercheurs": "Pas assez de chercheurs",
+    "@titre_popup_pas_assez_chercheurs": {
+        "description": "Titre de popup de pas assez de chercheurs"
+    },
+    "texte_popup_pas_assez_chercheurs": "Il faut au moins 1 chercheur pour commencer une partie !",
+    "@texte_popup_pas_assez_chercheurs": {
+        "description": "Texte de popup de pas assez de chercheurs"
+    },
+    "titre_popup_pas_assez_cacheurs": "Pas assez de caché",
+    "@titre_popup_pas_assez_cacheurs": {
+        "description": "Titre de popup de pas assez de cacheurs"
+    },
+    "texte_popup_pas_assez_cacheurs": "Il faut au moins 1 caché pour commencer une partie ! Décochez au moins une personne !",
+    "@texte_popup_pas_assez_cacheurs": {
+        "description": "Texte de popup de pas assez de cacheurs"
+    },
+    "titre_page_chat": "Chat de partie",
+    "@titre_page_chat": {
+        "description": "Titre de page de chat"
+    },
+    "hint_send_message": "Envoyer un message",
+    "@hint_send_message": {
+        "description": "Hint de envoyer un message"
+    },
+    "timer_cachette": "Temps de cache : ",
+    "@timer_cachette": {
+        "description": "Timer de cachette"
+    },
+    "timer_chasse": "Temps de jeu : ",
+    "@timer_chasse": {
+        "description": "Timer de chasse"
+    },
+    "etat_en_dehors_de_la_zone": "Vous êtes en dehors de la zone",
+    "@etat_en_dehors_de_la_zone": {
+        "description": "Etat de en dehors de la zone"
+    },
+    "etat_dans_la_zone": "Vous êtes dans la zone",
+    "@etat_dans_la_zone": {
+        "description": "Etat de dans la zone"
+    },
+    "confirmer_trouve": "Avez vous été trouvé ?",
+    "@confirmer_trouve": {
+        "description": "Bouton de confirmer avoir été trouvé"
+    },
+    "oui": "Oui",
+    "@oui": {
+        "description": "Bouton de oui"
+    },
+    "non": "Non",
+    "@non": {
+        "description": "Bouton de non"
+    },
+    "etat_trouve": "Trouvé",
+    "@etat_trouve": {
+        "description": "Etat de trouvé"
+    },
+    "etat_non_trouve": "Non trouvé",
+    "@etat_non_trouve": {
+        "description": "Etat de non trouvé"
+    },
+    "chercheur": "Chercheur",
+    "@chercheur": {
+        "description": "Bouton de chercheur"
+    },
+    "plus_5m" : "+5m",
+    "@+5m": {
+        "description": "Bouton de +5m"
+    },
+    "moins_5m" : "-5m",
+    "@-5m": {
+        "description": "Bouton de -5m"
+    },
+    "rayon": "Rayon",
+    "@rayon": {
+        "description": "Bouton de rayon"
+    },
+    "joueurs": "Joueurs",
+    "@joueurs": {
+        "description": "Bouton de joueurs"
+    },
+    "seekers": "Chercheurs",
+    "@seekers": {
+        "description": "Bouton de chercheurs"
+    },
+    "titre_popup_mail_envoye": "Mail envoyé",
+    "@titre_popup_mail_envoye": {
+        "description": "Titre de popup de mail envoyé"
+    },
+    "texte_popup_mail_envoye": "Un mail vous a été envoyé pour réinitialiser votre mot de passe",
+    "@texte_popup_mail_envoye": {
+        "description": "Texte de popup de mail envoyé"
+    },
+    "game_over": "Partie terminé !",
+    "@game_over": {
+        "description": "Bouton de game over"
+    },
+    "victoire_chercheur": "Les chercheurs ont gagné !",
+    "@victoire_chercheur": {
+        "description": "Bouton de victoire des chercheurs"
+    },
+    "victoire_cacheur": "Les cachés ont gagné !",
+    "@victoire_cacheur": {
+        "description": "Bouton de victoire des cacheurs"
     }
-
 
 
 }

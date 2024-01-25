@@ -557,12 +557,15 @@ class _GameMapState extends State<GameMap> {
                               children: [
                                 Text(
                                   isCachetteActive
-                                      ? 'Timer Cachette : '
-                                      : 'Timer Partie : ',
-                                  style: TextStyle(fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: "Poppins"),
+                                      ? AppLocalizations.of(context)!.timer_cachette
+                                      : AppLocalizations.of(context)!.timer_chasse,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "Poppins",
+                                  ),
                                 ),
+
                                 CountdownTimer(
                                   endTime: isCachetteActive
                                       ? endTimeCachette
@@ -631,8 +634,8 @@ class _GameMapState extends State<GameMap> {
                       builder: (context, isOutsideZone, child) {
                         return Text(
                           isOutsideZone
-                              ? "Vous êtes en dehors de la zone"
-                              : "Vous êtes dans la zone",
+                              ? AppLocalizations.of(context)!.etat_en_dehors_de_la_zone
+                              : AppLocalizations.of(context)!.etat_dans_la_zone,
                           style: TextStyle(fontSize: 22.0,
                               fontFamily: "Poppins",
                               fontWeight: FontWeight.w600,
@@ -642,8 +645,51 @@ class _GameMapState extends State<GameMap> {
                     ),
                     if (isBlindModeEnabled == true)
                       ElevatedButton(
-                        onPressed: () {
-                          print("���");
+                        onPressed: () async {
+                          bool? result = await showDialog<bool>(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text(AppLocalizations.of(context)!.confirmer),
+                                content: Text(AppLocalizations.of(context)!.confirmer_trouve),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: Text(AppLocalizations.of(context)!.non),
+                                    onPressed: () {
+                                      Navigator.of(context).pop(false);
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: Text(AppLocalizations.of(context)!.oui),
+                                    onPressed: () {
+                                      Navigator.of(context).pop(true);
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+
+                          if (result == true) {
+                            // Send 'ihavebeenfound' command to the server
+                            String auth = "chatappauthkey231r4";
+                            String gameCode = widget.gameCode;
+
+                            // Prepare the command
+                            Map<String, String> command = {
+                              'email': email,
+                              'auth': auth,
+                              'cmd': 'setFoundStatus',
+                              'gameCode': gameCode,
+                              'playerId': userId,
+                            };
+
+                            // Send the command
+                            _channel.sink.add(jsonEncode(command));
+
+                            //Local
+                            amIFound = true;
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           shape: SmoothRectangleBorder(
@@ -681,17 +727,17 @@ class _GameMapState extends State<GameMap> {
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                title: Text('Confirmation'),
-                                content: Text('Have you been found?'),
+                                title: Text(AppLocalizations.of(context)!.confirmer),
+                                content: Text(AppLocalizations.of(context)!.confirmer_trouve),
                                 actions: <Widget>[
                                   TextButton(
-                                    child: Text('No'),
+                                    child: Text(AppLocalizations.of(context)!.non),
                                     onPressed: () {
                                       Navigator.of(context).pop(false);
                                     },
                                   ),
                                   TextButton(
-                                    child: Text('Yes'),
+                                    child: Text(AppLocalizations.of(context)!.oui),
                                     onPressed: () {
                                       Navigator.of(context).pop(true);
                                     },

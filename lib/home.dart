@@ -34,8 +34,8 @@ class _HomePageState extends State<HomePage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Bienvenue'),
-            content: Text('Ceci est votre premier lancement de l\'application.'),
+            title: Text(AppLocalizations.of(context)!.titre_popup_avertissement),
+            content: Text(AppLocalizations.of(context)!.texte_popup_avertissement),
             actions: <Widget>[
               TextButton(
                 child: Text('OK'),

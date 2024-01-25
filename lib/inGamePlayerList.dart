@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class inGamePlayerlist extends StatefulWidget {
   final String gameCode;
@@ -90,7 +91,7 @@ class _inGamePlayerlist extends State<inGamePlayerlist> {
                         color: player['found'] ? Colors.red : Colors.blue,
                     ),
                     title: Text(player['username'], style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
-                    subtitle: Text(player['seeker'] ? 'Chercheur' : (player['found'] ? 'Trouvé' : 'Non trouvé'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, fontFamily: 'Poppins')),
+                    subtitle: Text(player['seeker'] ? AppLocalizations.of(context)!.seekers : (player['found'] ? AppLocalizations.of(context)!.etat_trouve : AppLocalizations.of(context)!.etat_non_trouve), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, fontFamily: 'Poppins')),
                   ),
                 );
               },

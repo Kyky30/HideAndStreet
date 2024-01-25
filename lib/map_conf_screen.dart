@@ -161,12 +161,12 @@ class _MapConfScreenState extends State<MapConfScreen> {
                       fixedSize: Size(MediaQuery.of(context).size.width / 3.5 - 20, 80),
                     ),
                     child: Text(
-                      '- 5 m',
+                      AppLocalizations.of(context)!.moins_5m,
                       style: const TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),
                   Text(
-                    'Rayon : ${radius.toStringAsFixed(2)} m',
+                    AppLocalizations.of(context)!.rayon + ' : ${radius.toStringAsFixed(2)}',
                     style: const TextStyle(fontSize: 18),
                   ),
                   ElevatedButton(
@@ -187,7 +187,7 @@ class _MapConfScreenState extends State<MapConfScreen> {
                       fixedSize: Size(MediaQuery.of(context).size.width / 3.5 - 20, 80),
                     ),
                     child: Text(
-                      '+ 5 m',
+                      AppLocalizations.of(context)!.plus_5m,
                       style: const TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),
