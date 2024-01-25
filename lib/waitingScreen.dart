@@ -106,14 +106,13 @@ class _WaitingScreenState extends State<WaitingScreen> {
 
   void _startGame() {
 
-    if(playersData.length < 1){ // TODO: remettre à 2
-      print("🚷 Il manque des joueurs");
+    if(selectedPlayers.length < 1){
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(AppLocalizations.of(context)!.titre_popup_champ_vide),
-            content: Text(AppLocalizations.of(context)!.texte_popup_champ_vide),
+            title: Text(AppLocalizations.of(context)!.titre_popup_pas_assez_chercheurs),
+            content: Text(AppLocalizations.of(context)!.texte_popup_pas_assez_chercheurs),
             actions: [
               TextButton(
                 onPressed: () {
@@ -127,13 +126,13 @@ class _WaitingScreenState extends State<WaitingScreen> {
       );
       return;
     }
-    else if(selectedPlayers.length < 1){
+    else if (selectedPlayers.length > (playersData.length-1)) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(AppLocalizations.of(context)!.accueil),
-            content: Text(AppLocalizations.of(context)!.partagerCodePartie),
+            title: Text(AppLocalizations.of(context)!.titre_popup_pas_assez_cacheurs),
+            content: Text(AppLocalizations.of(context)!.texte_popup_pas_assez_cacheurs),
             actions: [
               TextButton(
                 onPressed: () {
@@ -146,6 +145,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
         },
       );
       return;
+
     }
     String auth = "chatappauthkey231r4";
     _channel.sink.add('{"email":"$email","auth":"$auth","cmd":"startGame", "gameCode":"${widget.gameCode}", "startingTimeStamp": ${DateTime.now().millisecondsSinceEpoch}}');
@@ -240,12 +240,12 @@ class _WaitingScreenState extends State<WaitingScreen> {
                         Row(
                           children: [
                             Text(
-                              "Joueurs",
+                              AppLocalizations.of(context)!.joueurs,
                               style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
                             ),
                             Spacer(),
                             Text(
-                              "Chercheur ?",
+                              AppLocalizations.of(context)!.seekers,
                               style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
                             ),
                           ],
@@ -424,5 +424,3 @@ class _PlayerListItemState extends State<PlayerListItem> {
     );
   }
 }
-
-//TODO: Ajouter des contrainte des contrainte sur le bouton start du waiting screen (au moins 2 joueurs, au moins 1 seeker, etc.)

@@ -74,8 +74,22 @@ class ForgotenPassword extends StatelessWidget {
                 channel.sink.close();
 
                 // Afficher un message à l'utilisateur
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Un email de réinitialisation a été envoyé.')),
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text(AppLocalizations.of(context)!.titre_popup_mail_envoye),
+                      content: Text(AppLocalizations.of(context)!.texte_popup_mail_envoye),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text("OK"),
+                        ),
+                      ],
+                    );
+                  },
                 );
               },
               style: ElevatedButton.styleFrom(
