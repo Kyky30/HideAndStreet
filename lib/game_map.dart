@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:hide_and_street/winPage.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -229,6 +230,14 @@ class _GameMapState extends State<GameMap> {
             markers.remove(marker);
           });
         });
+      }
+      if(data['cmd'] == 'seekerWin')
+      {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => winPage(isSeekerWin: true)),
+              (Route<dynamic> route) => false,
+        );
       }
     });
   }
@@ -546,6 +555,11 @@ class _GameMapState extends State<GameMap> {
                             print('Timer ${isCachetteActive ? 'Cachette' : 'Partie'} ended');
                             if (!isCachetteActive) {
                               //TODO: Procédure de fin de partie
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(builder: (context) => winPage(isSeekerWin: false)),
+                                    (Route<dynamic> route) => false,
+                              );
                               print("🚨🚨🚨FIN DE PARTIE🚨🚨🚨");
                             }
                             else {
