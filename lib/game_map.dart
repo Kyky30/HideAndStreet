@@ -185,7 +185,7 @@ class _GameMapState extends State<GameMap> {
       if (data['cmd'] == 'ReceiveMessage') {
         // Utilisez le modèle de chat existant pour ajouter le message
         print("?? ${data['message']}");
-        Provider.of<ChatModel>(context, listen: false).addMessage(data['message']);
+        Provider.of<ChatModel>(context, listen: false).addMessage(data['message'], data['email'], data['username']);
       }
       if (data['cmd'] == 'playerOutOfZone' && data['playerId'] != userId) {
         print('Player out of zone: ${data['playerId']}');
