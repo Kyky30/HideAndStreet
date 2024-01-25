@@ -169,7 +169,7 @@ class _GameMapState extends State<GameMap> {
     await _getPref();
     _sendPosToServer();
     _checkSeekers();
-    // _startLocationCheckTimer();
+    _startLocationCheckTimer();
     _startTimers();
 
     // Convert the stream to a broadcast stream
@@ -451,18 +451,18 @@ class _GameMapState extends State<GameMap> {
     );
   }
 
-  // void _startLocationCheckTimer() {
-  //   timer1seconde = Timer.periodic(Duration(seconds: 5), (timer) {
-  //     print("1️⃣ Timer tick...  ------------------");
-  //     _updatePosition();
-  //     _checkPlayerLocation();
-  //   });
-  //   timer5secondes = Timer.periodic(Duration(seconds: 5), (timer) {
-  //     print("5️⃣ Timer tick...  ------------------");
-  //     _sendPosToServer();
-  //   });
-  //
-  // }
+  void _startLocationCheckTimer() {
+    timer1seconde = Timer.periodic(Duration(seconds: 5), (timer) {
+      print("1️⃣ Timer tick...  ------------------");
+      _updatePosition();
+      _checkPlayerLocation();
+    });
+    timer5secondes = Timer.periodic(Duration(seconds: 5), (timer) {
+      print("5️⃣ Timer tick...  ------------------");
+      _sendPosToServer();
+    });
+
+  }
 
 
   Future<void> _checkPlayerLocation() async {
