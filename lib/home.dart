@@ -75,20 +75,7 @@ class HomePage extends StatelessWidget {
                     ),
                     const SizedBox(height: 6),
 
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const Chat(partieId:0,)
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: Size(MediaQuery.of(context).size.width - 30, 50),
-                      ),
-                      child: const Text('Chat'),
-                    ),
+
                     const SizedBox(height: 6),
                     ElevatedButton(
                       onPressed: () {

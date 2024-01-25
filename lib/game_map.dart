@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:math';
+///import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/current_remaining_time.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
@@ -185,7 +185,7 @@ class _GameMapState extends State<GameMap> {
             // Naviguer vers l'écran Chat
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const Chat(partieId:0,)),
+              MaterialPageRoute(builder: (context) => const Chat()),
             );
           },
           child: Icon(Icons.chat),

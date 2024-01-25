@@ -97,6 +97,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
     return controller.stream.first;
   }
 
+
   void _togglePlayerSelection(String playerName) {
     setState(() {
       if (selectedPlayers.contains(playerName)) {
@@ -159,11 +160,11 @@ class _WaitingScreenState extends State<WaitingScreen> {
             ),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const Chat(partieId: partieId,)
+                  builder: (context) => Chat(email: email),
                 ),
               );
             },
