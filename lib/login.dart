@@ -153,13 +153,13 @@ class _LoginPageState extends State<LoginPage> {
               Align(
                 alignment: Alignment.topCenter,
                 child: Container(
-                  margin: const EdgeInsets.fromLTRB(15, 75, 15, 0),
+                  margin: EdgeInsets.fromLTRB(15, 0.1 * MediaQuery.of(context).size.height, 15, 0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Image.asset(
                         'assets/logo_connect.png',
-                        width: MediaQuery.of(context).size.width - 150,
+                        width: 0.8 * MediaQuery.of(context).size.width,
                         fit: BoxFit.contain,
                       ),
                     ],
@@ -174,13 +174,13 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       Text(
                         AppLocalizations.of(context)!.mail,
-                        style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: 0.05 * MediaQuery.of(context).size.width, fontWeight: FontWeight.bold),
                       ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                         child: Container(
-                          height: 80,
-                          width: MediaQuery.of(context).size.width - 30,
+                          height: 0.08 * MediaQuery.of(context).size.height,
+                          width: 0.9 * MediaQuery.of(context).size.width,
                           child: TextField(
                             decoration: InputDecoration(
                               filled: true,
@@ -195,16 +195,16 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 0.02 * MediaQuery.of(context).size.height),
                       Text(
                         AppLocalizations.of(context)!.mdp,
-                        style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: 0.05 * MediaQuery.of(context).size.width, fontWeight: FontWeight.bold),
                       ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                         child: Container(
-                          height: 80,
-                          width: MediaQuery.of(context).size.width - 30,
+                          height: 0.08 * MediaQuery.of(context).size.height,
+                          width: 0.9 * MediaQuery.of(context).size.width,
                           child: TextField(
                             obscureText: true,
                             decoration: InputDecoration(
@@ -220,15 +220,14 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 16),
-
-
+                      SizedBox(height: 0.02 * MediaQuery.of(context).size.height),
                     ],
                   ),
                 ),
               ),
+              Spacer(),
               Positioned(
-                bottom: 20,
+                bottom: 0.04 * MediaQuery.of(context).size.height,
                 left: 0,
                 right: 0,
                 child: Padding(
@@ -244,23 +243,23 @@ class _LoginPageState extends State<LoginPage> {
                           style: ElevatedButton.styleFrom(
                             shape: SmoothRectangleBorder(
                               borderRadius: SmoothBorderRadius(
-                                cornerRadius: 20,
+                                cornerRadius: 0.02 * MediaQuery.of(context).size.height,
                                 cornerSmoothing: 1,
                               ),
                             ),
-                            minimumSize: Size(MediaQuery.of(context).size.width - 30, 80),
+                            minimumSize: Size(0.9 * MediaQuery.of(context).size.width, 0.1 * MediaQuery.of(context).size.height),
                             backgroundColor: const Color(0xFF373967),
                             foregroundColor: const Color(0xFF212348),
                           ),
                           child: Text(
                             AppLocalizations.of(context)!.connexion,
-                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
+                            style: TextStyle(fontSize: 0.06 * MediaQuery.of(context).size.width, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
                           ),
                         ),
                       ),
                       Center(
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center, // Ajoutez cette ligne
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             TextButton(
                               onPressed: () {
@@ -273,7 +272,7 @@ class _LoginPageState extends State<LoginPage> {
                               },
                               child: Text(
                                 AppLocalizations.of(context)!.inscription,
-                                style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+                                style: TextStyle(color: Colors.black, fontSize: 0.04 * MediaQuery.of(context).size.width, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
                               ),
                             ),
                             TextButton(
@@ -287,29 +286,10 @@ class _LoginPageState extends State<LoginPage> {
                               },
                               child: Text(
                                 AppLocalizations.of(context)!.mdpoublie,
-                                style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+                                style: TextStyle(color: Colors.black, fontSize: 0.04 * MediaQuery.of(context).size.width, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
                               ),
                             ),
                           ],
-                        ),
-                      ),
-
-                      // TODO: supprimer ce bouton avant version finale
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                        child: TextButton(
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => MyHomePage(),
-                              ),
-                            );
-                          },
-                          child: Text(
-                            "Passer connexion -> dev",
-                            style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
-                          ),
                         ),
                       ),
                     ],

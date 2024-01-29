@@ -6,11 +6,20 @@ import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 
+// ... (imports restants)
+
 class ForgotenPassword extends StatelessWidget {
   const ForgotenPassword({Key? key});
 
+  double getScaleFactor(BuildContext context) {
+    final mediaQueryData = MediaQuery.of(context);
+    return mediaQueryData.textScaleFactor;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final scaleFactor = getScaleFactor(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.mdpOublieTitle),
@@ -26,18 +35,18 @@ class ForgotenPassword extends StatelessWidget {
                   Align(
                     alignment: Alignment.topLeft,
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                      padding: EdgeInsets.fromLTRB(15 * scaleFactor, 0, 15 * scaleFactor, 0),
                       child: Text(
                         AppLocalizations.of(context)!.mail,
-                        style: const TextStyle(
-                          fontSize: 18,
+                        style: TextStyle(
+                          fontSize: 18 * scaleFactor,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(15, 8, 15, 0),
+                    padding: EdgeInsets.fromLTRB(15 * scaleFactor, 8 * scaleFactor, 15 * scaleFactor, 0),
                     child: TextField(
                       decoration: InputDecoration(
                         filled: true,
@@ -45,7 +54,7 @@ class ForgotenPassword extends StatelessWidget {
                         hintText: AppLocalizations.of(context)!.whatmail,
                         border: OutlineInputBorder(
                           borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(20.0),
+                          borderRadius: BorderRadius.circular(20.0 * scaleFactor),
                         ),
                       ),
                     ),
@@ -56,7 +65,7 @@ class ForgotenPassword extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+            padding: EdgeInsets.fromLTRB(15 * scaleFactor, 0, 15 * scaleFactor, 0),
             child: ElevatedButton(
               onPressed: () async {
                 String email = 'dorianrochette@gmail.com';
@@ -95,18 +104,18 @@ class ForgotenPassword extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 shape: SmoothRectangleBorder(
                   borderRadius: SmoothBorderRadius(
-                    cornerRadius: 20,
+                    cornerRadius: 20 * scaleFactor,
                     cornerSmoothing: 1,
                   ),
                 ),
-                minimumSize: const Size(double.infinity, 70),
+                minimumSize: Size(double.infinity, 70 * scaleFactor),
                 backgroundColor: const Color(0xFF373967),
                 foregroundColor: const Color(0xFF212348),
               ),
               child: Text(
                 AppLocalizations.of(context)!.continuer,
-                style: const TextStyle(
-                  fontSize: 20,
+                style: TextStyle(
+                  fontSize: 20 * scaleFactor,
                   fontWeight: FontWeight.w600,
                   fontFamily: 'Poppins',
                   color: Colors.white,
@@ -114,7 +123,7 @@ class ForgotenPassword extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 25),
+          SizedBox(height: 25 * scaleFactor),
         ],
       ),
     );

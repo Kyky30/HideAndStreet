@@ -233,7 +233,14 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
+  double getScaleFactor(BuildContext context) {
+    final mediaQueryData = MediaQuery.of(context);
+    return mediaQueryData.textScaleFactor;
+  }
+
   Widget _buildStepPage(RegistrationStep step) {
+    final scaleFactor = getScaleFactor(context);
+
     return SingleChildScrollView(
       child: Stack(
         children: [
@@ -270,7 +277,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     padding: const EdgeInsets.all(16.0),
                     child: Text(
                       step.title,
-                      style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 24.0 * scaleFactor, fontWeight: FontWeight.bold),
                     ),
                   ),
                   for (var field in step.fields)
@@ -286,11 +293,11 @@ class _RegisterPageState extends State<RegisterPage> {
                         style: ElevatedButton.styleFrom(
                           shape: SmoothRectangleBorder(
                             borderRadius: SmoothBorderRadius(
-                              cornerRadius: 20,
+                              cornerRadius: 20 * scaleFactor,
                               cornerSmoothing: 1,
                             ),
                           ),
-                          minimumSize: const Size(double.infinity, 70),
+                          minimumSize: Size(double.infinity, 70 * scaleFactor),
                           backgroundColor: const Color(0xFF373967),
                           foregroundColor: const Color(0xFF212348),
                         ),
@@ -314,7 +321,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           hintText: field.hint,
                           border: OutlineInputBorder(
                             borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(20.0),
+                            borderRadius: BorderRadius.circular(20.0 * scaleFactor),
                           ),
                         ),
                       ),
@@ -324,7 +331,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
           ),
           Positioned(
-            bottom: 20,
+            bottom: 20 * scaleFactor,
             left: 0,
             right: 0,
             child: Padding(
@@ -342,17 +349,17 @@ class _RegisterPageState extends State<RegisterPage> {
                 style: ElevatedButton.styleFrom(
                   shape: SmoothRectangleBorder(
                     borderRadius: SmoothBorderRadius(
-                      cornerRadius: 20,
+                      cornerRadius: 20 * scaleFactor,
                       cornerSmoothing: 1,
                     ),
                   ),
-                  minimumSize: const Size(double.infinity, 80),
+                  minimumSize: Size(double.infinity, 80 * scaleFactor),
                   backgroundColor: const Color(0xFF373967),
                   foregroundColor: const Color(0xFF212348),
                 ),
                 child: Text(
                   step.buttonText,
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
+                  style: TextStyle(fontSize: 20 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
                 ),
               ),
             ),

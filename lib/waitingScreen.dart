@@ -229,44 +229,56 @@ class _WaitingScreenState extends State<WaitingScreen> {
           SizedBox(height: 20),
 
           Center(
-            child:Container(
-              width:MediaQuery.of(context).size.width - 30,
-              child:
-                  Column(
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width - 30,
-                        child:
-                        Row(
-                          children: [
-                            Text(
-                              AppLocalizations.of(context)!.joueurs,
-                              style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
-                            ),
-                            Spacer(),
-                            Text(
-                              AppLocalizations.of(context)!.seekers,
-                              style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
-                            ),
-                          ],
-                        )
-                        ,
-                      ),
-                      StreamBuilder<List<String>>(
-                        stream: _playerListController.stream,
-                        initialData: [],
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          } else {
-                            return PlayerList(players: snapshot.data!, onTogglePlayer: _togglePlayerSelection, isAdmin: widget.isAdmin, selectedPlayers: selectedPlayers, selectedPlayersStream: _selectedPlayersController.stream);
-                          }
-                        },
-                      ),
-                    ],
+            child: Container(
+              width: MediaQuery.of(context).size.width - 30,
+              child: Column(
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width - 30,
+                    child: Row(
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.joueurs,
+                          style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'Poppins',
+                              backgroundColor: Colors.white),
+                        ),
+                        Spacer(),
+                        Text(
+                          AppLocalizations.of(context)!.seekers,
+                          style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'Poppins',
+                              backgroundColor: Colors.white),
+                        ),
+                      ],
+                    ),
                   ),
+                  StreamBuilder<List<String>>(
+                    stream: _playerListController.stream,
+                    initialData: [],
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        return PlayerList(
+                            players: snapshot.data!,
+                            onTogglePlayer: _togglePlayerSelection,
+                            isAdmin: widget.isAdmin,
+                            selectedPlayers: selectedPlayers,
+                            selectedPlayersStream: _selectedPlayersController.stream);
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
           Spacer(),
@@ -286,25 +298,23 @@ class _WaitingScreenState extends State<WaitingScreen> {
             ),
             child: Container(
                 width: MediaQuery.of(context).size.width - 80,
-                child:
-                Center(
-                  child:
-                  Row (
+                child: Center(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         AppLocalizations.of(context)!.partagerCodePartie + ' : ',
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Poppins', color: Colors.white),
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w500, fontFamily: 'Poppins', color: Colors.white),
                       ),
                       Text(
                         widget.gameCode,
-                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, fontFamily: 'Poppins', color: Colors.white),
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w700, fontFamily: 'Poppins', color: Colors.white),
                       ),
                     ],
                   ),
-                )
-
-            )
+                )),
           ),
 
           SizedBox(height: 16),
@@ -315,7 +325,8 @@ class _WaitingScreenState extends State<WaitingScreen> {
               onPressed: _startGame,
               child: Text(
                 AppLocalizations.of(context)!.start_game,
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
+                style: const TextStyle(
+                    fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
               ),
               style: ElevatedButton.styleFrom(
                 shape: SmoothRectangleBorder(

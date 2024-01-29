@@ -1,4 +1,3 @@
-// account_settings.dart
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,12 +11,7 @@ import 'api/PremiumStatus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
-
-
-
-
 class AccountSettingsPage extends StatefulWidget {
-
   const AccountSettingsPage();
 
   @override
@@ -33,7 +27,6 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
   String CGUUrl = 'https://hideandstreet.furrball.fr/CGU.html';
   String CGVUrl = 'https://hideandstreet.furrball.fr/CGV.html';
   String PrivacyUrl = 'https://hideandstreet.furrball.fr/Privacy.html';
-
 
   @override
   void initState() {
@@ -60,7 +53,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     // Remove any stored user credentials or tokens
-    await prefs.remove('loggedin');  // Assuming 'loggedin' is used for storing authentication status
+    await prefs.remove('loggedin'); // Assuming 'loggedin' is used for storing authentication status
 
     // Clear the blind mode preference
     await PreferencesManager.setBlindToggle(false);
@@ -80,8 +73,15 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     }
   }
 
+  double getScaleFactor(BuildContext context) {
+    final mediaQueryData = MediaQuery.of(context);
+    return mediaQueryData.textScaleFactor;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final scaleFactor = getScaleFactor(context);
+
     return Scaffold(
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -90,32 +90,32 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 20),
+              SizedBox(height: 20 * scaleFactor),
               if (PremiumStatus().isPremium == false)
                 Container(
                   child: AdWidget(
                     ad: AdmobHelper.getBannerAd()..load(),
                     key: UniqueKey(),
                   ),
-                  height: 75,
+                  height: 75 * scaleFactor,
                 ),
               Card(
                 child: ListTile(
                   leading: Icon(Symbols.account_box_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
-                  title: Text(username, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
-                  subtitle: Text(email, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, fontFamily: 'Poppins')),
+                  title: Text(username, style: TextStyle(fontSize: 18 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
+                  subtitle: Text(email, style: TextStyle(fontSize: 16 * scaleFactor, fontWeight: FontWeight.w400, fontFamily: 'Poppins')),
                 ),
               ),
               Card(
                 child: ListTile(
                   leading: Icon(Symbols.calendar_today_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
-                  title: Text(AppLocalizations.of(context)!.creationDateLabel, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
-                  subtitle: Text(DateCreation, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, fontFamily: 'Poppins')),
+                  title: Text(AppLocalizations.of(context)!.creationDateLabel, style: TextStyle(fontSize: 18 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
+                  subtitle: Text(DateCreation, style: TextStyle(fontSize: 16 * scaleFactor, fontWeight: FontWeight.w400, fontFamily: 'Poppins')),
                 ),
               ),
               Card(
                 child: SwitchListTile(
-                  title: Text(AppLocalizations.of(context)!.blind_toggle_label, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
+                  title: Text(AppLocalizations.of(context)!.blind_toggle_label, style: TextStyle(fontSize: 18 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
                   value: isBlindModeEnabled,
                   onChanged: (value) {
                     setState(() {
@@ -131,20 +131,20 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                 style: ElevatedButton.styleFrom(
                   shape: SmoothRectangleBorder(
                     borderRadius: SmoothBorderRadius(
-                      cornerRadius: 20,
+                      cornerRadius: 20 * scaleFactor,
                       cornerSmoothing: 1,
                     ),
                   ),
-                  minimumSize: Size(MediaQuery.of(context).size.width - 30, 80),
+                  minimumSize: Size(MediaQuery.of(context).size.width - 30, 80 * scaleFactor),
                   backgroundColor: const Color(0xFF373967),
                   foregroundColor: const Color(0xFF212348),
                 ),
                 child: Text(
                   AppLocalizations.of(context)!.deconnexion,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white),
+                  style: TextStyle(fontSize: 20 * scaleFactor, fontWeight: FontWeight.w600, color: Colors.white),
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 20 * scaleFactor),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -154,7 +154,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                     },
                     child: Text(
                       AppLocalizations.of(context)!.cgu,
-                      style: const TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+                      style: TextStyle(color: Colors.black, fontSize: 13 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
                     ),
                   ),
                   TextButton(
@@ -163,7 +163,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                     },
                     child: Text(
                       AppLocalizations.of(context)!.cgv,
-                      style: const TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+                      style: TextStyle(color: Colors.black, fontSize: 13 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
                     ),
                   ),
                   TextButton(
@@ -172,7 +172,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                     },
                     child: Text(
                       AppLocalizations.of(context)!.privacy,
-                      style: const TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+                      style: TextStyle(color: Colors.black, fontSize: 13 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
                     ),
                   ),
                 ],

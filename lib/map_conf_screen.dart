@@ -1,13 +1,12 @@
-import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:figma_squircle/figma_squircle.dart';
 
 import 'room_creation.dart';
-
 import 'PreferencesManager.dart';
 
 class MapConfScreen extends StatefulWidget {
@@ -54,9 +53,7 @@ class _MapConfScreenState extends State<MapConfScreen> {
     // Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      // accessing the position and request users of the
-      // App to enable the location services.
+      // Location services are not enabled, don't continue accessing the position.
       return Future.error('Location services are disabled.');
     }
 
@@ -64,23 +61,17 @@ class _MapConfScreenState extends State<MapConfScreen> {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        // Permissions are denied, next time you could try
-        // requesting permissions again (this is also where
-        // Android's shouldShowRequestPermissionRationale
-        // returned true. According to Android guidelines
-        // your App should show an explanatory UI now.
+        // Permissions are denied, request permissions again.
         return Future.error('Location permissions are denied');
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
+      // Permissions are denied forever.
+      return Future.error('Location permissions are permanently denied.');
     }
 
-    // When we reach here, permissions are granted and we can
-    // continue accessing the position of the device.
+    // Permissions are granted, continue accessing the position of the device.
     return await Geolocator.getCurrentPosition();
   }
 
@@ -99,7 +90,7 @@ class _MapConfScreenState extends State<MapConfScreen> {
               child: FlutterMap(
                 options: MapOptions(
                   onTap: (_, tPosition) {
-                    if (isBlindModeEnabled == false) {
+                    if (!isBlindModeEnabled) {
                       setState(() {
                         tapPosition = tPosition;
                       });
@@ -120,14 +111,14 @@ class _MapConfScreenState extends State<MapConfScreen> {
                       borderColor: Colors.black,
                       borderStrokeWidth: 2,
                       useRadiusInMeter: true,
-                      radius: radius, //in meters
+                      radius: radius, // in meters
                     ),
                   ]),
                 ],
               ),
             ),
-            if (isBlindModeEnabled == false) ...[
-              // Afficher le Slider lorsque le mode aveugle est désactivé
+            if (!isBlindModeEnabled) ...[
+              // Display the Slider when blind mode is disabled
               Slider(
                 value: radius,
                 onChanged: (newRadius) {
@@ -139,7 +130,7 @@ class _MapConfScreenState extends State<MapConfScreen> {
                 max: 1000,
               ),
             ] else ...[
-              // Afficher la ligne avec la valeur de radius et les boutons lorsque le mode aveugle est activé
+              // Display the row with radius value and buttons when blind mode is enabled
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -191,7 +182,6 @@ class _MapConfScreenState extends State<MapConfScreen> {
                       style: const TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),
-
                 ],
               ),
             ],
@@ -226,7 +216,7 @@ class _MapConfScreenState extends State<MapConfScreen> {
                     style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
                   ),
                 ),
-                if (isBlindModeEnabled == false) ...[
+                if (!isBlindModeEnabled) ...[
                   ElevatedButton(
                     onPressed: () {
                       setState(() {
@@ -252,7 +242,7 @@ class _MapConfScreenState extends State<MapConfScreen> {
                 ],
               ],
             ),
-            const SizedBox(height: 20), //margin entre les boutons et le bas de l'écran
+            const SizedBox(height: 20), // Margin between buttons and the bottom of the screen
           ],
         ),
       );

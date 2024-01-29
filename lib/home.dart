@@ -19,7 +19,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   @override
   void initState() {
     super.initState();
@@ -51,12 +50,18 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  double getScaleFactor(BuildContext context) {
+    final mediaQueryData = MediaQuery.of(context);
+    return mediaQueryData.textScaleFactor;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final scaleFactor = getScaleFactor(context);
+
     return Scaffold(
       body: Stack(
         children: [
-
           // Image de fond
           Positioned.fill(
             child: Image.asset(
@@ -68,27 +73,26 @@ class _HomePageState extends State<HomePage> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween, // Align content at the top and bottom
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Logo en haut de la page
                 Container(
-                  margin: const EdgeInsets.fromLTRB(15, 75, 15, 0),
+                  margin: EdgeInsets.fromLTRB(15, 75 * scaleFactor, 15, 0),
                   child: Column(
                     children: [
                       Image.asset(
                         'assets/logo_home_menu.png',
-                        width: MediaQuery.of(context).size.width - 150,
+                        width: (MediaQuery.of(context).size.width - 150) * scaleFactor,
                         fit: BoxFit.contain,
                       ),
-                      const SizedBox(height: 10),
+                      SizedBox(height: 10 * scaleFactor),
                     ],
                   ),
                 ),
-                const SizedBox(height: 3),
-                // Spacer to fill the available space
-                const Spacer(),
-
+                SizedBox(height: 3 * scaleFactor),
+                // Spacer pour remplir l'espace disponible
+                Spacer(),
                 // Boutons pour créer et rejoindre une partie
                 ElevatedButton(
                   onPressed: () {
@@ -102,21 +106,20 @@ class _HomePageState extends State<HomePage> {
                   style: ElevatedButton.styleFrom(
                     shape: SmoothRectangleBorder(
                       borderRadius: SmoothBorderRadius(
-                        cornerRadius: 20,
+                        cornerRadius: 20 * scaleFactor,
                         cornerSmoothing: 1,
                       ),
                     ),
-                    minimumSize: Size(MediaQuery.of(context).size.width - 30, 80),
+                    minimumSize: Size(MediaQuery.of(context).size.width - 30, 80 * scaleFactor),
                     backgroundColor: const Color(0xFF373967),
                     foregroundColor: const Color(0xFF212348),
                   ),
                   child: Text(
                     AppLocalizations.of(context)!.creerpartie,
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
+                    style: TextStyle(fontSize: 20 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
                   ),
                 ),
-                const SizedBox(height: 16),
-
+                SizedBox(height: 16 * scaleFactor),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.push(
@@ -129,17 +132,17 @@ class _HomePageState extends State<HomePage> {
                   style: ElevatedButton.styleFrom(
                     shape: SmoothRectangleBorder(
                       borderRadius: SmoothBorderRadius(
-                        cornerRadius: 20,
+                        cornerRadius: 20 * scaleFactor,
                         cornerSmoothing: 1,
                       ),
                     ),
-                    minimumSize: Size(MediaQuery.of(context).size.width - 30, 80),
+                    minimumSize: Size(MediaQuery.of(context).size.width - 30, 80 * scaleFactor),
                     backgroundColor: const Color(0xFF373967),
                     foregroundColor: const Color(0xFF212348),
                   ),
                   child: Text(
                     AppLocalizations.of(context)!.rejoindrepartie,
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
+                    style: TextStyle(fontSize: 20 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
                   ),
                 ),
               ],
@@ -148,7 +151,5 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
-
-
   }
 }

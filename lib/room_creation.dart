@@ -10,6 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web_socket_channel/io.dart';
 
 
+// ... (imports restants)
+
 class RoomCreationPage extends StatefulWidget {
   final LatLng initialTapPosition;
   final double initialRadius;
@@ -28,6 +30,11 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
   late IOWebSocketChannel channel;
   String creatorId = '';
   String email = '';
+
+  double getScaleFactor(BuildContext context) {
+    final mediaQueryData = MediaQuery.of(context);
+    return mediaQueryData.textScaleFactor;
+  }
 
   @override
   void initState() {
@@ -109,8 +116,6 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
     }
   }
 
-
-
   void getCreatorId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -125,6 +130,7 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
     channel.sink.close();
     super.dispose();
   }
+
   int dureePartie = 0;
   int dureeCachette = 0;
 
@@ -174,19 +180,21 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
   ];
 
   Widget build(BuildContext context) {
+    final scaleFactor = getScaleFactor(context);
+
     return Scaffold(
       body: PageView.builder(
         controller: _pageController,
         itemCount: _steps(context).length,
         physics: NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
-          return _buildStepPage(_steps(context)[index]);
+          return _buildStepPage(_steps(context)[index], scaleFactor);
         },
       ),
     );
   }
 
-  Widget _buildStepPage(RoomCreationStep step) {
+  Widget _buildStepPage(RoomCreationStep step, double scaleFactor) {
     return SingleChildScrollView(
       child: Stack(
         children: [
@@ -199,13 +207,13 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
           Align(
             alignment: Alignment.topCenter,
             child: Container(
-              margin: const EdgeInsets.fromLTRB(15, 75, 15, 0),
+              margin: EdgeInsets.fromLTRB(15 * scaleFactor, 75 * scaleFactor, 15 * scaleFactor, 0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Image.asset(
                     step.logo,
-                    width: MediaQuery.of(context).size.width - 150,
+                    width: MediaQuery.of(context).size.width - 150 * scaleFactor,
                     fit: BoxFit.contain,
                   ),
                   const SizedBox(height: 10),
@@ -215,20 +223,20 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
           ),
           Positioned.fill(
             child: Padding(
-              padding: const EdgeInsets.only(top: 0.0),
+              padding: EdgeInsets.only(top: 0.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: EdgeInsets.all(16.0 * scaleFactor),
                     child: Text(
                       step.title,
-                      style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 24.0 * scaleFactor, fontWeight: FontWeight.bold),
                     ),
                   ),
                   for (var field in step.fields)
                     Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: EdgeInsets.all(16.0 * scaleFactor),
                       child: TextFormField(
                         key: field.key,
                         keyboardType: field.keyboardType,
@@ -238,7 +246,7 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
                           hintText: field.hint,
                           border: OutlineInputBorder(
                             borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(20.0),
+                            borderRadius: BorderRadius.circular(20.0 * scaleFactor),
                           ),
                         ),
                       ),
@@ -248,11 +256,11 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
             ),
           ),
           Positioned(
-            bottom: 20,
+            bottom: 20 * scaleFactor,
             left: 0,
             right: 0,
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(16.0 * scaleFactor),
               child: ElevatedButton(
                 onPressed: () {
                   if (step.onTap != null) {
@@ -262,17 +270,17 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
                 style: ElevatedButton.styleFrom(
                   shape: SmoothRectangleBorder(
                     borderRadius: SmoothBorderRadius(
-                      cornerRadius: 20,
+                      cornerRadius: 20 * scaleFactor,
                       cornerSmoothing: 1,
                     ),
                   ),
-                  minimumSize: const Size(double.infinity, 80),
+                  minimumSize: Size(double.infinity, 80 * scaleFactor),
                   backgroundColor: const Color(0xFF373967),
                   foregroundColor: const Color(0xFF212348),
                 ),
                 child: Text(
                   step.buttonText,
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
+                  style: TextStyle(fontSize: 20 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
                 ),
               ),
             ),
@@ -334,7 +342,7 @@ class RoomCreationField {
     this.key,
     this.keyboardType = TextInputType.text, // Set the default keyboard type to text
   });
-
 }
+
 
 

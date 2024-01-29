@@ -348,7 +348,7 @@
     "@cgv": {
         "description": "Bouton de conditions générales de vente"
     },
-    "privacy": "Politique de confidentialité",
+    "privacy": "Confidentialité",
     "@privacy": {
         "description": "Bouton de politique de confidentialité"
     },

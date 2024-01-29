@@ -8,6 +8,8 @@ import 'package:web_socket_channel/io.dart';
 
 import 'package:figma_squircle/figma_squircle.dart';
 
+// ... (imports restants)
+
 class RoomJoiningPage extends StatefulWidget {
   const RoomJoiningPage({Key? key}) : super(key: key);
 
@@ -20,6 +22,11 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
   late final IOWebSocketChannel _channel;
   String email = '';
   String userID = '';
+
+  double getScaleFactor(BuildContext context) {
+    final mediaQueryData = MediaQuery.of(context);
+    return mediaQueryData.textScaleFactor;
+  }
 
   @override
   void initState() {
@@ -111,18 +118,20 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
 
   @override
   Widget build(BuildContext context) {
+    final scaleFactor = getScaleFactor(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.rejoindrepartie),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16 * scaleFactor),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               AppLocalizations.of(context)!.codePartie,
-              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 24 * scaleFactor, fontWeight: FontWeight.bold),
             ),
             TextField(
               controller: _gameCodeController,
@@ -132,27 +141,27 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
                 hintText: AppLocalizations.of(context)!.exempleCodePartie,
                 border: OutlineInputBorder(
                   borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(20.0),
+                  borderRadius: BorderRadius.circular(20.0 * scaleFactor),
                 ),
               ),
             ),
-            SizedBox(height: 16.0),
+            SizedBox(height: 16.0 * scaleFactor),
             ElevatedButton(
               onPressed: _joinGame,
               style: ElevatedButton.styleFrom(
                 shape: SmoothRectangleBorder(
                   borderRadius: SmoothBorderRadius(
-                    cornerRadius: 20,
+                    cornerRadius: 20 * scaleFactor,
                     cornerSmoothing: 1,
                   ),
                 ),
-                minimumSize: const Size(double.infinity, 80),
+                minimumSize: Size(double.infinity, 80 * scaleFactor),
                 backgroundColor: const Color(0xFF373967),
                 foregroundColor: const Color(0xFF212348),
               ),
               child: Text(
                 AppLocalizations.of(context)!.rejoindre,
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
+                style: TextStyle(fontSize: 20 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
               ),
             ),
           ],
@@ -167,3 +176,4 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
     super.dispose();
   }
 }
+
