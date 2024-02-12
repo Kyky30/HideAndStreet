@@ -10,5 +10,8 @@ class L10n {
     const Locale('pt'),
     const Locale('pl'),
     const Locale('sv'),
+    const Locale('fi'),
+    const Locale('fi'),
+    const Locale('ja'),
   ];
 }
