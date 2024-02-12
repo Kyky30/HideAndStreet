@@ -44,11 +44,6 @@ class GameMap extends StatefulWidget {
   State<GameMap> createState() => _GameMapState();
 }
 class _GameMapState extends State<GameMap> {
-  //Joueur
-  late bool amITheSeeker = false;
-
-  //Joueurs
-  late List<String> seekersIds = [];
 
   //Positions
   late Position latestPositionSentToServer;
@@ -177,20 +172,12 @@ class _GameMapState extends State<GameMap> {
         isCachetteActive = true;
       });
     });
-<<<<<<< Updated upstream
+
     await _getPref();
     _sendPosToServer();
     _checkSeekers();
     _startLocationCheckTimer();
     _startTimers();
-=======
-  });
-  await _getPref();
-  _sendPosToServer();
-  _startLocationCheckTimer();
-  _startTimers();
-  _checkSeekers();
->>>>>>> Stashed changes
 
     // Convert the stream to a broadcast stream
     broadcastStream = _channel.stream.asBroadcastStream();
@@ -271,21 +258,6 @@ class _GameMapState extends State<GameMap> {
         );
       }
     });
-  }
-
-  void _checkSeekers() async {
-    print(widget.playerList);
-    //Parcourir la liste des joueurs selectionnés
-    widget.playerList.forEach((player, value) {
-      if (player == userId && value == true) {
-        amITheSeeker = true;
-        seekersIds.add(player);
-      } else if (player != userId && value == true) {
-        seekersIds.add(player);
-      }
-    });
-    print("🔎 Je suis le seeker : $amITheSeeker");
-    print("🔎 Liste des seekers : $seekersIds");
   }
 
   Future<void> _getPref() async {
