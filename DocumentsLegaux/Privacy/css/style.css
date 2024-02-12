@@ -1,0 +1,38 @@
+/* Style pour les CGU */
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    margin: 20px;
+  }
+  
+  h1, h2, h3 {
+    color: #008080;
+  }
+  
+  h2 {
+    border-bottom: 2px solid #008080;
+    padding-bottom: 5px;
+    margin-top: 20px;
+  }
+  
+  p {
+    margin-bottom: 15px;
+  }
+  
+  ul, ol {
+    margin-bottom: 15px;
+  }
+  
+  a {
+    color: #008080;
+    text-decoration: underline;
+  }
+  
+  a:hover {
+    color: #006666;
+  }
+  
+  /* Ajoutez d'autres styles selon les besoins spécifiques des CGU */
+  

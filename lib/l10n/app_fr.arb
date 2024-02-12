@@ -379,6 +379,7 @@
     "texte_popup_pas_assez_chercheurs": "Il faut au moins 1 chercheur pour commencer une partie !",
     "@texte_popup_pas_assez_chercheurs": {
         "description": "Texte de popup de pas assez de chercheurs"
+<<<<<<< Updated upstream
     },
     "titre_popup_pas_assez_cacheurs": "Pas assez de caché",
     "@titre_popup_pas_assez_cacheurs": {
@@ -475,6 +476,8 @@
     "victoire_cacheur": "Les cachés ont gagné !",
     "@victoire_cacheur": {
         "description": "Bouton de victoire des cacheurs"
+=======
+>>>>>>> Stashed changes
     }
 
 

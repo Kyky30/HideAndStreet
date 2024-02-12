@@ -74,6 +74,7 @@
   "titre_popup_pas_assez_joueurs": "Not enough players",
   "texte_popup_pas_assez_joueurs": "You must be at least 2 players to start the game !",
   "titre_popup_pas_assez_chercheurs": "Not enough seekers",
+<<<<<<< Updated upstream
   "texte_popup_pas_assez_chercheurs": "You must be at least 1 seeker to start the game !",
   "titre_popup_pas_assez_cacheurs": "Not enough hiders",
   "texte_popup_pas_assez_cacheurs": "You must be at least 1 hider to start the game ! Uncheck at least one seeker to start the game !",
@@ -101,5 +102,8 @@
   "game_over": "Game over",
   "victoire_chercheurs": "Seekers win !",
   "victoire_cachette": "Hiders win !"
+=======
+  "texte_popup_pas_assez_chercheurs": "You must be at least 1 seeker to start the game !"
+>>>>>>> Stashed changes
 
 }
