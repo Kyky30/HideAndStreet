@@ -1,4 +1,3 @@
-```json
 {
 "connexion": "ログイン",
 "deconnexion": "ログアウト",
@@ -120,4 +119,3 @@
 "codePartie": "ゲームコード",
 "exempleCodePartie": "例：ABCDEF"
 }
-```

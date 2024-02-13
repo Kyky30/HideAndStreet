@@ -13,5 +13,11 @@ class L10n {
     const Locale('fi'),
     const Locale('fi'),
     const Locale('ja'),
+    const Locale('zh'),
+    const Locale('ko'),
+    const Locale('ru'),
+    const Locale('ar'),
+    const Locale('vi'),
+
   ];
 }
