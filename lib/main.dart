@@ -10,7 +10,7 @@ import 'monetization/PremiumStatus.dart';
 import 'chat_model.dart';
 import 'home.dart';
 import 'l10n/l10n.dart';
-import 'login.dart';
+import 'Page/login.dart';
 import 'shop.dart';
 import 'account_settings.dart';
 

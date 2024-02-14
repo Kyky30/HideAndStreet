@@ -1,40 +1,19 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:hide_and_street/home.dart';
 import 'package:hide_and_street/main.dart';
 import 'package:hide_and_street/password_forgoten.dart';
 import 'package:figma_squircle/figma_squircle.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:web_socket_channel/io.dart';
+import '../WebSocketManager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
-import 'register.dart';
+import '../register.dart';
 
-class WebSocketManager {
-  static IOWebSocketChannel? _channel;
+import 'package:hide_and_street/components/alertbox.dart';
+import '../components/buttons.dart';
 
-  static Future<void> connect(String email) async {
-    _channel = IOWebSocketChannel.connect('wss://app.hideandstreet.furrball.fr/login$email');
-  }
-
-  static Future<void> closeConnection() async {
-    _channel?.sink.close();
-  }
-
-  static Future<void> sendLoginData(String auth, String email, String password) async {
-    if (_channel != null) {
-      String loginData = "{'auth':'$auth','cmd':'login','email':'$email','hash':'$password'}";
-      _channel!.sink.add(loginData);
-    }
-  }
-
-  static Stream<dynamic> getStream() {
-    return _channel?.stream ?? Stream.empty();
-  }
-}
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key? key});
@@ -44,12 +23,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  // Déclarez les variables email et password ici
+
   String email = '';
-
   String password = '';
-
-
 
   Future<void> login(BuildContext context) async {
     if (email.isEmpty || password.isEmpty) {
@@ -58,17 +34,15 @@ class _LoginPageState extends State<LoginPage> {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(AppLocalizations.of(context)!.titre_popup_champ_vide),
-            content: Text(AppLocalizations.of(context)!.texte_popup_champ_vide),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text("OK"),
-              ),
-            ],
+          return CustomAlertDialog1
+            (
+              title: AppLocalizations.of(context)!.titre_popup_champ_vide,
+              content: AppLocalizations.of(context)!.texte_popup_champ_vide,
+              buttonText: "OK",
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              scaleFactor: MediaQuery.of(context).textScaleFactor,
           );
         },
       );
@@ -89,17 +63,14 @@ class _LoginPageState extends State<LoginPage> {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text(AppLocalizations.of(context)!.popup_titre_email_mdp_incorrect),
-                content: Text(AppLocalizations.of(context)!.popup_texte_email_mdp_incorrect),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text("OK"),
-                  ),
-                ],
+              return CustomAlertDialog1(
+                title: AppLocalizations.of(context)!.popup_titre_email_mdp_incorrect,
+                content: AppLocalizations.of(context)!.popup_texte_email_mdp_incorrect,
+                buttonText: "OK",
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                scaleFactor: MediaQuery.of(context).textScaleFactor,
               );
             },
           );
@@ -135,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
         }
       });
 
-      await WebSocketManager.sendLoginData(auth, email, password);
+      await WebSocketManager.sendData("'cmd':'login','email':'$email','hash':'$password'");
     } catch (e) {
       print("Erreur lors de la connexion au WebSocket: " + e.toString());
       // Gérer l'erreur de connexion, par exemple, afficher un message d'erreur à l'utilisateur

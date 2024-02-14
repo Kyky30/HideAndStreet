@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:hide_and_street/PreferencesManager.dart';
-import 'package:hide_and_street/login.dart';
+import 'package:hide_and_street/Page/login.dart';
 import 'package:web_socket_channel/io.dart';
 
 
