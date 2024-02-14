@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-
-// ... (imports restants)
+import 'package:hide_and_street/components/buttons.dart';
+import 'package:hide_and_street/components/input.dart';
+import 'package:hide_and_street/components/alertbox.dart';
 
 class ForgotenPassword extends StatelessWidget {
   const ForgotenPassword({Key? key});
@@ -19,6 +20,24 @@ class ForgotenPassword extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scaleFactor = getScaleFactor(context);
+
+    String email = '';
+    final emailController = TextEditingController();
+
+    @override
+    void initState() {
+      // Listen for changes in the text fields
+      emailController.addListener(() {
+        email = emailController.text;
+      });
+
+    }
+
+    @override
+    void dispose() {
+      // Clean up the controllers when the widget is disposed
+      emailController.dispose();
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -47,16 +66,11 @@ class ForgotenPassword extends StatelessWidget {
                   ),
                   Padding(
                     padding: EdgeInsets.fromLTRB(15 * scaleFactor, 8 * scaleFactor, 15 * scaleFactor, 0),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.grey[300],
-                        hintText: AppLocalizations.of(context)!.whatmail,
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(20.0 * scaleFactor),
-                        ),
-                      ),
+                    child:
+                    CustomTextField(
+                      hintText: AppLocalizations.of(context)!.whatmail,
+                      controller: emailController,
+                      scaleFactor: scaleFactor,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -66,61 +80,42 @@ class ForgotenPassword extends StatelessWidget {
           ),
           Padding(
             padding: EdgeInsets.fromLTRB(15 * scaleFactor, 0, 15 * scaleFactor, 0),
-            child: ElevatedButton(
+            child: CustomButton(
+              text: AppLocalizations.of(context)!.continuer,
               onPressed: () async {
-                String email = 'dorianrochette@gmail.com';
-                String auth = "chatappauthkey231r4";
+                  String email = 'dorianrochette@gmail.com';
+                  String auth = "chatappauthkey231r4";
 
-                // Créer une connexion WebSocket
-                WebSocketChannel channel = IOWebSocketChannel.connect('wss://app.hideandstreet.furrball.fr/resetPassword');
+                  // Créer une connexion WebSocket
+                  WebSocketChannel channel = IOWebSocketChannel.connect('wss://app.hideandstreet.furrball.fr/resetPassword');
 
-                // Envoyer la demande de réinitialisation du mot de passe au backend
-                String resetData = '{"auth":"$auth","email":"$email","cmd":"resetPassword"}';
-                print(resetData);
-                channel.sink.add(resetData);
+                  // Envoyer la demande de réinitialisation du mot de passe au backend
+                  String resetData = '{"auth":"$auth","email":"$email","cmd":"resetPassword"}';
+                  print(resetData);
+                  channel.sink.add(resetData);
 
-                // Fermer la connexion après envoi
-                channel.sink.close();
+                  // Fermer la connexion après envoi
+                  channel.sink.close();
 
-                // Afficher un message à l'utilisateur
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text(AppLocalizations.of(context)!.titre_popup_mail_envoye),
-                      content: Text(AppLocalizations.of(context)!.texte_popup_mail_envoye),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
+                  // Afficher un message à l'utilisateur
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return CustomAlertDialog1
+                        (
+                          title: AppLocalizations.of(context)!.titre_popup_mail_envoye,
+                          content: AppLocalizations.of(context)!.texte_popup_mail_envoye,
+                          buttonText: "OK",
+                          onPressed: ()
+                          {
                             Navigator.of(context).pop();
                           },
-                          child: Text("OK"),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                shape: SmoothRectangleBorder(
-                  borderRadius: SmoothBorderRadius(
-                    cornerRadius: 20 * scaleFactor,
-                    cornerSmoothing: 1,
-                  ),
-                ),
-                minimumSize: Size(double.infinity, 70 * scaleFactor),
-                backgroundColor: const Color(0xFF373967),
-                foregroundColor: const Color(0xFF212348),
-              ),
-              child: Text(
-                AppLocalizations.of(context)!.continuer,
-                style: TextStyle(
-                  fontSize: 20 * scaleFactor,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: 'Poppins',
-                  color: Colors.white,
-                ),
-              ),
+                          scaleFactor: scaleFactor
+                      );
+                    },
+                  );
+                },
+              scaleFactor: scaleFactor,
             ),
           ),
           SizedBox(height: 25 * scaleFactor),

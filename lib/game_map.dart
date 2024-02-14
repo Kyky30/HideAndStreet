@@ -5,7 +5,6 @@ import 'package:hide_and_street/winPage.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:geolocator/geolocator.dart';
@@ -17,9 +16,11 @@ import 'chat.dart';
 import 'PreferencesManager.dart';
 import 'chatWebSocket.dart';
 import 'chat_model.dart';
-import 'inGamePlayerList.dart';
 
+
+import 'package:hide_and_street/components/inGamePlayerList.dart';
 import 'package:hide_and_street/components/buttons.dart';
+import 'package:hide_and_street/components/alertbox.dart';
 
 class GameMap extends StatefulWidget {
   final LatLng center;
@@ -691,23 +692,18 @@ class _GameMapState extends State<GameMap> {
                             bool? result = await showDialog<bool>(
                               context: context,
                               builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text(AppLocalizations.of(context)!.confirmer),
-                                  content: Text(AppLocalizations.of(context)!.confirmer_trouve),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: Text(AppLocalizations.of(context)!.non),
-                                      onPressed: () {
-                                        Navigator.of(context).pop(false);
-                                      },
-                                    ),
-                                    TextButton(
-                                      child: Text(AppLocalizations.of(context)!.oui),
-                                      onPressed: () {
-                                        Navigator.of(context).pop(true);
-                                      },
-                                    ),
-                                  ],
+                                return CustomAlertDialog2(
+                                    title: AppLocalizations.of(context)!.confirmer,
+                                    content: AppLocalizations.of(context)!.confirmer_trouve,
+                                    buttonText1: AppLocalizations.of(context)!.non,
+                                    buttonText2: AppLocalizations.of(context)!.oui,
+                                    onPressed1: () {
+                                      Navigator.of(context).pop(false);
+                                    },
+                                    onPressed2: () {
+                                      Navigator.of(context).pop(true);
+                                    },
+                                    scaleFactor: MediaQuery.of(context).textScaleFactor,
                                 );
                               },
                             );
@@ -743,28 +739,23 @@ class _GameMapState extends State<GameMap> {
                   children: [
                     if (amITheSeeker == false && amIFound == false)
                       FloatingActionButton(
-                        heroTag: 'button2',
+                        heroTag: 'button1',
                         onPressed: () async {
                           bool? result = await showDialog<bool>(
                             context: context,
                             builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text(AppLocalizations.of(context)!.confirmer),
-                                content: Text(AppLocalizations.of(context)!.confirmer_trouve),
-                                actions: <Widget>[
-                                  TextButton(
-                                    child: Text(AppLocalizations.of(context)!.non),
-                                    onPressed: () {
-                                      Navigator.of(context).pop(false);
-                                    },
-                                  ),
-                                  TextButton(
-                                    child: Text('Yes'),
-                                    onPressed: () {
-                                      Navigator.of(context).pop(true);
-                                    },
-                                  ),
-                                ],
+                              return CustomAlertDialog2(
+                                title: AppLocalizations.of(context)!.confirmer,
+                                content: AppLocalizations.of(context)!.confirmer_trouve,
+                                buttonText1: AppLocalizations.of(context)!.non,
+                                buttonText2: AppLocalizations.of(context)!.oui,
+                                onPressed1: () {
+                                  Navigator.of(context).pop(false);
+                                },
+                                onPressed2: () {
+                                  Navigator.of(context).pop(true);
+                                },
+                                scaleFactor: MediaQuery.of(context).textScaleFactor,
                               );
                             },
                           );

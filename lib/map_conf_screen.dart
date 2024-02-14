@@ -9,6 +9,9 @@ import 'package:figma_squircle/figma_squircle.dart';
 import 'room_creation.dart';
 import 'PreferencesManager.dart';
 
+import 'package:hide_and_street/components/buttons.dart';
+
+
 class MapConfScreen extends StatefulWidget {
   const MapConfScreen({Key? key}) : super(key: key);
 
@@ -134,53 +137,29 @@ class _MapConfScreenState extends State<MapConfScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        radius -= 5;
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: SmoothRectangleBorder(
-                        borderRadius: SmoothBorderRadius(
-                          cornerRadius: 20,
-                          cornerSmoothing: 1,
-                        ),
-                      ),
-                      backgroundColor: const Color(0xFF373967),
-                      foregroundColor: const Color(0xFF212348),
-                      fixedSize: Size(MediaQuery.of(context).size.width / 3.5 - 20, 80),
-                    ),
-                    child: Text(
-                      AppLocalizations.of(context)!.moins_5m,
-                      style: const TextStyle(fontSize: 16, color: Colors.white),
-                    ),
+                  CustomButton
+                    (
+                      text: AppLocalizations.of(context)!.moins_5m,
+                      onPressed: () {
+                        setState(() {
+                          radius -= 5;
+                        });
+                        },
+                      scaleFactor: MediaQuery.of(context).textScaleFactor,
                   ),
                   Text(
                     AppLocalizations.of(context)!.rayon + ' : ${radius.toStringAsFixed(2)}',
                     style: const TextStyle(fontSize: 18),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        radius += 5;
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: SmoothRectangleBorder(
-                        borderRadius: SmoothBorderRadius(
-                          cornerRadius: 20,
-                          cornerSmoothing: 1,
-                        ),
-                      ),
-                      backgroundColor: const Color(0xFF373967),
-                      foregroundColor: const Color(0xFF212348),
-                      fixedSize: Size(MediaQuery.of(context).size.width / 3.5 - 20, 80),
-                    ),
-                    child: Text(
-                      AppLocalizations.of(context)!.plus_5m,
-                      style: const TextStyle(fontSize: 16, color: Colors.white),
-                    ),
+                  CustomButton
+                    (
+                      text: AppLocalizations.of(context)!.plus_5m,
+                      onPressed: () {
+                        setState(() {
+                          radius += 5;
+                        });
+                      },
+                      scaleFactor: MediaQuery.of(context).textScaleFactor,
                   ),
                 ],
               ),
@@ -188,7 +167,23 @@ class _MapConfScreenState extends State<MapConfScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton(
+                if (!isBlindModeEnabled) ...[
+
+                  CustomButton
+                    (
+                    text: AppLocalizations.of(context)!.centrer,
+                    onPressed: () {
+                      setState(() {
+                        tapPosition = LatLng(currentPosition.latitude, currentPosition.longitude);
+                      });
+                    },
+                    scaleFactor: MediaQuery.of(context).textScaleFactor,
+                  ),
+                ],
+
+                CustomButton
+                  (
+                  text: AppLocalizations.of(context)!.confirmer,
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -200,46 +195,8 @@ class _MapConfScreenState extends State<MapConfScreen> {
                       ),
                     );
                   },
-                  style: ElevatedButton.styleFrom(
-                    shape: SmoothRectangleBorder(
-                      borderRadius: SmoothBorderRadius(
-                        cornerRadius: 20,
-                        cornerSmoothing: 1,
-                      ),
-                    ),
-                    backgroundColor: const Color(0xFF373967),
-                    foregroundColor: const Color(0xFF212348),
-                    fixedSize: Size(MediaQuery.of(context).size.width / 2 - 20, 80),
-                  ),
-                  child: Text(
-                    AppLocalizations.of(context)!.confirmer,
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
-                  ),
+                  scaleFactor: MediaQuery.of(context).textScaleFactor,
                 ),
-                if (!isBlindModeEnabled) ...[
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        tapPosition = LatLng(currentPosition.latitude, currentPosition.longitude);
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: SmoothRectangleBorder(
-                        borderRadius: SmoothBorderRadius(
-                          cornerRadius: 20,
-                          cornerSmoothing: 1,
-                        ),
-                      ),
-                      backgroundColor: const Color(0xFF373967),
-                      foregroundColor: const Color(0xFF212348),
-                      fixedSize: Size(MediaQuery.of(context).size.width / 2 - 20, 80),
-                    ),
-                    child: Text(
-                      AppLocalizations.of(context)!.centrer,
-                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
-                    ),
-                  ),
-                ],
               ],
             ),
             const SizedBox(height: 20), // Margin between buttons and the bottom of the screen
