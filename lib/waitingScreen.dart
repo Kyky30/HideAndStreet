@@ -10,8 +10,8 @@ import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 
-import 'package:hide_and_street/api/AdmobHelper.dart';
-import 'package:hide_and_street/api/PremiumStatus.dart';
+import 'package:hide_and_street/monetization/AdmobHelper.dart';
+import 'package:hide_and_street/monetization/PremiumStatus.dart';
 
 class WaitingScreen extends StatefulWidget {
   final String gameCode;

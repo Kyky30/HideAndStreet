@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'PreferencesManager.dart';
-import 'package:hide_and_street/api/AdmobHelper.dart';
+import 'package:hide_and_street/monetization/AdmobHelper.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-import 'api/PremiumStatus.dart';
+import 'monetization/PremiumStatus.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 import 'package:material_symbols_icons/symbols.dart';
+
+import 'package:hide_and_street/components/buttons.dart';
 
 class AccountSettingsPage extends StatefulWidget {
   const AccountSettingsPage();
@@ -126,23 +128,10 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                 ),
               ),
               Spacer(),
-              ElevatedButton(
-                onPressed: () => _logout(context),
-                style: ElevatedButton.styleFrom(
-                  shape: SmoothRectangleBorder(
-                    borderRadius: SmoothBorderRadius(
-                      cornerRadius: 20 * scaleFactor,
-                      cornerSmoothing: 1,
-                    ),
-                  ),
-                  minimumSize: Size(MediaQuery.of(context).size.width - 30, 80 * scaleFactor),
-                  backgroundColor: const Color(0xFF373967),
-                  foregroundColor: const Color(0xFF212348),
-                ),
-                child: Text(
-                  AppLocalizations.of(context)!.deconnexion,
-                  style: TextStyle(fontSize: 20 * scaleFactor, fontWeight: FontWeight.w600, color: Colors.white),
-                ),
+              CustomButton(
+                  text: AppLocalizations.of(context)!.deconnexion,
+                  onPressed: () => _logout(context),
+                  scaleFactor: scaleFactor
               ),
               SizedBox(height: 20 * scaleFactor),
               Row(

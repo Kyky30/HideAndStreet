@@ -1,1 +1,13 @@
-{}
+{
+  "ar": [
+    "texte_popup_autre_erreur"
+  ],
+
+  "ru": [
+    "texte_popup_autre_erreur"
+  ],
+
+  "zh": [
+    "texte_popup_autre_erreur"
+  ]
+}

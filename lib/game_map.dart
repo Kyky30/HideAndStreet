@@ -12,13 +12,14 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'chat.dart';
 import 'PreferencesManager.dart';
 import 'chatWebSocket.dart';
 import 'chat_model.dart';
 import 'inGamePlayerList.dart';
+
+import 'package:hide_and_street/components/buttons.dart';
 
 class GameMap extends StatefulWidget {
   final LatLng center;
@@ -620,7 +621,6 @@ class _GameMapState extends State<GameMap> {
                                         ? 'Cachette'
                                         : 'Partie'} ended');
                                     if (!isCachetteActive) {
-                                      //TODO: Procédure de fin de partie
                                       Navigator.pushAndRemoveUntil(
                                         context,
                                         MaterialPageRoute(builder: (context) =>
@@ -685,75 +685,56 @@ class _GameMapState extends State<GameMap> {
                       },
                     ),
                     if (isBlindModeEnabled == true)
-                      ElevatedButton(
-                        onPressed: () async {
-                          bool? result = await showDialog<bool>(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text(AppLocalizations.of(context)!.confirmer),
-                                content: Text(AppLocalizations.of(context)!.confirmer_trouve),
-                                actions: <Widget>[
-                                  TextButton(
-                                    child: Text(AppLocalizations.of(context)!.non),
-                                    onPressed: () {
-                                      Navigator.of(context).pop(false);
-                                    },
-                                  ),
-                                  TextButton(
-                                    child: Text(AppLocalizations.of(context)!.oui),
-                                    onPressed: () {
-                                      Navigator.of(context).pop(true);
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                          );
+                      CustomButton(
+                          text: AppLocalizations.of(context)!.connexion,
+                          onPressed: () async {
+                            bool? result = await showDialog<bool>(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text(AppLocalizations.of(context)!.confirmer),
+                                  content: Text(AppLocalizations.of(context)!.confirmer_trouve),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: Text(AppLocalizations.of(context)!.non),
+                                      onPressed: () {
+                                        Navigator.of(context).pop(false);
+                                      },
+                                    ),
+                                    TextButton(
+                                      child: Text(AppLocalizations.of(context)!.oui),
+                                      onPressed: () {
+                                        Navigator.of(context).pop(true);
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
 
-                          if (result == true) {
-                            // Send 'ihavebeenfound' command to the server
-                            String auth = "chatappauthkey231r4";
-                            String gameCode = widget.gameCode;
+                            if (result == true) {
+                              // Send 'ihavebeenfound' command to the server
+                              String auth = "chatappauthkey231r4";
+                              String gameCode = widget.gameCode;
 
-                            // Prepare the command
-                            Map<String, String> command = {
-                              'email': email,
-                              'auth': auth,
-                              'cmd': 'setFoundStatus',
-                              'gameCode': gameCode,
-                              'playerId': userId,
-                            };
+                              // Prepare the command
+                              Map<String, String> command = {
+                                'email': email,
+                                'auth': auth,
+                                'cmd': 'setFoundStatus',
+                                'gameCode': gameCode,
+                                'playerId': userId,
+                              };
 
-                            // Send the command
-                            _channel.sink.add(jsonEncode(command));
+                              // Send the command
+                              _channel.sink.add(jsonEncode(command));
 
-                            //Local
-                            amIFound = true;
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: SmoothRectangleBorder(
-                            borderRadius: SmoothBorderRadius(
-                              cornerRadius: 20,
-                              cornerSmoothing: 1,
-                            ),
-                          ),
-                          minimumSize: Size(MediaQuery
-                              .of(context)
-                              .size
-                              .width - 30, 80),
-                          backgroundColor: const Color(0xFF373967),
-                          foregroundColor: const Color(0xFF212348),
-                        ),
-                        child: Text(
-                          AppLocalizations.of(context)!.connexion,
-                          style: const TextStyle(fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: 'Poppins',
-                              color: Colors.white),
-                        ),
-                      ),
+                              //Local
+                              amIFound = true;
+                            }
+                          },
+                          scaleFactor: MediaQuery.of(context).textScaleFactor
+                      )
                   ],
                 ),
                 floatingActionButton: isBlindModeEnabled == false

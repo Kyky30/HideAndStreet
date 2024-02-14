@@ -74,9 +74,7 @@
 "titre_popup_pas_assez_chercheurs": "十分な探索者がいません",
 "texte_popup_pas_assez_chercheurs": "ゲームを開始するには少なくとも1人の探索者が必要です！",
 "titre_popup_pas_assez_cacheurs": "十分なかくれんぼ者がいません",
-"texte_popup_pas_assez_cacheurs": "ゲームを開始するには少なくとも1人のかくれん
-
-ぼ者が必要です！ゲームを開始するには、少なくとも1人の探索者をチェック解除してください！",
+"texte_popup_pas_assez_cacheurs": "ゲームを開始するには少なくとも1人のかくれんぼ者が必要です！ゲームを開始するには、少なくとも1人の探索者をチェック解除してください！",
 "titre_popup_mdp_insecure": "安全でないパスワード",
 "texte_popup_mdp_insecure": "パスワードは少なくとも8文字で、少なくとも1つの大文字、1つの小文字、1つの数字、1つの特殊文字を含める必要があります！",
 "titre_popup_code_partie_invalide": "無効なゲームコード",

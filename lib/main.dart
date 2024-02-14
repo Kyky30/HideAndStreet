@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:hide_and_street/api/PurchaseApi.dart';
+import 'package:hide_and_street/monetization/PurchaseApi.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'api/PremiumStatus.dart';
+import 'monetization/PremiumStatus.dart';
 
 import 'chat_model.dart';
 import 'home.dart';

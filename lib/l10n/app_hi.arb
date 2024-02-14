@@ -64,7 +64,7 @@
   "champ_conf_duree_cachette": "छिपाने की अवधि",
   "texte_champ_conf_duree_cachette": "मिनटों में छिपाने की अवधि",
   "start_game": "खेल शुरू",
-  "game_code": "खेल कोड: {कोड}",
+  "game_code": "खेल कोड: {code}",
   "cgu": "उपयोग की शर्तें",
   "cgv": "बिक्री की शर्तें",
   "privacy": "गोपनीयता नीति",

@@ -7,8 +7,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web_socket_channel/io.dart';
 
 import 'package:figma_squircle/figma_squircle.dart';
+import 'package:hide_and_street/components/buttons.dart';
+import 'package:hide_and_street/components/alertbox.dart';
 
-// ... (imports restants)
 
 class RoomJoiningPage extends StatefulWidget {
   const RoomJoiningPage({Key? key}) : super(key: key);
@@ -61,17 +62,14 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(AppLocalizations.of(context)!.titre_popup_code_partie_invalide),
-            content: Text(AppLocalizations.of(context)!.texte_popup_code_partie_invalide),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text("OK"),
-              ),
-            ],
+          return CustomAlertDialog1(
+            title: AppLocalizations.of(context)!.titre_popup_champ_vide,
+            content: AppLocalizations.of(context)!.texte_popup_champ_vide,
+            buttonText: 'OK',
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            scaleFactor: getScaleFactor(context),
           );
         },
       );

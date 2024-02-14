@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:hide_and_street/chat.dart';
-import 'package:hide_and_street/game_map.dart';
 
 import 'package:hide_and_street/map_conf_screen.dart';
 
 import 'package:hide_and_street/room_joining.dart';
 
-import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import 'package:hide_and_street/api/AdmobHelper.dart';
-import 'package:hide_and_street/api/PremiumStatus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:hide_and_street/components/buttons.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -94,56 +90,33 @@ class _HomePageState extends State<HomePage> {
                 // Spacer pour remplir l'espace disponible
                 Spacer(),
                 // Boutons pour créer et rejoindre une partie
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MapConfScreen(),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: SmoothRectangleBorder(
-                      borderRadius: SmoothBorderRadius(
-                        cornerRadius: 20 * scaleFactor,
-                        cornerSmoothing: 1,
-                      ),
-                    ),
-                    minimumSize: Size(MediaQuery.of(context).size.width - 30, 80 * scaleFactor),
-                    backgroundColor: const Color(0xFF373967),
-                    foregroundColor: const Color(0xFF212348),
-                  ),
-                  child: Text(
-                    AppLocalizations.of(context)!.creerpartie,
-                    style: TextStyle(fontSize: 20 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
-                  ),
+
+                CustomButton(
+                    text: AppLocalizations.of(context)!.creerpartie,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MapConfScreen(),
+                        ),
+                      );
+                    },
+                    scaleFactor: scaleFactor
                 ),
+
                 SizedBox(height: 16 * scaleFactor),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => RoomJoiningPage(),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: SmoothRectangleBorder(
-                      borderRadius: SmoothBorderRadius(
-                        cornerRadius: 20 * scaleFactor,
-                        cornerSmoothing: 1,
-                      ),
-                    ),
-                    minimumSize: Size(MediaQuery.of(context).size.width - 30, 80 * scaleFactor),
-                    backgroundColor: const Color(0xFF373967),
-                    foregroundColor: const Color(0xFF212348),
-                  ),
-                  child: Text(
-                    AppLocalizations.of(context)!.rejoindrepartie,
-                    style: TextStyle(fontSize: 20 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
-                  ),
+
+                CustomButton(
+                    text: AppLocalizations.of(context)!.rejoindrepartie,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RoomJoiningPage(),
+                        ),
+                      );
+                    },
+                    scaleFactor: scaleFactor
                 ),
               ],
             ),
