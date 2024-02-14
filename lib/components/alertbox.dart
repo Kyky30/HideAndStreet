@@ -1,6 +1,5 @@
 // Classe de boîte d'alerte personnalisée
 import 'package:flutter/material.dart';
-import 'package:figma_squircle/figma_squircle.dart';
 import 'package:hide_and_street/components/buttons.dart';
 
 class CustomAlertDialog1 extends StatelessWidget {

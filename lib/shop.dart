@@ -5,6 +5,9 @@ import 'package:figma_squircle/figma_squircle.dart';
 import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 import 'package:hide_and_street/monetization/PurchaseApi.dart';
 
+import '../components/buttons.dart';
+
+
 void presentPaywallIfNeeded() async {
   await initPlatformState();
   final paywallResult = await RevenueCatUI.presentPaywallIfNeeded("default");
@@ -32,28 +35,10 @@ class ShopPage extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: presentPaywallIfNeeded,
-              style: ElevatedButton.styleFrom(
-                shape: SmoothRectangleBorder(
-                  borderRadius: SmoothBorderRadius(
-                    cornerRadius: 20 * scaleFactor, // Adapter la taille du coin en fonction du facteur de zoom
-                    cornerSmoothing: 1,
-                  ),
-                ),
-                minimumSize: Size(double.infinity, 80 * scaleFactor), // Adapter la hauteur du bouton en fonction du facteur de zoom
-                backgroundColor: const Color(0xFF373967),
-                foregroundColor: const Color(0xFF212348),
-              ),
-              child: Text(
-                AppLocalizations.of(context)!.acheterpremium,
-                style: TextStyle(
-                  fontSize: 20 * scaleFactor, // Adapter la taille de la police en fonction du facteur de zoom
-                  fontWeight: FontWeight.w600,
-                  fontFamily: 'Poppins',
-                  color: Colors.white,
-                ),
-              ),
+            CustomButton(
+                text: AppLocalizations.of(context)!.acheterpremium,
+                onPressed: presentPaywallIfNeeded,
+                scaleFactor: scaleFactor
             ),
           ],
         ),

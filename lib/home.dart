@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:hide_and_street/components/buttons.dart';
+import 'package:hide_and_street/components/alertbox.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -28,18 +29,14 @@ class _HomePageState extends State<HomePage> {
       await showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(AppLocalizations.of(context)!.titre_popup_avertissement),
-            content: Text(AppLocalizations.of(context)!.texte_popup_avertissement),
-            actions: <Widget>[
-              TextButton(
-                child: Text('OK'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
+          return CustomAlertDialog1(
+              title: AppLocalizations.of(context)!.titre_popup_avertissement,
+              content: AppLocalizations.of(context)!.texte_popup_avertissement,
+              buttonText: 'OK',
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              scaleFactor: getScaleFactor(context));
         },
       );
       await prefs.setBool('isFirstLaunch', false);

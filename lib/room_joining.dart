@@ -9,6 +9,9 @@ import 'package:web_socket_channel/io.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:hide_and_street/components/buttons.dart';
 import 'package:hide_and_street/components/alertbox.dart';
+import 'package:hide_and_street/components/input.dart';
+
+
 
 
 class RoomJoiningPage extends StatefulWidget {
@@ -131,17 +134,10 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
               AppLocalizations.of(context)!.codePartie,
               style: TextStyle(fontSize: 24 * scaleFactor, fontWeight: FontWeight.bold),
             ),
-            TextField(
+            CustomTextField(
               controller: _gameCodeController,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.grey[300],
-                hintText: AppLocalizations.of(context)!.exempleCodePartie,
-                border: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(20.0 * scaleFactor),
-                ),
-              ),
+              hintText: AppLocalizations.of(context)!.exempleCodePartie,
+              scaleFactor: scaleFactor,
             ),
             SizedBox(height: 16.0 * scaleFactor),
             ElevatedButton(
