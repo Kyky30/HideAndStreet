@@ -10,6 +10,10 @@ import 'package:web_socket_channel/io.dart';
 
 import 'dart:developer' as developer;
 
+import 'components/alertbox.dart';
+import 'components/buttons.dart';
+import 'components/input.dart';
+
 void signUp(BuildContext context, String emailValues, String pseudoValues, String passwordValues, String confirmPasswordValues) async {
   // Check if email is valid.
   bool isValid = RegExp(
@@ -78,17 +82,32 @@ class _RegisterPageState extends State<RegisterPage> {
 
   String _TexteSelctionDate = "";
 
-  List<GlobalKey<FormFieldState<String>>> pseudoKey = [GlobalKey<FormFieldState<String>>()];
-  List<GlobalKey<FormFieldState<String>>> emailKey = [GlobalKey<FormFieldState<String>>()];
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController pseudoController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
+
   GlobalKey<FormFieldState<String>> dateOfBirthKey = GlobalKey<FormFieldState<String>>();
-  List<GlobalKey<FormFieldState<String>>> passwordKeys = [GlobalKey<FormFieldState<String>>(), GlobalKey<FormFieldState<String>>()];
 
   bool _toggleValue = false;
 
   @override
   void initState() {
     super.initState();
-    _loadBlindToggle(); // Move this to didChangeDependencies
+    _loadBlindToggle();
+
+    emailController.addListener(() {
+      emailValues = emailController.text;
+    });
+    pseudoController.addListener(() {
+      pseudoValues = pseudoController.text;
+    });
+    passwordController.addListener(() {
+      passwordValues = passwordController.text;
+    });
+    confirmPasswordController.addListener(() {
+      confirmPasswordValues = confirmPasswordController.text;
+    });
   }
 
   @override
@@ -120,7 +139,7 @@ class _RegisterPageState extends State<RegisterPage> {
       ],
       validate: () {
         if (_selectedDate == null) {
-          _showEmptyFieldDialog(context, AppLocalizations.of(context)!.datedenaissance);
+          _showEmptyFieldDialog(context);
         } else {
           var currentDate = DateTime.now();
           var age = currentDate.year - _selectedDate!.year - ((_selectedDate!.month > currentDate.month || (_selectedDate!.month == currentDate.month && _selectedDate!.day > currentDate.day)) ? 1 : 0);
@@ -144,14 +163,13 @@ class _RegisterPageState extends State<RegisterPage> {
       buttonText: AppLocalizations.of(context)!.confirmer,
       logo: 'assets/logo_connect.png',
       fields: [
-        RegistrationField(label: AppLocalizations.of(context)!.pseudo, hint: AppLocalizations.of(context)!.pseudo, key: pseudoKey[0]),
+        RegistrationField(label: AppLocalizations.of(context)!.pseudo, hint: AppLocalizations.of(context)!.pseudo, controller: pseudoController),
       ],
       onTap: () {
-        var pseudo = pseudoKey[0].currentState?.value ?? "";
-        if (pseudo.isEmpty) {
-          _showEmptyFieldDialog(context, AppLocalizations.of(context)!.pseudo);
+        if (pseudoController.text.isEmpty) {
+          _showEmptyFieldDialog(context);
         } else {
-          pseudoValues = pseudo;
+          pseudoValues = pseudoController.text;
           print(pseudoValues);
           _pageController.nextPage(duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
         }
@@ -163,14 +181,13 @@ class _RegisterPageState extends State<RegisterPage> {
       buttonText: AppLocalizations.of(context)!.confirmer,
       logo: 'assets/logo_connect.png',
       fields: [
-        RegistrationField(label: AppLocalizations.of(context)!.mail, hint: AppLocalizations.of(context)!.exemple_email, isPassword: false, key: emailKey[0]),
+        RegistrationField(label: AppLocalizations.of(context)!.mail, hint: AppLocalizations.of(context)!.exemple_email, isPassword: false, controller: emailController),
       ],
       onTap: () {
-        var email = emailKey[0].currentState?.value ?? "";
-        if (email.isEmpty) {
-          _showEmptyFieldDialog(context, AppLocalizations.of(context)!.mail);
+        if (emailController.text.isEmpty) {
+          _showEmptyFieldDialog(context);
         } else {
-          emailValues = email;
+          emailValues = emailController.text;
           print(emailValues);
           _pageController.nextPage(duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
         }
@@ -182,22 +199,19 @@ class _RegisterPageState extends State<RegisterPage> {
       buttonText: AppLocalizations.of(context)!.confirmer,
       logo: 'assets/logo_connect.png',
       fields: [
-        RegistrationField(label: AppLocalizations.of(context)!.mdp, hint: AppLocalizations.of(context)!.mdp, isPassword: true, key: passwordKeys[0]),
-        RegistrationField(label: AppLocalizations.of(context)!.mdpconfirm, hint: AppLocalizations.of(context)!.mdpconfirm, isPassword: true, key: passwordKeys[1]),
+        RegistrationField(label: AppLocalizations.of(context)!.mdp, hint: AppLocalizations.of(context)!.mdp, isPassword: true, controller: passwordController),
+        RegistrationField(label: AppLocalizations.of(context)!.mdpconfirm, hint: AppLocalizations.of(context)!.mdpconfirm, isPassword: true, controller: confirmPasswordController),
       ],
       onTap: () {
-        var password = passwordKeys[0].currentState?.value ?? "";
-        var confirmPassword = passwordKeys[1].currentState?.value ?? "";
-
-        if (password.isEmpty || confirmPassword.isEmpty) {
-          _showEmptyFieldDialog(context, AppLocalizations.of(context)!.mdp);
-        } else if (password != confirmPassword) {
+        if (passwordController.text.isEmpty || confirmPasswordController.text.isEmpty) {
+          _showEmptyFieldDialog(context);
+        } else if (passwordController.text != confirmPasswordController.text) {
           _showPasswordMismatchDialog(context);
-        } else if (!isPasswordSecure(password)) {
+        } else if (!isPasswordSecure(passwordController.text)) {
           _showPasswordInsecureDialog(context);
         } else {
-          passwordValues = password;
-          confirmPasswordValues = confirmPassword;
+          passwordValues = passwordController.text;
+          confirmPasswordValues = confirmPasswordController.text;
           print(passwordValues);
           _pageController.nextPage(duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
         }
@@ -284,24 +298,11 @@ class _RegisterPageState extends State<RegisterPage> {
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: field.dateField
-                          ? ElevatedButton(
-                        onPressed: () => _selectDate(context),
-                        child: Text(
-                          _TexteSelctionDate,
-                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          shape: SmoothRectangleBorder(
-                            borderRadius: SmoothBorderRadius(
-                              cornerRadius: 20 * scaleFactor,
-                              cornerSmoothing: 1,
-                            ),
-                          ),
-                          minimumSize: Size(double.infinity, 70 * scaleFactor),
-                          backgroundColor: const Color(0xFF373967),
-                          foregroundColor: const Color(0xFF212348),
-                        ),
-                      )
+                          ? CustomButton(
+                            text: _TexteSelctionDate,
+                            onPressed: () => _selectDate(context),
+                            scaleFactor: MediaQuery.of(context).textScaleFactor,
+                        )
                           : field.toggleField
                           ? SwitchListTile(
                         title: Text(field.label),
@@ -312,18 +313,11 @@ class _RegisterPageState extends State<RegisterPage> {
                           });
                         },
                       )
-                          : TextFormField(
-                        key: field.key,
-                        obscureText: field.isPassword,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.grey[300],
-                          hintText: field.hint,
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(20.0 * scaleFactor),
-                          ),
-                        ),
+                          : CustomTextField(
+                          obscureText: field.isPassword,
+                          hintText: field.hint ?? '',
+                          controller: field.controller ?? TextEditingController(),
+                          scaleFactor: scaleFactor
                       ),
                     ),
                 ],
@@ -336,7 +330,8 @@ class _RegisterPageState extends State<RegisterPage> {
             right: 0,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: ElevatedButton(
+              child: CustomButton(
+                text: step.buttonText,
                 onPressed: () {
                   if (step.validate != null) {
                     step.validate!();
@@ -346,21 +341,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     }
                   }
                 },
-                style: ElevatedButton.styleFrom(
-                  shape: SmoothRectangleBorder(
-                    borderRadius: SmoothBorderRadius(
-                      cornerRadius: 20 * scaleFactor,
-                      cornerSmoothing: 1,
-                    ),
-                  ),
-                  minimumSize: Size(double.infinity, 80 * scaleFactor),
-                  backgroundColor: const Color(0xFF373967),
-                  foregroundColor: const Color(0xFF212348),
-                ),
-                child: Text(
-                  step.buttonText,
-                  style: TextStyle(fontSize: 20 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
-                ),
+                scaleFactor: MediaQuery.of(context).textScaleFactor,
               ),
             ),
           ),
@@ -388,38 +369,32 @@ class _RegisterPageState extends State<RegisterPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(AppLocalizations.of(context)!.titre_popup_mdp),
-          content: Text(AppLocalizations.of(context)!.texte_popup_mdp),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text("OK"),
-            ),
-          ],
+        return CustomAlertDialog1(
+          title: AppLocalizations.of(context)!.titre_popup_mdp,
+          content: AppLocalizations.of(context)!.texte_popup_mdp,
+          buttonText: AppLocalizations.of(context)!.ok,
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          scaleFactor: MediaQuery.of(context).textScaleFactor,
         );
       },
     );
   }
 
-
-  void _showEmptyFieldDialog(BuildContext context, String fieldName) {
+  void _showEmptyFieldDialog(BuildContext context) {
+    print("🚫 Champ vide");
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(AppLocalizations.of(context)!.titre_popup_champ_vide),
-          content: Text(AppLocalizations.of(context)!.texte_popup_champ_vide),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text("OK"),
-            ),
-          ],
+        return CustomAlertDialog1(
+          title: AppLocalizations.of(context)!.titre_popup_champ_vide,
+          content: AppLocalizations.of(context)!.texte_popup_champ_vide,
+          buttonText: AppLocalizations.of(context)!.ok,
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          scaleFactor: MediaQuery.of(context).textScaleFactor,
         );
       },
     );
@@ -429,17 +404,14 @@ class _RegisterPageState extends State<RegisterPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(AppLocalizations.of(context)!.titre_popup_age),
-          content: Text(AppLocalizations.of(context)!.texte_popup_age),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text("OK"),
-            ),
-          ],
+        return CustomAlertDialog1(
+          title: AppLocalizations.of(context)!.titre_popup_age,
+          content: AppLocalizations.of(context)!.texte_popup_age,
+          buttonText: AppLocalizations.of(context)!.ok,
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          scaleFactor: MediaQuery.of(context).textScaleFactor,
         );
       },
     );
@@ -450,17 +422,14 @@ void _showPasswordInsecureDialog(BuildContext context) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text(AppLocalizations.of(context)!.titre_popup_mdp_insecure),
-        content: Text(AppLocalizations.of(context)!.texte_popup_mdp_insecure),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text("OK"),
-          ),
-        ],
+      return CustomAlertDialog1(
+        title: AppLocalizations.of(context)!.titre_popup_mdp_insecure,
+        content: AppLocalizations.of(context)!.texte_popup_mdp_insecure,
+        buttonText: AppLocalizations.of(context)!.ok,
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        scaleFactor: MediaQuery.of(context).textScaleFactor,
       );
     },
   );
@@ -496,7 +465,8 @@ class RegistrationStep {
 class RegistrationField {
   final String label;
   final String? hint;
-  final GlobalKey<FormFieldState<String>>? key;
+  final TextEditingController? controller;
+  final Key? key;
   final bool isPassword;
   final bool dateField;
   final bool toggleField;
@@ -505,6 +475,7 @@ class RegistrationField {
     required this.label,
     this.hint,
     this.key,
+    this.controller,
     this.isPassword = false,
     this.dateField = false,
     this.toggleField = false,
