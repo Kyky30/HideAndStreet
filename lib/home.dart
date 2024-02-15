@@ -85,7 +85,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 SizedBox(height: 3 * scaleFactor),
                 // Spacer pour remplir l'espace disponible
-                Spacer(),
+                const Spacer(),
                 // Boutons pour créer et rejoindre une partie
 
                 CustomButton(
@@ -94,7 +94,7 @@ class _HomePageState extends State<HomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => MapConfScreen(),
+                          builder: (context) => const MapConfScreen(),
                         ),
                       );
                     },
@@ -109,7 +109,7 @@ class _HomePageState extends State<HomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => RoomJoiningPage(),
+                          builder: (context) => const RoomJoiningPage(),
                         ),
                       );
                     },

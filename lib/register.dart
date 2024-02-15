@@ -45,7 +45,7 @@ void signUp(BuildContext context, String emailValues, String pseudoValues, Strin
           // Return user to login if successful
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => LoginPage()),
+            MaterialPageRoute(builder: (context) => const LoginPage()),
           );
         } else {
           channel.sink.close();
@@ -128,7 +128,7 @@ class _RegisterPageState extends State<RegisterPage> {
           if (age < 13) {
             _showAgeRestrictionDialog(context);
           } else {
-            _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+            _pageController.nextPage(duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
           }
         }
       },
@@ -153,7 +153,7 @@ class _RegisterPageState extends State<RegisterPage> {
         } else {
           pseudoValues = pseudo;
           print(pseudoValues);
-          _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+          _pageController.nextPage(duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
         }
       },
     ),
@@ -172,7 +172,7 @@ class _RegisterPageState extends State<RegisterPage> {
         } else {
           emailValues = email;
           print(emailValues);
-          _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+          _pageController.nextPage(duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
         }
       },
     ),
@@ -199,7 +199,7 @@ class _RegisterPageState extends State<RegisterPage> {
           passwordValues = password;
           confirmPasswordValues = confirmPassword;
           print(passwordValues);
-          _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+          _pageController.nextPage(duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
         }
       },
     ),
@@ -225,7 +225,7 @@ class _RegisterPageState extends State<RegisterPage> {
       body: PageView.builder(
         controller: _pageController,
         itemCount: _steps(context).length,
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
           return _buildStepPage(_steps(context)[index]);
         },
@@ -396,7 +396,7 @@ class _RegisterPageState extends State<RegisterPage> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("OK"),
+              child: const Text("OK"),
             ),
           ],
         );
@@ -417,7 +417,7 @@ class _RegisterPageState extends State<RegisterPage> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("OK"),
+              child: const Text("OK"),
             ),
           ],
         );
@@ -437,7 +437,7 @@ class _RegisterPageState extends State<RegisterPage> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("OK"),
+              child: const Text("OK"),
             ),
           ],
         );
@@ -458,7 +458,7 @@ void _showPasswordInsecureDialog(BuildContext context) {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: Text("OK"),
+            child: const Text("OK"),
           ),
         ],
       );

@@ -18,7 +18,7 @@ class WaitingScreen extends StatefulWidget {
   final bool isAdmin;
 
 
-  WaitingScreen({required this.gameCode, required this.isAdmin});
+  const WaitingScreen({required this.gameCode, required this.isAdmin});
 
   @override
   _WaitingScreenState createState() => _WaitingScreenState();
@@ -118,7 +118,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text("OK"),
+                child: const Text("OK"),
               ),
             ],
           );
@@ -138,7 +138,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text("OK"),
+                child: const Text("OK"),
               ),
             ],
           );
@@ -226,7 +226,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
 
           Center(
             child: Container(
@@ -246,7 +246,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
                               fontFamily: 'Poppins',
                               backgroundColor: Colors.white),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         Text(
                           AppLocalizations.of(context)!.seekers,
                           style: const TextStyle(
@@ -261,10 +261,10 @@ class _WaitingScreenState extends State<WaitingScreen> {
                   ),
                   StreamBuilder<List<String>>(
                     stream: _playerListController.stream,
-                    initialData: [],
+                    initialData: const [],
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator();
+                        return const CircularProgressIndicator();
                       } else if (snapshot.hasError) {
                         return Text('Error: ${snapshot.error}');
                       } else {
@@ -281,7 +281,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
               ),
             ),
           ),
-          Spacer(),
+          const Spacer(),
 
           ElevatedButton(
             onPressed: _shareGameCode,
@@ -317,7 +317,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
                 )),
           ),
 
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
 
           // Afficher le bouton "Start Game" et les cases à cocher si l'utilisateur est un administrateur
           if (widget.isAdmin)
@@ -340,7 +340,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
                 foregroundColor: const Color(0xFF212348),
               ),
             ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
         ],
       ),
     );
@@ -354,7 +354,7 @@ class PlayerList extends StatelessWidget {
   final List<String> selectedPlayers;
   final Stream<List<String>> selectedPlayersStream;
 
-  PlayerList({required this.players, required this.onTogglePlayer, required this.isAdmin, required this.selectedPlayers, required this.selectedPlayersStream});
+  const PlayerList({required this.players, required this.onTogglePlayer, required this.isAdmin, required this.selectedPlayers, required this.selectedPlayersStream});
 
   @override
   Widget build(BuildContext context) {
@@ -373,7 +373,7 @@ class PlayerListItem extends StatefulWidget {
   final List<String> selectedPlayers;
   final Stream<List<String>> selectedPlayersStream;
 
-  PlayerListItem({
+  const PlayerListItem({
     required this.playerName,
     required this.onTogglePlayer,
     required this.isAdmin,

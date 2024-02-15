@@ -52,7 +52,7 @@ class _ChatState extends State<Chat> {
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.titre_page_chat),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             // Autres logiques si nécessaire...
             Navigator.pop(context); // Utilisez Navigator.pop pour revenir à l'écran précédent
@@ -63,7 +63,7 @@ class _ChatState extends State<Chat> {
         children: [
           Expanded(
             child : Padding(
-              padding: EdgeInsets.all(24.0), // Ajouter un padding sur les bords de l'écran
+              padding: const EdgeInsets.all(24.0), // Ajouter un padding sur les bords de l'écran
               child: ListView.builder(
                 controller: _scrollController,
                 itemCount: chatModel.messages.length,
@@ -84,19 +84,19 @@ class _ChatState extends State<Chat> {
 
                   // Ajouter le nom d'utilisateur uniquement si l'utilisateur actuel n'a pas envoyé le message et si c'est un nouvel utilisateur
                   if (!isCurrentUser && isNewUser) {
-                    columnWidgets.add(Text(username + " : ", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)));
+                    columnWidgets.add(Text(username + " : ", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)));
                   }
 
                   // Ajouter le message
                   columnWidgets.add(
                     Container(
-                      margin: EdgeInsets.symmetric(vertical: 2.0), // Ajouter un padding vertical entre les messages
-                      padding: EdgeInsets.all(10),
+                      margin: const EdgeInsets.symmetric(vertical: 2.0), // Ajouter un padding vertical entre les messages
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         color: isCurrentUser ? Colors.blue : Colors.black87,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Text(message, style: TextStyle(color: Colors.white, fontSize: 16)),
+                      child: Text(message, style: const TextStyle(color: Colors.white, fontSize: 16)),
                     ),
                   );
 
@@ -113,18 +113,18 @@ class _ChatState extends State<Chat> {
             ),
           ),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Row(
               children: [
                 Expanded(
                   child: TextField(
                     controller: _controller,
                     textInputAction: TextInputAction.go,
-                    decoration: InputDecoration(hintText: 'Send a message'),
+                    decoration: const InputDecoration(hintText: 'Send a message'),
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.send),
+                  icon: const Icon(Icons.send),
                   onPressed: _sendMessage,
                 ),
               ],
@@ -150,7 +150,7 @@ class _ChatState extends State<Chat> {
       // Scroll to bottom
       _scrollController.animateTo(
         _scrollController.position.maxScrollExtent,
-        duration: Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: 500),
         curve: Curves.easeOut,
       );
     }

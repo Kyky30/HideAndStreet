@@ -17,7 +17,7 @@ class RoomCreationPage extends StatefulWidget {
   final LatLng initialTapPosition;
   final double initialRadius;
 
-  RoomCreationPage({
+  const RoomCreationPage({
     required this.initialTapPosition,
     required this.initialRadius,
   });
@@ -147,7 +147,7 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
         } else {
           dureePartie = int.parse(duree);
           print(dureePartie);
-          _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+          _pageController.nextPage(duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
         }
       },
     ),
@@ -167,7 +167,7 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
           dureeCachette = int.parse(dureeCach);
           print(dureeCachette);
           _createGame();
-          _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+          _pageController.nextPage(duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
         }
       },
     ),
@@ -180,7 +180,7 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
       body: PageView.builder(
         controller: _pageController,
         itemCount: _steps(context).length,
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
           return _buildStepPage(_steps(context)[index], scaleFactor);
         },
@@ -217,7 +217,7 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
           ),
           Positioned.fill(
             child: Padding(
-              padding: EdgeInsets.only(top: 0.0),
+              padding: const EdgeInsets.only(top: 0.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -297,7 +297,7 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("OK"),
+              child: const Text("OK"),
             ),
           ],
         );

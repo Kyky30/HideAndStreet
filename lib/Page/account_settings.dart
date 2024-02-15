@@ -102,14 +102,14 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                 ),
               Card(
                 child: ListTile(
-                  leading: Icon(Symbols.account_box_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
+                  leading: const Icon(Symbols.account_box_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
                   title: Text(username, style: TextStyle(fontSize: 18 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
                   subtitle: Text(email, style: TextStyle(fontSize: 16 * scaleFactor, fontWeight: FontWeight.w400, fontFamily: 'Poppins')),
                 ),
               ),
               Card(
                 child: ListTile(
-                  leading: Icon(Symbols.calendar_today_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
+                  leading: const Icon(Symbols.calendar_today_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
                   title: Text(AppLocalizations.of(context)!.creationDateLabel, style: TextStyle(fontSize: 18 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
                   subtitle: Text(DateCreation, style: TextStyle(fontSize: 16 * scaleFactor, fontWeight: FontWeight.w400, fontFamily: 'Poppins')),
                 ),
@@ -126,7 +126,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                   },
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               CustomButton(
                   text: AppLocalizations.of(context)!.deconnexion,
                   onPressed: () => _logout(context),

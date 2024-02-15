@@ -18,7 +18,7 @@ class AdmobHelper {
 
     InterstitialAd.load(
       adUnitId: "ca-app-pub-3940256099942544/1033173712",
-      request: AdRequest(),
+      request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {
           _interstitialAd = ad;
@@ -77,7 +77,7 @@ class AdmobHelper {
         onAdLoaded: (Ad ad) => print('Ad loaded.'),
         onAdOpened: (Ad ad) => print('Ad opened.'),
       ),
-      request: AdRequest(),
+      request: const AdRequest(),
     );
 
     return bAd;

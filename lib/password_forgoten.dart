@@ -1,5 +1,4 @@
 // account_settings.dart
-import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:web_socket_channel/io.dart';
@@ -83,7 +82,6 @@ class ForgotenPassword extends StatelessWidget {
             child: CustomButton(
               text: AppLocalizations.of(context)!.continuer,
               onPressed: () async {
-                  String email = 'dorianrochette@gmail.com';
                   String auth = "chatappauthkey231r4";
 
                   // Créer une connexion WebSocket
