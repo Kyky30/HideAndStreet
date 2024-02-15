@@ -48,7 +48,6 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
     String gameCode = _gameCodeController.text;
 
     if (gameCode.isNotEmpty) {
-      print("🌊🤣😎⚾🤙");
       WebSocketManager.sendData('"email": "$email", "cmd":"joinGame","userId":"$userID", "gameCode":"$gameCode"');
 
       // Écoutez les réponses du serveur
@@ -71,8 +70,8 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text(AppLocalizations.of(context)!.titre_popup_reponse_incomplete_serveur),
-                    content: Text(AppLocalizations.of(context)!.texte_popup_reponse_incomplete_serveur),
+                    title: Text(AppLocalizations.of(context)!.erreur),
+                    content: Text(AppLocalizations.of(context)!.erreurconnexion),
                     actions: [
                       TextButton(
                         onPressed: () {
@@ -93,8 +92,8 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
         context: context,
         builder: (BuildContext context) {
           return CustomAlertDialog1(
-            title: AppLocalizations.of(context)!.titre_popup_champ_vide,
-            content: AppLocalizations.of(context)!.texte_popup_champ_vide,
+            title: AppLocalizations.of(context)!.erreur,
+            content: AppLocalizations.of(context)!.erreurconnexion,
             buttonText: 'OK',
             onPressed: () {
               Navigator.of(context).pop();
