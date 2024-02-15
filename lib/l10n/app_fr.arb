@@ -475,6 +475,17 @@
     "victoire_cacheur": "Les cachés ont gagné !",
     "@victoire_cacheur": {
         "description": "Bouton de victoire des cacheurs"
+    },
+    "ok": "OK",
+    "@ok": {
+        "description": "Bouton de ok"
+    },
+    "erreurconnexion": "Erreur lors de la connexion vérifiez vôtre connection et redémarrez l'application",
+    "@erreurconnexion": {
+        "description": "Message d'erreur de connexion"
+    },
+    "erreur": "Erreur",
+    "@erreur": {
+        "description": "Texte d'erreur"
     }
-
 }

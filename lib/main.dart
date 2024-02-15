@@ -11,8 +11,8 @@ import 'chat_model.dart';
 import 'home.dart';
 import 'l10n/l10n.dart';
 import 'Page/login.dart';
-import 'shop.dart';
-import 'account_settings.dart';
+import 'Page/shop.dart';
+import 'Page/account_settings.dart';
 
 import 'package:material_symbols_icons/symbols.dart';
 

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'PreferencesManager.dart';
+import '../PreferencesManager.dart';
 import 'package:hide_and_street/monetization/AdmobHelper.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-import 'monetization/PremiumStatus.dart';
+import '../monetization/PremiumStatus.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 import 'package:material_symbols_icons/symbols.dart';

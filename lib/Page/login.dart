@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:hide_and_street/main.dart';
 import 'package:hide_and_street/password_forgoten.dart';
-import 'package:figma_squircle/figma_squircle.dart';
 import '../WebSocketManager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -11,8 +10,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../register.dart';
 
-import 'package:hide_and_street/components/alertbox.dart';
 import '../components/buttons.dart';
+import '../components/input.dart';
+import '../components/alertbox.dart';
+
 
 
 class LoginPage extends StatefulWidget {
@@ -27,6 +28,33 @@ class _LoginPageState extends State<LoginPage> {
   String email = '';
   String password = '';
 
+  // Declare the controllers for the email and password fields
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Listen for changes in the text fields
+    emailController.addListener(() {
+      email = emailController.text;
+    });
+
+    passwordController.addListener(() {
+      password = passwordController.text;
+    });
+  }
+
+  @override
+  void dispose() {
+    // Clean up the controllers when the widget is disposed
+    emailController.dispose();
+    passwordController.dispose();
+
+    super.dispose();
+  }
+
   Future<void> login(BuildContext context) async {
     if (email.isEmpty || password.isEmpty) {
       print("❓ Champ vide");
@@ -38,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
             (
               title: AppLocalizations.of(context)!.titre_popup_champ_vide,
               content: AppLocalizations.of(context)!.texte_popup_champ_vide,
-              buttonText: "OK",
+              buttonText: AppLocalizations.of(context)!.ok,
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -48,8 +76,6 @@ class _LoginPageState extends State<LoginPage> {
       );
       return;
     }
-
-    String auth = "chatappauthkey231r4";
 
     try {
       await WebSocketManager.connect(email);
@@ -66,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
               return CustomAlertDialog1(
                 title: AppLocalizations.of(context)!.popup_titre_email_mdp_incorrect,
                 content: AppLocalizations.of(context)!.popup_texte_email_mdp_incorrect,
-                buttonText: "OK",
+                buttonText: AppLocalizations.of(context)!.ok,
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -152,16 +178,10 @@ class _LoginPageState extends State<LoginPage> {
                         child: Container(
                           height: 0.08 * MediaQuery.of(context).size.height,
                           width: 0.9 * MediaQuery.of(context).size.width,
-                          child: TextField(
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.grey[300],
-                              hintText: AppLocalizations.of(context)!.mail,
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            ),
+                          child: CustomTextField(
+                            hintText: AppLocalizations.of(context)!.mail,
+                            controller: emailController,
+                            scaleFactor: MediaQuery.of(context).textScaleFactor,
                             onChanged: (e) => email = e,
                           ),
                         ),
@@ -176,17 +196,11 @@ class _LoginPageState extends State<LoginPage> {
                         child: Container(
                           height: 0.08 * MediaQuery.of(context).size.height,
                           width: 0.9 * MediaQuery.of(context).size.width,
-                          child: TextField(
+                          child: CustomTextField(
+                            hintText: AppLocalizations.of(context)!.mdp,
+                            controller: passwordController,
                             obscureText: true,
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.grey[300],
-                              hintText: AppLocalizations.of(context)!.mdp,
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            ),
+                            scaleFactor: MediaQuery.of(context).textScaleFactor,
                             onChanged: (e) => password = e,
                           ),
                         ),
@@ -207,25 +221,12 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                        child: ElevatedButton(
+                        child: CustomButton(
+                          text: AppLocalizations.of(context)!.connexion,
                           onPressed: () {
                             login(context);
                           },
-                          style: ElevatedButton.styleFrom(
-                            shape: SmoothRectangleBorder(
-                              borderRadius: SmoothBorderRadius(
-                                cornerRadius: 0.02 * MediaQuery.of(context).size.height,
-                                cornerSmoothing: 1,
-                              ),
-                            ),
-                            minimumSize: Size(0.9 * MediaQuery.of(context).size.width, 0.1 * MediaQuery.of(context).size.height),
-                            backgroundColor: const Color(0xFF373967),
-                            foregroundColor: const Color(0xFF212348),
-                          ),
-                          child: Text(
-                            AppLocalizations.of(context)!.connexion,
-                            style: TextStyle(fontSize: 0.06 * MediaQuery.of(context).size.width, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
-                          ),
+                          scaleFactor: MediaQuery.of(context).textScaleFactor,
                         ),
                       ),
                       Center(

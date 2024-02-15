@@ -1,13 +1,94 @@
 {
   "ar": [
-    "texte_popup_autre_erreur"
+    "texte_popup_autre_erreur",
+    "ok",
+    "erreurconnexion",
+    "erreur"
+  ],
+
+  "de": [
+    "ok",
+    "erreurconnexion",
+    "erreur"
+  ],
+
+  "en": [
+    "ok",
+    "erreurconnexion",
+    "erreur"
+  ],
+
+  "es": [
+    "ok",
+    "erreurconnexion",
+    "erreur"
+  ],
+
+  "fi": [
+    "ok",
+    "erreurconnexion",
+    "erreur"
+  ],
+
+  "hi": [
+    "ok",
+    "erreurconnexion",
+    "erreur"
+  ],
+
+  "it": [
+    "ok",
+    "erreurconnexion",
+    "erreur"
+  ],
+
+  "ja": [
+    "ok",
+    "erreurconnexion",
+    "erreur"
+  ],
+
+  "ko": [
+    "ok",
+    "erreurconnexion",
+    "erreur"
+  ],
+
+  "pl": [
+    "ok",
+    "erreurconnexion",
+    "erreur"
+  ],
+
+  "pt": [
+    "ok",
+    "erreurconnexion",
+    "erreur"
   ],
 
   "ru": [
-    "texte_popup_autre_erreur"
+    "texte_popup_autre_erreur",
+    "ok",
+    "erreurconnexion",
+    "erreur"
+  ],
+
+  "sv": [
+    "ok",
+    "erreurconnexion",
+    "erreur"
+  ],
+
+  "vi": [
+    "ok",
+    "erreurconnexion",
+    "erreur"
   ],
 
   "zh": [
-    "texte_popup_autre_erreur"
+    "texte_popup_autre_erreur",
+    "ok",
+    "erreurconnexion",
+    "erreur"
   ]
 }

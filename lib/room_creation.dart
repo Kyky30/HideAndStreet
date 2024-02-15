@@ -9,8 +9,9 @@ import 'package:latlong2/latlong.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web_socket_channel/io.dart';
 
+import 'WebSocketManager.dart';
+import 'components/alertbox.dart';
 
-// ... (imports restants)
 
 class RoomCreationPage extends StatefulWidget {
   final LatLng initialTapPosition;
@@ -40,81 +41,74 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
   void initState() {
     super.initState();
     getCreatorId();
-    // Établir la connexion WebSocket sécurisée
-    channel = IOWebSocketChannel.connect('wss://app.hideandstreet.furrball.fr/createGame');
+    WebSocketManager.connect(email); // Establish WebSocket connection
   }
 
   void _createGame() async {
     double initialRadius = widget.initialRadius;
     LatLng initialTapPosition = widget.initialTapPosition;
 
-    // Logique pour créer la partie et envoyer des données via WebSocket sécurisé
-    String auth = "chatappauthkey231r4";
+    String data = '"email":"$email","cmd":"createGame","radius": "$initialRadius", "creatorId": "$creatorId", "center": {"lat": ${initialTapPosition.latitude}, "lng": ${initialTapPosition.longitude}}, "duration": $dureePartie, "hidingDuration": "$dureeCachette"';
 
-    // Create a Completer to await the game code response
-    Completer<String?> gameCodeCompleter = Completer<String?>();
+    try {
+      // Send data to server using WebSocketManager
+      await WebSocketManager.sendData(data);
 
-    // Declare the StreamSubscription as nullable
-    StreamSubscription<dynamic>? streamSubscription;
-
-    // Add a listener to the WebSocket stream to handle incoming messages
-    streamSubscription = channel.stream.listen(
-          (message) {
-        // Parse the incoming message as JSON
+      // Listen to WebSocketManager stream for responses
+      WebSocketManager.getStream().listen((message) {
         Map<String, dynamic> data = json.decode(message);
 
         // Check if the received message contains the game code
         if (data.containsKey('gameCode')) {
           String receivedGameCode = data['gameCode'];
 
-          // Complete the Completer with the received game code
-          gameCodeCompleter.complete(receivedGameCode);
-
-          // Cancel the stream subscription as we have received the game code
-          streamSubscription?.cancel();
+          // Redirect to the waiting screen with the received game code
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => WaitingScreen(gameCode: receivedGameCode, isAdmin: true),
+            ),
+          );
+        } else {
+          // Handle other responses from the server if needed
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return CustomAlertDialog1
+                (
+                title: AppLocalizations.of(context)!.titre_popup_champ_vide ,
+                content: AppLocalizations.of(context)!.texte_popup_champ_vide,
+                buttonText: AppLocalizations.of(context)!.ok,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                scaleFactor: MediaQuery.of(context).textScaleFactor,
+              );
+            },
+          );
         }
-      },
-      onError: (error) {
-        print("❓ WebSocket error: $error");
-
-        // Complete the Completer with an error
-        gameCodeCompleter.completeError(error);
-
-        // Cancel the stream subscription in case of an error
-        streamSubscription?.cancel();
-      },
-      onDone: () {
-        print('❌ WebSocket connection closed');
-      },
-    );
-
-    // Send the game creation command to the server
-    channel.sink.add('{"email":"$email","auth":"$auth","cmd":"createGame","radius": "$initialRadius", "creatorId": "$creatorId", "center": {"lat": ${initialTapPosition.latitude}, "lng": ${initialTapPosition.longitude}}, "duration": $dureePartie, "hidingDuration": "$dureeCachette"}');
-
-    try {
-      // Wait for the game code response or an error
-      String? receivedGameCode = await gameCodeCompleter.future;
-
-      // Check if the game code is not null before navigating
-      if (receivedGameCode != null) {
-        // Redirect to the waiting screen with the received game code
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => WaitingScreen(gameCode: receivedGameCode, isAdmin: true),
-          ),
-        );
-      } else {
-        // Handle the case where the game code is null (error scenario)
-        // You can show an error message or take appropriate action
-        print('🤳 Game code is null');
-      }
+      });
     } catch (error) {
-      // Handle errors thrown during the waiting process
-      // You can show an error message or take appropriate action
-      print('Error waiting for game code: $error');
+      print('Error sending data: $error');
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CustomAlertDialog1
+            (
+            title: AppLocalizations.of(context)!.erreur ,
+            content: AppLocalizations.of(context)!.erreurconnexion,
+            buttonText: AppLocalizations.of(context)!.ok,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            scaleFactor: MediaQuery.of(context).textScaleFactor,
+          );
+        },
+      );
+      // Handle error sending data
     }
   }
+
 
   void getCreatorId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

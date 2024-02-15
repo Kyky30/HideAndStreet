@@ -5,7 +5,7 @@ import 'package:figma_squircle/figma_squircle.dart';
 import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 import 'package:hide_and_street/monetization/PurchaseApi.dart';
 
-import '../components/buttons.dart';
+import '../../components/buttons.dart';
 
 
 void presentPaywallIfNeeded() async {
