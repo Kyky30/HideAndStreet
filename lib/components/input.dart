@@ -8,6 +8,8 @@ class CustomTextField extends StatelessWidget {
   final bool obscureText;
   final double scaleFactor;
   final void Function(String)? onChanged;
+  final TextInputType keyboardType;
+
 
   const CustomTextField({
     required this.hintText,
@@ -15,11 +17,14 @@ class CustomTextField extends StatelessWidget {
     this.obscureText = false,
     required this.scaleFactor,
     this.onChanged,
+    this.keyboardType = TextInputType.text,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      onChanged: onChanged,
+      keyboardType: keyboardType,
       controller: controller,
       obscureText: obscureText,
       style: TextStyle(

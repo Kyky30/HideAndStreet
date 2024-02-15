@@ -1,15 +1,16 @@
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:figma_squircle/figma_squircle.dart';
+
 import 'package:hide_and_street/waitingScreen.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'WebSocketManager.dart';
-import 'components/alertbox.dart';
+import '../WebSocketManager.dart';
+import '../components/alertbox.dart';
+import '../components/buttons.dart';
+import '../components/input.dart';
 
 
 class RoomCreationPage extends StatefulWidget {
@@ -40,6 +41,16 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
     super.initState();
     getCreatorId();
     WebSocketManager.connect(email); // Establish WebSocket connection
+
+    // Listen for changes in the text fields
+    dureePartieController.addListener(() {
+      dureePartie = int.parse(dureePartieController.text);
+    });
+
+    dureeCachetteController.addListener(() {
+      dureeCachette = int.parse(dureeCachetteController.text);
+    });
+
   }
 
   void _createGame() async {
@@ -126,8 +137,9 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
   int dureePartie = 0;
   int dureeCachette = 0;
 
-  List<GlobalKey<FormFieldState<String>>> dureeKey = [GlobalKey<FormFieldState<String>>()];
-  List<GlobalKey<FormFieldState<String>>> dureeCachetteKey = [GlobalKey<FormFieldState<String>>()];
+  // Declare the controllers for the email and password fields
+  final TextEditingController dureePartieController = TextEditingController();
+  final TextEditingController dureeCachetteController = TextEditingController();
 
   List<RoomCreationStep> _steps(BuildContext context) => [
     RoomCreationStep(
@@ -136,14 +148,17 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
       buttonText: AppLocalizations.of(context)!.confirmer,
       logo: 'assets/logo_connect.png',
       fields: [
-        RoomCreationField(label: AppLocalizations.of(context)!.champ_conf_duree, hint: AppLocalizations.of(context)!.texte_champ_conf_duree, key: dureeKey[0], keyboardType: TextInputType.number),
+        RoomCreationField(
+            label: AppLocalizations.of(context)!.champ_conf_duree,
+            hint: AppLocalizations.of(context)!.texte_champ_conf_duree,
+            controller: dureePartieController,
+            keyboardType: TextInputType.phone),
       ],
       onTap: () {
-        var duree = dureeKey[0].currentState?.value ?? "";
-        if (duree.isEmpty) {
+        if (dureePartieController.text.isEmpty) {
           _showEmptyFieldDialog(context);
         } else {
-          dureePartie = int.parse(duree);
+          dureePartie = int.parse(dureePartieController.text);
           print(dureePartie);
           _pageController.nextPage(duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
         }
@@ -155,14 +170,17 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
       buttonText: AppLocalizations.of(context)!.confirmer,
       logo: 'assets/logo_connect.png',
       fields: [
-        RoomCreationField(label: AppLocalizations.of(context)!.champ_conf_duree_cachette, hint: AppLocalizations.of(context)!.texte_champ_conf_duree_cachette, key: dureeCachetteKey[0], keyboardType: TextInputType.number),
+        RoomCreationField(
+            label: AppLocalizations.of(context)!.champ_conf_duree_cachette,
+            hint: AppLocalizations.of(context)!.texte_champ_conf_duree_cachette,
+            controller: dureeCachetteController,
+            keyboardType: TextInputType.phone),
       ],
       onTap: () {
-        var dureeCach = dureeCachetteKey[0].currentState?.value ?? "";
-        if (dureeCach.isEmpty) {
+        if (dureeCachetteController.text.isEmpty) {
           _showEmptyFieldDialog(context);
         } else {
-          dureeCachette = int.parse(dureeCach);
+          dureeCachette = int.parse(dureeCachetteController.text);
           print(dureeCachette);
           _createGame();
           _pageController.nextPage(duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
@@ -229,19 +247,12 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
                   for (var field in step.fields)
                     Padding(
                       padding: EdgeInsets.all(16.0 * scaleFactor),
-                      child: TextFormField(
-                        key: field.key,
-                        keyboardType: field.keyboardType,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.grey[300],
-                          hintText: field.hint,
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(20.0 * scaleFactor),
-                          ),
+                      child:
+                        CustomTextField(
+                          hintText: field.hint ?? '',
+                          controller: field.controller,
+                          scaleFactor: scaleFactor,
                         ),
-                      ),
                     ),
                 ],
               ),
@@ -253,27 +264,17 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
             right: 0,
             child: Padding(
               padding: EdgeInsets.all(16.0 * scaleFactor),
-              child: ElevatedButton(
-                onPressed: () {
-                  if (step.onTap != null) {
-                    step.onTap!();
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: SmoothRectangleBorder(
-                    borderRadius: SmoothBorderRadius(
-                      cornerRadius: 20 * scaleFactor,
-                      cornerSmoothing: 1,
-                    ),
-                  ),
-                  minimumSize: Size(double.infinity, 80 * scaleFactor),
-                  backgroundColor: const Color(0xFF373967),
-                  foregroundColor: const Color(0xFF212348),
-                ),
-                child: Text(
-                  step.buttonText,
-                  style: TextStyle(fontSize: 20 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
-                ),
+              child:
+
+              CustomButton
+                (
+                  text: step.buttonText,
+                  onPressed: () {
+                    if (step.onTap != null) {
+                      step.onTap!();
+                    }
+                  },
+                  scaleFactor: MediaQuery.of(context).textScaleFactor,
               ),
             ),
           ),
@@ -287,17 +288,14 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(AppLocalizations.of(context)!.titre_popup_champ_vide),
-          content: Text(AppLocalizations.of(context)!.texte_popup_champ_vide),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text("OK"),
-            ),
-          ],
+        return CustomAlertDialog1(
+            title: AppLocalizations.of(context)!.titre_popup_champ_vide,
+            content: AppLocalizations.of(context)!.texte_popup_champ_vide,
+            buttonText: AppLocalizations.of(context)!.ok,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            scaleFactor: MediaQuery.of(context).textScaleFactor,
         );
       },
     );
@@ -325,13 +323,13 @@ class RoomCreationStep {
 class RoomCreationField {
   final String label;
   final String? hint;
-  final GlobalKey<FormFieldState<String>>? key;
+  final TextEditingController controller;
   final TextInputType? keyboardType; // Add this property for keyboard type
 
   RoomCreationField({
     required this.label,
     this.hint,
-    this.key,
+    required this.controller,
     this.keyboardType = TextInputType.text, // Set the default keyboard type to text
   });
 }

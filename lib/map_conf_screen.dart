@@ -5,7 +5,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'room_creation.dart';
+import 'Page/room_creation.dart';
 import 'PreferencesManager.dart';
 
 import 'package:hide_and_street/components/buttons.dart';
