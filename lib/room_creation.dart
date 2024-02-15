@@ -7,7 +7,6 @@ import 'package:figma_squircle/figma_squircle.dart';
 import 'package:hide_and_street/waitingScreen.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:web_socket_channel/io.dart';
 
 import 'WebSocketManager.dart';
 import 'components/alertbox.dart';
@@ -28,7 +27,6 @@ class RoomCreationPage extends StatefulWidget {
 
 class _RoomCreationPageState extends State<RoomCreationPage> {
   PageController _pageController = PageController(initialPage: 0);
-  late IOWebSocketChannel channel;
   String creatorId = '';
   String email = '';
 
@@ -121,7 +119,7 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
   @override
   void dispose() {
     // Fermer la connexion WebSocket lorsque le widget est détruit
-    channel.sink.close();
+    WebSocketManager.closeConnection();
     super.dispose();
   }
 

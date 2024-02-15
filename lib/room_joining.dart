@@ -4,14 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hide_and_street/waitingScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:web_socket_channel/io.dart';
 
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:hide_and_street/components/alertbox.dart';
 import 'package:hide_and_street/components/input.dart';
 
-
-
+// Importez votre gestionnaire de WebSocket
+import 'WebSocketManager.dart';
 
 class RoomJoiningPage extends StatefulWidget {
   const RoomJoiningPage({Key? key}) : super(key: key);
@@ -22,7 +21,6 @@ class RoomJoiningPage extends StatefulWidget {
 
 class _RoomJoiningPageState extends State<RoomJoiningPage> {
   final TextEditingController _gameCodeController = TextEditingController();
-  late final IOWebSocketChannel _channel;
   String email = '';
   String userID = '';
 
@@ -34,14 +32,8 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
   @override
   void initState() {
     super.initState();
-    _channel = IOWebSocketChannel.connect('wss://app.hideandstreet.furrball.fr/joinGame');
+    WebSocketManager.connect(email);
     _getPref();
-    _channel.stream.listen((message) {
-      _handleServerResponse(message);
-    }, onError: (error) {
-      // Gérer les erreurs éventuelles
-      print('Erreur de streaming: $error');
-    });
   }
 
   void _getPref() async {
@@ -54,12 +46,48 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
 
   void _joinGame() {
     String gameCode = _gameCodeController.text;
-    String auth = "chatappauthkey231r4";
 
     if (gameCode.isNotEmpty) {
-      // Envoyer la commande joinGame avec le code de la partie au serveur via WebSocket
-      _channel.sink.add('{"email": "$email","auth":"$auth", "cmd":"joinGame","userId":"$userID", "gameCode":"$gameCode"}');
-      print('{"email": "$email", "auth":"$auth", "cmd":"joinGame","gameCode":"$gameCode"}');
+      print("🌊🤣😎⚾🤙");
+      WebSocketManager.sendData('"email": "$email", "cmd":"joinGame","userId":"$userID", "gameCode":"$gameCode"');
+
+      // Écoutez les réponses du serveur
+      WebSocketManager.getStream().listen((message) {
+        Map<String, dynamic> data = json.decode(message);
+        print(data);
+
+        if (data['cmd'] == 'joinGame') {
+          if (data['status'] == 'success') {
+            if (data.containsKey('gameCode')) {
+              String gameCode = data['gameCode'];
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => WaitingScreen(gameCode: gameCode, isAdmin: false),
+                ),
+              );
+            } else {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text(AppLocalizations.of(context)!.titre_popup_reponse_incomplete_serveur),
+                    content: Text(AppLocalizations.of(context)!.texte_popup_reponse_incomplete_serveur),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text("OK"),
+                      ),
+                    ],
+                  );
+                },
+              );
+            }
+          }
+        }
+      });
     } else {
       showDialog(
         context: context,
@@ -78,43 +106,6 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
     }
   }
 
-  void _handleServerResponse(String response) {
-    final Map<String, dynamic> data = jsonDecode(response);
-    print(data);
-    if (data['cmd'] == 'joinGame') {
-      if (data['status'] == 'success') {
-        if (data.containsKey('gameCode')) {
-          String gameCode = data['gameCode'];
-          // Naviguer vers la page WaitingScreen en cas de succès
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => WaitingScreen(gameCode: gameCode, isAdmin: false),
-            ),
-          );
-        } else {
-          // Gérer le cas où le serveur n'a pas renvoyé le code de la partie
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text(AppLocalizations.of(context)!.titre_popup_reponse_incomplete_serveur),
-                content: Text(AppLocalizations.of(context)!.texte_popup_reponse_incomplete_serveur),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text("OK"),
-                  ),
-                ],
-              );
-            },
-          );
-        }
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -165,8 +156,8 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
 
   @override
   void dispose() {
-    _channel.sink.close();
+    // Fermez la connexion WebSocket lorsque la page est détruite
+    WebSocketManager.closeConnection();
     super.dispose();
   }
 }
-
