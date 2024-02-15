@@ -1,7 +1,6 @@
 // shop.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:figma_squircle/figma_squircle.dart';
 import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 import 'package:hide_and_street/monetization/PurchaseApi.dart';
 

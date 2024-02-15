@@ -434,7 +434,7 @@ class _GameMapState extends State<GameMap> {
         'email': email,
         'auth': auth,
         'cmd': 'setPositionPlayer',
-        'position': currentPosition.toString(),
+        'position':position,
         'gameCode': gameCode,
         'playerId': userId,
       };
@@ -449,27 +449,6 @@ class _GameMapState extends State<GameMap> {
 
   }
 
-
-
-  _lancerTempsDeCachette() {
-    CountdownTimer hideTimer = CountdownTimer(
-      endTime: timeStampDebutPartie + tempsDeCachette * 1000,
-      onEnd: () {
-        print('Temps de cachette terminé');
-        //TODO: Afficher un message de fin de temps de cachette et lancer le temps de partie
-      },
-    );
-  }
-
-  _lancerTempsDePartie() {
-    CountdownTimer gameTimer = CountdownTimer(
-        endTime: timeStampDebutPartie + tempsDePartie * 1000,
-        onEnd: () {
-          print('Temps de partie terminé');
-          //TODO: Afficher un message de fin de partie et lancer la procédure de fin de partie
-        }
-    );
-  }
 
   void _startLocationCheckTimer() {
     timer1seconde = Timer.periodic(const Duration(seconds: 5), (timer) {
@@ -533,7 +512,7 @@ class _GameMapState extends State<GameMap> {
       'email': email,
       'auth': auth,
       'cmd': 'setOutOfZone',
-      'position': currentPosition.toString(),
+      'position': position,
       'gameCode': gameCode,
       'playerId': userId,
     };

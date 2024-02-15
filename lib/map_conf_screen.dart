@@ -4,7 +4,6 @@ import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:figma_squircle/figma_squircle.dart';
 
 import 'room_creation.dart';
 import 'PreferencesManager.dart';
