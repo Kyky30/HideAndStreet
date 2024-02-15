@@ -69,17 +69,14 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text(AppLocalizations.of(context)!.erreur),
-                    content: Text(AppLocalizations.of(context)!.erreurconnexion),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text("OK"),
-                      ),
-                    ],
+                  return CustomAlertDialog1(
+                    title: AppLocalizations.of(context)!.erreur,
+                    content: AppLocalizations.of(context)!.erreurconnexion,
+                    buttonText: AppLocalizations.of(context)!.ok,
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    scaleFactor: getScaleFactor(context),
                   );
                 },
               );
@@ -94,7 +91,7 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
           return CustomAlertDialog1(
             title: AppLocalizations.of(context)!.erreur,
             content: AppLocalizations.of(context)!.erreurconnexion,
-            buttonText: 'OK',
+            buttonText: AppLocalizations.of(context)!.erreurconnexion,
             onPressed: () {
               Navigator.of(context).pop();
             },
