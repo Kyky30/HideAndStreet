@@ -13,6 +13,9 @@ import 'package:figma_squircle/figma_squircle.dart';
 import 'package:hide_and_street/monetization/AdmobHelper.dart';
 import 'package:hide_and_street/monetization/PremiumStatus.dart';
 
+import 'package:hide_and_street/components/alertbox.dart';
+import 'package:hide_and_street/components/buttons.dart';
+
 class WaitingScreen extends StatefulWidget {
   final String gameCode;
   final bool isAdmin;
@@ -110,17 +113,14 @@ class _WaitingScreenState extends State<WaitingScreen> {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(AppLocalizations.of(context)!.titre_popup_pas_assez_chercheurs),
-            content: Text(AppLocalizations.of(context)!.texte_popup_pas_assez_chercheurs),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text("OK"),
-              ),
-            ],
+          return CustomAlertDialog1(
+              title: AppLocalizations.of(context)!.titre_popup_pas_assez_chercheurs,
+              content: AppLocalizations.of(context)!.texte_popup_pas_assez_chercheurs,
+              buttonText: AppLocalizations.of(context)!.ok,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              scaleFactor: MediaQuery.of(context).textScaleFactor,
           );
         },
       );
@@ -130,17 +130,14 @@ class _WaitingScreenState extends State<WaitingScreen> {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(AppLocalizations.of(context)!.titre_popup_pas_assez_cacheurs),
-            content: Text(AppLocalizations.of(context)!.texte_popup_pas_assez_cacheurs),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text("OK"),
-              ),
-            ],
+          return CustomAlertDialog1(
+              title: AppLocalizations.of(context)!.titre_popup_pas_assez_cacheurs,
+              content: AppLocalizations.of(context)!.texte_popup_pas_assez_cacheurs,
+              buttonText: AppLocalizations.of(context)!.ok,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              scaleFactor: MediaQuery.of(context).textScaleFactor,
           );
         },
       );
@@ -283,62 +280,22 @@ class _WaitingScreenState extends State<WaitingScreen> {
           ),
           const Spacer(),
 
-          ElevatedButton(
-            onPressed: _shareGameCode,
-            style: ElevatedButton.styleFrom(
-              shape: SmoothRectangleBorder(
-                borderRadius: SmoothBorderRadius(
-                  cornerRadius: 20,
-                  cornerSmoothing: 1,
-                ),
-              ),
-              minimumSize: Size(MediaQuery.of(context).size.width - 30, 60),
+          CustomButton(
+              text: AppLocalizations.of(context)!.partagerCodePartie + ' : ' + widget.gameCode,
+              onPressed: _shareGameCode,
+              scaleFactor: MediaQuery.of(context).textScaleFactor,
               backgroundColor: const Color(0xFF5A5C98),
               foregroundColor: const Color(0xFF212348),
-            ),
-            child: Container(
-                width: MediaQuery.of(context).size.width - 80,
-                child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.partagerCodePartie + ' : ',
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w500, fontFamily: 'Poppins', color: Colors.white),
-                      ),
-                      Text(
-                        widget.gameCode,
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w700, fontFamily: 'Poppins', color: Colors.white),
-                      ),
-                    ],
-                  ),
-                )),
           ),
 
           const SizedBox(height: 16),
 
           // Afficher le bouton "Start Game" et les cases à cocher si l'utilisateur est un administrateur
           if (widget.isAdmin)
-            ElevatedButton(
-              onPressed: _startGame,
-              child: Text(
-                AppLocalizations.of(context)!.start_game,
-                style: const TextStyle(
-                    fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
-              ),
-              style: ElevatedButton.styleFrom(
-                shape: SmoothRectangleBorder(
-                  borderRadius: SmoothBorderRadius(
-                    cornerRadius: 20,
-                    cornerSmoothing: 1,
-                  ),
-                ),
-                minimumSize: Size(MediaQuery.of(context).size.width - 30, 80),
-                backgroundColor: const Color(0xFF373967),
-                foregroundColor: const Color(0xFF212348),
-              ),
+            CustomButton(
+                text: AppLocalizations.of(context)!.start_game,
+                onPressed: _startGame,
+                scaleFactor: MediaQuery.of(context).textScaleFactor
             ),
           const SizedBox(height: 20),
         ],

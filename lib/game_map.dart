@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:hide_and_street/winPage.dart';
+import 'package:hide_and_street/Page/winPage.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
