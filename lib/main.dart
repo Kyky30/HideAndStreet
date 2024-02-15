@@ -32,7 +32,7 @@ void main() async{
         ChangeNotifierProvider(create: (context) => ChatModel()),
         // Ajoutez d'autres providers si nécessaire
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
@@ -59,8 +59,8 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         '/home': (context) => const MyHomePage(),
-        '/account_settings': (context) => AccountSettingsPage(),
-        '/login': (context) => LoginPage(),
+        '/account_settings': (context) => const AccountSettingsPage(),
+        '/login': (context) => const LoginPage(),
       },
       supportedLocales: L10n.all,
       localizationsDelegates: const [
@@ -85,9 +85,9 @@ class MyApp extends StatelessWidget {
     bool? loggedIn = prefs.getBool('loggedin');
 
     if (loggedIn == true) {
-      return MyHomePage();
+      return const MyHomePage();
     } else {
-      return LoginPage(); // Return the LoginPage widget
+      return const LoginPage(); // Return the LoginPage widget
     }
   }
 }
@@ -105,7 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Widget> _tabs = [
     const ShopPage(),
     HomePage(),
-    AccountSettingsPage(),
+    const AccountSettingsPage(),
   ];
 
   void _onItemTapped(int index) {

@@ -7,7 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class winPage extends StatefulWidget {
   final bool isSeekerWin;
 
-  winPage({required this.isSeekerWin});
+  const winPage({required this.isSeekerWin});
 
   @override
   _WinPageState createState() => _WinPageState();
@@ -19,7 +19,7 @@ class _WinPageState extends State<winPage> {
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(height: 40),
+          const SizedBox(height: 40),
           Text(
             AppLocalizations.of(context)!.game_over,
             style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.black),
@@ -28,7 +28,7 @@ class _WinPageState extends State<winPage> {
             widget.isSeekerWin ? AppLocalizations.of(context)!.victoire_chercheur : AppLocalizations.of(context)!.victoire_cacheur,
             style: const TextStyle(fontSize: 25, fontWeight: FontWeight.w500, fontFamily: 'Poppins', color: Colors.blue),
           ),
-          Spacer(),
+          const Spacer(),
           Center(
             child: Column(
               children: [
@@ -37,7 +37,7 @@ class _WinPageState extends State<winPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => MapConfScreen(),
+                        builder: (context) => const MapConfScreen(),
                       ),
                     );
                   },
@@ -63,7 +63,7 @@ class _WinPageState extends State<winPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => RoomJoiningPage(),
+                        builder: (context) => const RoomJoiningPage(),
                       ),
                     );
                   },
@@ -83,7 +83,7 @@ class _WinPageState extends State<winPage> {
                     style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
               ],
             ),
           ),

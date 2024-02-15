@@ -106,7 +106,7 @@ class _GameMapState extends State<GameMap> {
         (tempsDeCachette * 60 * 1000);
 
     // Start timerCachette
-    timerCachette = Timer.periodic(Duration(seconds: 1), (timer) {
+    timerCachette = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         if (DateTime.now().millisecondsSinceEpoch >= endTimeCachette) {
           // Timer cachette ended, switch to timerPartie
@@ -122,7 +122,7 @@ class _GameMapState extends State<GameMap> {
 
   void _startTimerPartie() {
     // Start timerPartie
-    timerPartie = Timer.periodic(Duration(seconds: 1), (timer) {
+    timerPartie = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         if (DateTime.now().millisecondsSinceEpoch >= endTimePartie) {
           // Timer partie ended, do something
@@ -218,7 +218,7 @@ class _GameMapState extends State<GameMap> {
           child: Container(
             child: Stack(
               children: <Widget>[
-                Align(
+                const Align(
                   alignment: Alignment.center,
                   child: Icon(Symbols.location_on_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24, color: Colors.red, size: 30),
                 ),
@@ -226,7 +226,7 @@ class _GameMapState extends State<GameMap> {
                   alignment: Alignment.topCenter,
                   child: Text(
                     data['playerName'],
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 20.0,
                       fontWeight: FontWeight.bold,
                       fontFamily: "Poppins",
@@ -244,7 +244,7 @@ class _GameMapState extends State<GameMap> {
           markers.add(marker);
         });
 
-        Timer(Duration(seconds: 5), () {
+        Timer(const Duration(seconds: 5), () {
           print('Removing marker: $marker');
           setState(() {
             markers.remove(marker);
@@ -255,7 +255,7 @@ class _GameMapState extends State<GameMap> {
       {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => winPage(isSeekerWin: true)),
+          MaterialPageRoute(builder: (context) => const winPage(isSeekerWin: true)),
               (Route<dynamic> route) => false,
         );
       }
@@ -380,7 +380,7 @@ class _GameMapState extends State<GameMap> {
                     child: Container(
                       width: 15,
                       height: 15,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.blue,
                         shape: BoxShape.circle,
                       ),
@@ -390,7 +390,7 @@ class _GameMapState extends State<GameMap> {
                     alignment: Alignment.topCenter,
                     child: Text(
                       positionData['username'].toString(), // replace with the actual username
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
                         color: Colors.blue,
@@ -472,12 +472,12 @@ class _GameMapState extends State<GameMap> {
   }
 
   void _startLocationCheckTimer() {
-    timer1seconde = Timer.periodic(Duration(seconds: 5), (timer) {
+    timer1seconde = Timer.periodic(const Duration(seconds: 5), (timer) {
       print("1️⃣ Timer tick...  ------------------");
       _updatePosition();
       _checkPlayerLocation();
     });
-    timer5secondes = Timer.periodic(Duration(seconds: 5), (timer) {
+    timer5secondes = Timer.periodic(const Duration(seconds: 5), (timer) {
       print("5️⃣ Timer tick...  ------------------");
       _sendPosToServer();
       _updateSeekersPositions();
@@ -554,7 +554,7 @@ class _GameMapState extends State<GameMap> {
         width: 80,
         height: 80,
         child: Container(
-          child: Stack(
+          child: const Stack(
             children: <Widget>[
               Align(
                 alignment: Alignment.center,
@@ -567,7 +567,7 @@ class _GameMapState extends State<GameMap> {
       setState(() {
         markers.add(marker);
       });
-      Timer(Duration(seconds: 5), () {
+      Timer(const Duration(seconds: 5), () {
         print('Removing marker: $marker');
         setState(() {
           markers.remove(marker);
@@ -593,7 +593,7 @@ class _GameMapState extends State<GameMap> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SizedBox(height: 40),
+                          const SizedBox(height: 40),
                           Center(
                             child:
                             Row(
@@ -603,7 +603,7 @@ class _GameMapState extends State<GameMap> {
                                   isCachetteActive
                                       ? AppLocalizations.of(context)!.timer_cachette
                                       : AppLocalizations.of(context)!.timer_chasse,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                     fontFamily: "Poppins",
@@ -613,7 +613,7 @@ class _GameMapState extends State<GameMap> {
                                   endTime: isCachetteActive
                                       ? endTimeCachette
                                       : endTimePartie,
-                                  textStyle: TextStyle(fontSize: 25,
+                                  textStyle: const TextStyle(fontSize: 25,
                                       color: Colors.red,
                                       fontWeight: FontWeight.bold,
                                       fontFamily: "Poppins"),
@@ -625,7 +625,7 @@ class _GameMapState extends State<GameMap> {
                                       Navigator.pushAndRemoveUntil(
                                         context,
                                         MaterialPageRoute(builder: (context) =>
-                                            winPage(isSeekerWin: false)),
+                                            const winPage(isSeekerWin: false)),
                                             (Route<dynamic> route) => false,
                                       );
                                       print("🚨🚨🚨FIN DE PARTIE🚨🚨🚨");
@@ -642,7 +642,7 @@ class _GameMapState extends State<GameMap> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Expanded(
                       child: FlutterMap(
                         options: MapOptions(
@@ -786,7 +786,7 @@ class _GameMapState extends State<GameMap> {
                           grade: 200,
                           opticalSize: 24),
                     ),
-                  SizedBox(height: 10),
+                    const SizedBox(height: 10),
                   Stack(
                     children: [
                       FloatingActionButton(
@@ -821,7 +821,7 @@ class _GameMapState extends State<GameMap> {
                           child: Container(
                             width: 10,
                             height: 10,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               shape: BoxShape.circle,
                               color: Colors.red,
                             ),
@@ -829,7 +829,7 @@ class _GameMapState extends State<GameMap> {
                         ),
                     ],
                   ),
-                  SizedBox(height: 10),
+                    const SizedBox(height: 10),
                   FloatingActionButton(
                     heroTag: 'button3',
                     onPressed: () {
@@ -845,7 +845,7 @@ class _GameMapState extends State<GameMap> {
                         grade: 200,
                         opticalSize: 24),
                   ),
-                  SizedBox(height: 40),
+                    const SizedBox(height: 40),
                 ],
               )
                   : null,

@@ -33,12 +33,12 @@ class WebSocketManager {
   }
 
   static Stream<dynamic> getStream() {
-    return _channel?.stream ?? Stream.empty();
+    return _channel?.stream ?? const Stream.empty();
   }
 }
 
 class LoginPage extends StatefulWidget {
-  LoginPage({Key? key});
+  const LoginPage({Key? key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -149,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => MyHomePage(),
+              builder: (context) => const MyHomePage(),
             ),
           );
         } else {
@@ -239,7 +239,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               Positioned(
                 bottom: 0.04 * MediaQuery.of(context).size.height,
                 left: 0,

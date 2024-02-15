@@ -10,7 +10,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class inGamePlayerlist extends StatefulWidget {
   final String gameCode;
 
-  inGamePlayerlist({required this.gameCode});
+  const inGamePlayerlist({required this.gameCode});
 
   @override
   _inGamePlayerlist createState() => _inGamePlayerlist();
@@ -64,14 +64,14 @@ class _inGamePlayerlist extends State<inGamePlayerlist> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('In-Game Player List'),
+        title: const Text('In-Game Player List'),
       ),
       body: StreamBuilder<List<dynamic>>(
         stream: _playerListController.stream,
-        initialData: [],
+        initialData: const [],
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
@@ -90,8 +90,8 @@ class _inGamePlayerlist extends State<inGamePlayerlist> {
                         opticalSize: 24,
                         color: player['found'] ? Colors.red : Colors.blue,
                     ),
-                    title: Text(player['username'], style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
-                    subtitle: Text(player['seeker'] ? AppLocalizations.of(context)!.seekers : (player['found'] ? AppLocalizations.of(context)!.etat_trouve : AppLocalizations.of(context)!.etat_non_trouve), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, fontFamily: 'Poppins')),
+                    title: Text(player['username'], style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
+                    subtitle: Text(player['seeker'] ? AppLocalizations.of(context)!.seekers : (player['found'] ? AppLocalizations.of(context)!.etat_trouve : AppLocalizations.of(context)!.etat_non_trouve), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400, fontFamily: 'Poppins')),
                   ),
                 );
               },
