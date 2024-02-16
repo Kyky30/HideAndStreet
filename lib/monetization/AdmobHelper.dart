@@ -8,9 +8,7 @@ class AdmobHelper {
   int numInterstitialLoadAttempts = 0;
 
   static initialize() {
-    if (MobileAds.instance == null) {
-      MobileAds.instance.initialize();
-    }
+    MobileAds.instance.initialize();
   }
 
   Future<void> createInterstitialAd() {

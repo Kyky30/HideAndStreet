@@ -8,7 +8,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:figma_squircle/figma_squircle.dart';
 
 import 'package:hide_and_street/monetization/AdmobHelper.dart';
 import 'package:hide_and_street/monetization/PremiumStatus.dart';

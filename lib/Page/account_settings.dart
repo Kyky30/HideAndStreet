@@ -22,12 +22,12 @@ class AccountSettingsPage extends StatefulWidget {
 class _AccountSettingsPageState extends State<AccountSettingsPage> {
   bool isBlindModeEnabled = false;
   String username = '';
-  String DateCreation = '';
+  String dateCreation = '';
   String email = '';
 
-  String CGUUrl = 'https://hideandstreet.furrball.fr/CGU.html';
-  String CGVUrl = 'https://hideandstreet.furrball.fr/CGV.html';
-  String PrivacyUrl = 'https://hideandstreet.furrball.fr/privacy.html';
+  String cguUrl = 'https://hideandstreet.furrball.fr/CGU.html';
+  String cgvUrl = 'https://hideandstreet.furrball.fr/CGV.html';
+  String privacyUrl = 'https://hideandstreet.furrball.fr/privacy.html';
 
   @override
   void initState() {
@@ -40,7 +40,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     bool blindMode = await PreferencesManager.getBlindToggle();
     setState(() {
       username = prefs.getString('username') ?? ''; // Utilisez la clé correcte
-      DateCreation = DateCreation = (prefs.getString('DateCreation') ?? '').substring(0, 15);
+      dateCreation = dateCreation = (prefs.getString('DateCreation') ?? '').substring(0, 15);
       isBlindModeEnabled = blindMode;
       email = prefs.getString('email') ?? '';
     });
@@ -66,12 +66,6 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
 
     // Navigate to the login page
     Navigator.pushReplacementNamed(context, '/login');
-  }
-
-  Future<void> _launchUrl(_url) async {
-    if (!await launchUrl(_url)) {
-      throw Exception('Could not launch $_url');
-    }
   }
 
   double getScaleFactor(BuildContext context) {
@@ -111,7 +105,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                 child: ListTile(
                   leading: const Icon(Symbols.calendar_today_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
                   title: Text(AppLocalizations.of(context)!.creationDateLabel, style: TextStyle(fontSize: 18 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
-                  subtitle: Text(DateCreation, style: TextStyle(fontSize: 16 * scaleFactor, fontWeight: FontWeight.w400, fontFamily: 'Poppins')),
+                  subtitle: Text(dateCreation, style: TextStyle(fontSize: 16 * scaleFactor, fontWeight: FontWeight.w400, fontFamily: 'Poppins')),
                 ),
               ),
               Card(
@@ -138,7 +132,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                 children: [
                   TextButton(
                     onPressed: () {
-                      launchUrl(Uri.parse(CGUUrl));
+                      launchUrl(Uri.parse(cguUrl));
                     },
                     child: Text(
                       AppLocalizations.of(context)!.cgu,
@@ -147,7 +141,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                   ),
                   TextButton(
                     onPressed: () {
-                      launchUrl(Uri.parse(CGVUrl));
+                      launchUrl(Uri.parse(cgvUrl));
                     },
                     child: Text(
                       AppLocalizations.of(context)!.cgv,
@@ -156,7 +150,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                   ),
                   TextButton(
                     onPressed: () {
-                      launchUrl(Uri.parse(PrivacyUrl));
+                      launchUrl(Uri.parse(privacyUrl));
                     },
                     child: Text(
                       AppLocalizations.of(context)!.privacy,
