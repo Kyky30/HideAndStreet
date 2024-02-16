@@ -8,6 +8,9 @@ class CustomButton extends StatelessWidget {
   final Color backgroundColor;
   final Color foregroundColor;
   final double scaleFactor;
+  final int height;
+  final int widthMinus;
+  final double fontSize;
 
   const CustomButton({
     required this.text,
@@ -15,6 +18,9 @@ class CustomButton extends StatelessWidget {
     this.backgroundColor = const Color(0xFF373967),
     this.foregroundColor = const Color(0xFF212348),
     required this.scaleFactor,
+    this.height = 80,
+    this.widthMinus = 30,
+    this.fontSize = 20,
   });
 
   @override
@@ -28,14 +34,14 @@ class CustomButton extends StatelessWidget {
             cornerSmoothing: 1,
           ),
         ),
-        minimumSize: Size(MediaQuery.of(context).size.width - 30, 80 * scaleFactor),
+        minimumSize: Size(MediaQuery.of(context).size.width - widthMinus, height * scaleFactor),
         backgroundColor: backgroundColor,
         foregroundColor: foregroundColor,
       ),
       child: Text(
         text,
         style: TextStyle(
-          fontSize: 20 * scaleFactor, // Adapter la taille de la police en fonction du facteur de zoom
+          fontSize: fontSize * scaleFactor, // Adapter la taille de la police en fonction du facteur de zoom
           fontWeight: FontWeight.w600,
           fontFamily: 'Poppins',
           color: Colors.white,

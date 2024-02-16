@@ -108,7 +108,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
 
   void _startGame() {
 
-    if(selectedPlayers.length < 1){
+    if(selectedPlayers.isEmpty){
       showDialog(
         context: context,
         builder: (BuildContext context) {

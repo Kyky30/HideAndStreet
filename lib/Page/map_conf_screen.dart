@@ -5,8 +5,8 @@ import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'Page/room_creation.dart';
-import 'PreferencesManager.dart';
+import 'room_creation.dart';
+import '../PreferencesManager.dart';
 
 import 'package:hide_and_street/components/buttons.dart';
 
@@ -119,6 +119,7 @@ class _MapConfScreenState extends State<MapConfScreen> {
                 ],
               ),
             ),
+            SizedBox(height: 20),
             if (!isBlindModeEnabled) ...[
               // Display the Slider when blind mode is disabled
               Slider(
@@ -145,10 +146,11 @@ class _MapConfScreenState extends State<MapConfScreen> {
                         });
                         },
                       scaleFactor: MediaQuery.of(context).textScaleFactor,
+                      widthMinus: 300,
                   ),
                   Text(
                     AppLocalizations.of(context)!.rayon + ' : ${radius.toStringAsFixed(2)}',
-                    style: const TextStyle(fontSize: 18),
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins'),
                   ),
                   CustomButton
                     (
@@ -159,15 +161,16 @@ class _MapConfScreenState extends State<MapConfScreen> {
                         });
                       },
                       scaleFactor: MediaQuery.of(context).textScaleFactor,
+                      widthMinus: 300,
                   ),
                 ],
               ),
             ],
+            SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 if (!isBlindModeEnabled) ...[
-
                   CustomButton
                     (
                     text: AppLocalizations.of(context)!.centrer,
@@ -177,6 +180,7 @@ class _MapConfScreenState extends State<MapConfScreen> {
                       });
                     },
                     scaleFactor: MediaQuery.of(context).textScaleFactor,
+                    widthMinus: 275,
                   ),
                 ],
 
@@ -195,6 +199,7 @@ class _MapConfScreenState extends State<MapConfScreen> {
                     );
                   },
                   scaleFactor: MediaQuery.of(context).textScaleFactor,
+                  widthMinus: 175,
                 ),
               ],
             ),

@@ -523,7 +523,6 @@ class _GameMapState extends State<GameMap> {
     print("📡 Commande SetOutOfZone envoyée");
   }
 
-  //TODO: A rendre fonctionnel
   Future<void> _updateSeekersPositions() async {
     List<Position> positionseeker = await getPositionForId(seekersIds);
 
@@ -610,7 +609,6 @@ class _GameMapState extends State<GameMap> {
                                       print("🚨🚨🚨FIN DE PARTIE🚨🚨🚨");
                                     }
                                     else {
-                                      //TODO: Procédure de fin de cachette
                                       print("🚨🚨FIN DE CACHETTE🚨🚨");
                                     }
                                   },
@@ -812,7 +810,6 @@ class _GameMapState extends State<GameMap> {
                   FloatingActionButton(
                     heroTag: 'button3',
                     onPressed: () {
-                      //TODO: Naviguer vers la liste des joueurs
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) =>
