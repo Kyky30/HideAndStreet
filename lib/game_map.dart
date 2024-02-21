@@ -17,6 +17,8 @@ import 'PreferencesManager.dart';
 import 'chatWebSocket.dart';
 import 'chat_model.dart';
 
+import 'package:just_audio/just_audio.dart';
+import 'package:flutter/services.dart';
 
 import 'package:hide_and_street/components/inGamePlayerList.dart';
 import 'package:hide_and_street/components/buttons.dart';
@@ -710,129 +712,153 @@ class _GameMapState extends State<GameMap> {
                 ),
                 floatingActionButton: isBlindModeEnabled == false
                     ? Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    if (amITheSeeker == false && amIFound == false)
-                      FloatingActionButton(
-                          heroTag: 'button0',
-                          child: const Icon(Symbols.share_location_rounded,
-                              fill: 1,
-                              weight: 700,
-                              grade: 200,
-                              opticalSize: 24),
-                          //Montre la position pendant 5 secondes
-                          onPressed: () {
-                            _sendOutOfZoneCommand();
-                          }
-                      ),
-                      FloatingActionButton(
-                        heroTag: 'button1',
-                        onPressed: () async {
-                          bool? result = await showDialog<bool>(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return CustomAlertDialog2(
-                                title: AppLocalizations.of(context)!.confirmer,
-                                content: AppLocalizations.of(context)!.confirmer_trouve,
-                                buttonText1: AppLocalizations.of(context)!.non,
-                                buttonText2: AppLocalizations.of(context)!.oui,
-                                onPressed1: () {
-                                  Navigator.of(context).pop(false);
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        if (amITheSeeker == false && amIFound == false)
+                          FloatingActionButton(
+                              heroTag: 'button5',
+                              child: const Icon(Symbols.celebration_rounded,
+                                  fill: 1,
+                                  weight: 700,
+                                  grade: 200,
+                                  opticalSize: 24),
+                              onPressed: () async {
+                                // Trigger a haptic feedback
+                                HapticFeedback.lightImpact();
+
+                                // Create a new AudioPlayer instance
+                                AudioPlayer player = AudioPlayer();
+
+                                // Play the sound
+                                await player.setAsset('assets/sounds/your_sound_file.mp3');
+                                player.play();
+
+                                // Dispose the player when done
+                                player.dispose();
+                              }
+                          ),
+                          const SizedBox(height: 10),
+                          FloatingActionButton(
+                                heroTag: 'button0',
+                                child: const Icon(Symbols.share_location_rounded,
+                                    fill: 1,
+                                    weight: 700,
+                                    grade: 200,
+                                    opticalSize: 24),
+                                //Montre la position pendant 5 secondes
+                                onPressed: () {
+                                  _sendOutOfZoneCommand();
+                                }
+                            ),
+                          const SizedBox(height: 10),
+                          FloatingActionButton(
+                              heroTag: 'button1',
+                              onPressed: () async {
+                                bool? result = await showDialog<bool>(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return CustomAlertDialog2(
+                                      title: AppLocalizations.of(context)!.confirmer,
+                                      content: AppLocalizations.of(context)!.confirmer_trouve,
+                                      buttonText1: AppLocalizations.of(context)!.non,
+                                      buttonText2: AppLocalizations.of(context)!.oui,
+                                      onPressed1: () {
+                                        Navigator.of(context).pop(false);
+                                      },
+                                      onPressed2: () {
+                                        Navigator.of(context).pop(true);
+                                      },
+                                      scaleFactor: MediaQuery.of(context).textScaleFactor,
+                                    );
+                                  },
+                                );
+
+                              if (result == true) {
+                                // Send 'ihavebeenfound' command to the server
+                                String auth = "chatappauthkey231r4";
+                                String gameCode = widget.gameCode;
+
+                                // Prepare the command
+                                Map<String, String> command = {
+                                  'email': email,
+                                  'auth': auth,
+                                  'cmd': 'setFoundStatus',
+                                  'gameCode': gameCode,
+                                  'playerId': userId,
+                                };
+
+                                // Send the command
+                                _channel.sink.add(jsonEncode(command));
+
+                                //Local
+                                amIFound = true;
+                              }
+                            },
+                            child: const Icon(Symbols.hand_gesture, fill: 1,
+                                weight: 700,
+                                grade: 200,
+                                opticalSize: 24),
+                          ),
+                          const SizedBox(height: 10),
+                          Stack(
+                            children: [
+                              FloatingActionButton(
+                                heroTag: 'button2',
+                                onPressed: () async {
+                                  // Naviguer vers l'écran Chat
+                                  chatIsOpen = true;
+                                  newMessage = false;
+                                  setState(() {}); // Mettre à jour l'interface utilisateur
+
+                                  await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Chat(
+                                        email: email,
+                                        gameCode: widget.gameCode,
+                                        broadcastChannel: broadcastStream,
+                                      ),
+                                    ),
+                                  );
+
+                                  // Mettre à jour l'état après le retour du Chat
+                                  chatIsOpen = false;
+                                  setState(() {});
                                 },
-                                onPressed2: () {
-                                  Navigator.of(context).pop(true);
-                                },
-                                scaleFactor: MediaQuery.of(context).textScaleFactor,
+                                child: const Icon(Symbols.chat_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
+                              ),
+                              if (newMessage)
+                                Positioned(
+                                  top: 8,
+                                  right: 8,
+                                  child: Container(
+                                    width: 10,
+                                    height: 10,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          FloatingActionButton(
+                            heroTag: 'button3',
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) =>
+                                    inGamePlayerlist(gameCode: widget.gameCode,)),
                               );
                             },
-                          );
-
-                        if (result == true) {
-                          // Send 'ihavebeenfound' command to the server
-                          String auth = "chatappauthkey231r4";
-                          String gameCode = widget.gameCode;
-
-                          // Prepare the command
-                          Map<String, String> command = {
-                            'email': email,
-                            'auth': auth,
-                            'cmd': 'setFoundStatus',
-                            'gameCode': gameCode,
-                            'playerId': userId,
-                          };
-
-                          // Send the command
-                          _channel.sink.add(jsonEncode(command));
-
-                          //Local
-                          amIFound = true;
-                        }
-                      },
-                      child: const Icon(Symbols.hand_gesture, fill: 1,
-                          weight: 700,
-                          grade: 200,
-                          opticalSize: 24),
-                    ),
-                    const SizedBox(height: 10),
-                  Stack(
-                    children: [
-                      FloatingActionButton(
-                        heroTag: 'button2',
-                        onPressed: () async {
-                          // Naviguer vers l'écran Chat
-                          chatIsOpen = true;
-                          newMessage = false;
-                          setState(() {}); // Mettre à jour l'interface utilisateur
-
-                          await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Chat(
-                                email: email,
-                                gameCode: widget.gameCode,
-                                broadcastChannel: broadcastStream,
-                              ),
-                            ),
-                          );
-
-                          // Mettre à jour l'état après le retour du Chat
-                          chatIsOpen = false;
-                          setState(() {});
-                        },
-                        child: const Icon(Symbols.chat_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
-                      ),
-                      if (newMessage)
-                        Positioned(
-                          top: 8,
-                          right: 8,
-                          child: Container(
-                            width: 10,
-                            height: 10,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.red,
-                            ),
+                            child: const Icon(Symbols.people_rounded, fill: 1,
+                                weight: 700,
+                                grade: 200,
+                                opticalSize: 24),
                           ),
-                        ),
+                          const SizedBox(height: 40),
                     ],
-                  ),
-                    const SizedBox(height: 10),
-                  FloatingActionButton(
-                    heroTag: 'button3',
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) =>
-                            inGamePlayerlist(gameCode: widget.gameCode,)),
-                      );
-                    },
-                    child: const Icon(Symbols.people_rounded, fill: 1,
-                        weight: 700,
-                        grade: 200,
-                        opticalSize: 24),
-                  ),
-                    const SizedBox(height: 40),
-                ],
               )
                   : null,
 
