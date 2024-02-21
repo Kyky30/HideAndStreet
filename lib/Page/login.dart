@@ -7,7 +7,6 @@ import '../WebSocketManager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-
 import '../register.dart';
 
 import '../components/buttons.dart';
@@ -55,8 +54,6 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> login(BuildContext context) async {
     if (email.isEmpty || password.isEmpty) {
-      print("❓ Champ vide");
-
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -98,8 +95,6 @@ class _LoginPageState extends State<LoginPage> {
               );
             },
           );
-
-          print("🚫 " + responseData["status"]);
           return;
         }
 
@@ -126,7 +121,21 @@ class _LoginPageState extends State<LoginPage> {
         } else {
           await WebSocketManager.closeConnection();
           print("🚫 " + "connexion " + responseData["status"]);
-          print("Erreur lors de la connexion");
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return CustomAlertDialog1
+                (
+                title: AppLocalizations.of(context)!.erreur ,
+                content: AppLocalizations.of(context)!.erreurconnexion,
+                buttonText: AppLocalizations.of(context)!.ok,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                scaleFactor: MediaQuery.of(context).textScaleFactor,
+              );
+            },
+          );
         }
       });
 
@@ -134,6 +143,21 @@ class _LoginPageState extends State<LoginPage> {
     } catch (e) {
       print("Erreur lors de la connexion au WebSocket: " + e.toString());
       // Gérer l'erreur de connexion, par exemple, afficher un message d'erreur à l'utilisateur
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CustomAlertDialog1
+            (
+            title: AppLocalizations.of(context)!.erreur ,
+            content: AppLocalizations.of(context)!.erreurconnexion,
+            buttonText: AppLocalizations.of(context)!.ok,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            scaleFactor: MediaQuery.of(context).textScaleFactor,
+          );
+        },
+      );
     }
   }
 
