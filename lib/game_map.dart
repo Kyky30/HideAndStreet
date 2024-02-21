@@ -102,8 +102,7 @@ class _GameMapState extends State<GameMap> {
 
   void _startTimers() {
     // Set endTime for timerCachette
-    endTimeCachette = DateTime.now().millisecondsSinceEpoch +
-        (tempsDeCachette * 60 * 1000);
+    endTimeCachette = timeStampDebutPartie + (tempsDeCachette * 60 * 1000);
 
     // Start timerCachette
     timerCachette = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -111,8 +110,7 @@ class _GameMapState extends State<GameMap> {
         if (DateTime.now().millisecondsSinceEpoch >= endTimeCachette) {
           // Timer cachette ended, switch to timerPartie
           isCachetteActive = false;
-          endTimePartie = endTimeCachette +
-              (tempsDePartie * 60 * 1000);
+          endTimePartie = timeStampDebutPartie + ((tempsDeCachette + tempsDePartie) * 60 * 1000);
           timerCachette.cancel(); // Stop timerCachette
           _startTimerPartie();
         }
@@ -715,6 +713,18 @@ class _GameMapState extends State<GameMap> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     if (amITheSeeker == false && amIFound == false)
+                      FloatingActionButton(
+                          heroTag: 'button0',
+                          child: const Icon(Symbols.share_location_rounded,
+                              fill: 1,
+                              weight: 700,
+                              grade: 200,
+                              opticalSize: 24),
+                          //Montre la position pendant 5 secondes
+                          onPressed: () {
+                            _sendOutOfZoneCommand();
+                          }
+                      ),
                       FloatingActionButton(
                         heroTag: 'button1',
                         onPressed: () async {

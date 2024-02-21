@@ -148,9 +148,17 @@ class _MapConfScreenState extends State<MapConfScreen> {
                       scaleFactor: MediaQuery.of(context).textScaleFactor,
                       widthMinus: 300,
                   ),
-                  Text(
-                    AppLocalizations.of(context)!.rayon + ' : ${radius.toStringAsFixed(2)}',
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins'),
+                  Column(
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.rayon + ' : ',
+                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins',),
+                      ),
+                      Text(
+                        radius.toStringAsFixed(0) + ' m',
+                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins',),
+                      ),
+                    ],
                   ),
                   CustomButton
                     (
@@ -174,6 +182,8 @@ class _MapConfScreenState extends State<MapConfScreen> {
                   CustomButton
                     (
                     text: AppLocalizations.of(context)!.centrer,
+                    backgroundColor: const Color(0xFF7375A8),
+                    foregroundColor: const Color(0xFF64679D),
                     onPressed: () {
                       setState(() {
                         tapPosition = LatLng(currentPosition.latitude, currentPosition.longitude);

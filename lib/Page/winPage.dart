@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hide_and_street/Page/map_conf_screen.dart';
+import 'package:hide_and_street/main.dart';
 import 'package:hide_and_street/room_joining.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -60,6 +61,22 @@ class _WinPageState extends State<winPage> {
                     },
                     scaleFactor: MediaQuery.of(context).textScaleFactor,
                 ),
+
+                SizedBox(height: 16 * MediaQuery.of(context).textScaleFactor),
+
+                CustomButton(
+                    text: AppLocalizations.of(context)!.accueil,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MyHomePage(),
+                        ),
+                      );
+                    },
+                    scaleFactor: MediaQuery.of(context).textScaleFactor,
+                ),
+
                 const SizedBox(height: 20),
               ],
             ),

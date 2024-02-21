@@ -143,7 +143,7 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
 
   List<RoomCreationStep> _steps(BuildContext context) => [
     RoomCreationStep(
-      title: AppLocalizations.of(context)!.titre_conf_duree,
+      title: AppLocalizations.of(context)!.timer_chasse,
       background: 'assets/background_white.jpg',
       buttonText: AppLocalizations.of(context)!.confirmer,
       logo: 'assets/logo_connect.png',
@@ -165,7 +165,7 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
       },
     ),
     RoomCreationStep(
-      title: AppLocalizations.of(context)!.titre_conf_duree_cachette,
+      title: AppLocalizations.of(context)!.timer_cachette,
       background: 'assets/background_white.jpg',
       buttonText: AppLocalizations.of(context)!.confirmer,
       logo: 'assets/logo_connect.png',
