@@ -85,8 +85,8 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
             builder: (BuildContext context) {
               return CustomAlertDialog1
                 (
-                title: AppLocalizations.of(context)!.titre_popup_champ_vide ,
-                content: AppLocalizations.of(context)!.texte_popup_champ_vide,
+                title: AppLocalizations.of(context)!.erreur ,
+                content: AppLocalizations.of(context)!.erreurconnexion,
                 buttonText: AppLocalizations.of(context)!.ok,
                 onPressed: () {
                   Navigator.of(context).pop();

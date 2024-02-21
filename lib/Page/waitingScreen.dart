@@ -15,6 +15,8 @@ import 'package:hide_and_street/monetization/PremiumStatus.dart';
 import 'package:hide_and_street/components/alertbox.dart';
 import 'package:hide_and_street/components/buttons.dart';
 
+import '../WebSocketManager.dart';
+
 class WaitingScreen extends StatefulWidget {
   final String gameCode;
   final bool isAdmin;
@@ -50,14 +52,15 @@ class _WaitingScreenState extends State<WaitingScreen> {
       });
     }
 
-    _channel = IOWebSocketChannel.connect('wss://app.hideandstreet.furrball.fr/getPlayerlist');
+    WebSocketManager.connect(email); // Établir une connexion WebSocket
     _getPref();
     _playerList = getPlayerList(widget.gameCode);
     _initWebSocket();
   }
 
   void _initWebSocket() {
-    _channel.stream.listen((message) {
+    // Écouter les réponses du serveur
+    WebSocketManager.getStream().listen((message) {
       final Map<String, dynamic> data = jsonDecode(message);
       print('Received message from server: $message');
       if (data['cmd'] == 'getPlayerlist' || data['cmd'] == 'UpdatePlayerlist') {
@@ -78,7 +81,6 @@ class _WaitingScreenState extends State<WaitingScreen> {
           LatLng center = LatLng(
               centerCoordinates['lat']!, centerCoordinates['lng']!);
           double radius = (data['data']['radius'] as num).toDouble();
-          print("⛷️⛷️⛷️⛷️⛷️");
           Map<String, bool> playerList = Map<String, bool>.from(
               data['data']['players']);
           Navigator.pushAndRemoveUntil(
@@ -105,6 +107,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
       }
     });
   }
+
 
   void _startGame() {
 
@@ -143,8 +146,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
       return;
 
     }
-    String auth = "chatappauthkey231r4";
-    _channel.sink.add('{"email":"$email","auth":"$auth","cmd":"startGame", "gameCode":"${widget.gameCode}", "startingTimeStamp": ${DateTime.now().millisecondsSinceEpoch}}');
+    WebSocketManager.sendData('"email":"$email","cmd":"startGame", "gameCode":"${widget.gameCode}", "startingTimeStamp": ${DateTime.now().millisecondsSinceEpoch}');
     //}
   }
 
@@ -162,6 +164,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
       _channel.sink.add('{"email":"$email","auth":"chatappauthkey231r4","cmd":"UpdatePlayerlist", "gameCode":"${widget.gameCode}"}');
     } else {
       print('WebSocket connection is closed. Cannot update player list.');
+
     }
   }
 
@@ -181,7 +184,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
     final StreamController<List<String>> controller =
     StreamController<List<String>>();
 
-    _channel.sink.add('{"email":"$email","auth":"chatappauthkey231r4","cmd":"getPlayerlist", "gameCode":"${widget.gameCode}"}');
+    WebSocketManager.sendData('"email":"$email","cmd":"getPlayerlist", "gameCode":"${widget.gameCode}"');
 
     return controller.stream.first;
   }
@@ -199,15 +202,14 @@ class _WaitingScreenState extends State<WaitingScreen> {
   }
 
   void _updateSelectedPlayersToServer() {
-    String auth = "chatappauthkey231r4";
-    _channel.sink.add('{"email":"$email","auth":"$auth","cmd":"updateSeekerStatus","gameCode":"${widget.gameCode}", "selectedPlayers": ${jsonEncode(selectedPlayers)}}');
+    WebSocketManager.sendData('"email":"$email","cmd":"updateSeekerStatus","gameCode":"${widget.gameCode}", "selectedPlayers": ${jsonEncode(selectedPlayers)}');
   }
 
 
 
   @override
   void dispose() {
-    _channel.sink.close();
+    // WebSocketManager.closeConnection(); // Fermer la connexion WebSocket
     _playerListController.close();
     _selectedPlayersController.close();
     super.dispose();
