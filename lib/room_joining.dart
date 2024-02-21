@@ -53,7 +53,7 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
       // Écoutez les réponses du serveur
       WebSocketManager.getStream().listen((message) {
         Map<String, dynamic> data = json.decode(message);
-        print(data);
+        print("test " + data.toString());
 
         if (data['cmd'] == 'joinGame') {
           if (data['status'] == 'success') {
@@ -151,9 +151,9 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
   }
 
   @override
-  void dispose() {
+  Future<void> dispose() async {
     // Fermez la connexion WebSocket lorsque la page est détruite
-    WebSocketManager.closeConnection();
+    // WebSocketManager.closeConnection();
     super.dispose();
   }
 }

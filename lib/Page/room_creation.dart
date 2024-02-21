@@ -130,7 +130,7 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
   @override
   void dispose() {
     // Fermer la connexion WebSocket lorsque le widget est détruit
-    WebSocketManager.closeConnection();
+    // WebSocketManager.closeConnection();
     super.dispose();
   }
 

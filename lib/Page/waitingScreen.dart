@@ -1,38 +1,30 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:hide_and_street/game_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:share/share.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:web_socket_channel/io.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
-
 import 'package:hide_and_street/monetization/AdmobHelper.dart';
 import 'package:hide_and_street/monetization/PremiumStatus.dart';
-
-import 'package:hide_and_street/components/alertbox.dart';
-import 'package:hide_and_street/components/buttons.dart';
-
 import '../WebSocketManager.dart';
+
 
 class WaitingScreen extends StatefulWidget {
   final String gameCode;
   final bool isAdmin;
 
-
   const WaitingScreen({required this.gameCode, required this.isAdmin});
 
   @override
   _WaitingScreenState createState() => _WaitingScreenState();
-
 }
 
 class _WaitingScreenState extends State<WaitingScreen> {
   AdmobHelper admobHelper = new AdmobHelper();
 
-  late WebSocketChannel _channel;
   late Future<List<String>> _playerList;
   String email = '';
   String id = '';
@@ -41,25 +33,25 @@ class _WaitingScreenState extends State<WaitingScreen> {
   final _selectedPlayersController = StreamController<List<String>>.broadcast();
   late List<dynamic> playersData;
 
-
   @override
   void initState() {
     super.initState();
 
-    if (PremiumStatus().isPremium) { //TODO : Remettre les pubs
+    if (PremiumStatus().isPremium) {
       admobHelper.createInterstitialAd().then((_) {
         admobHelper.showInterstitialAd();
       });
     }
 
-    WebSocketManager.connect(email); // Établir une connexion WebSocket
+    // Connect to WebSocket using WebSocketManager
+    WebSocketManager.connect(email);
+
     _getPref();
     _playerList = getPlayerList(widget.gameCode);
     _initWebSocket();
   }
 
   void _initWebSocket() {
-    // Écouter les réponses du serveur
     WebSocketManager.getStream().listen((message) {
       final Map<String, dynamic> data = jsonDecode(message);
       print('Received message from server: $message');
@@ -71,8 +63,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
         } else {
           print('Error in response: ${data['message']}');
         }
-      }
-      else if (data['cmd'] == 'partyStartInfo') {
+      } else if (data['cmd'] == 'partyStartInfo') {
         if (data.containsKey('data') && data['data'].containsKey('center') &&
             data['data'].containsKey('radius')) {
           // Parse the center and radius values
@@ -81,6 +72,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
           LatLng center = LatLng(
               centerCoordinates['lat']!, centerCoordinates['lng']!);
           double radius = (data['data']['radius'] as num).toDouble();
+          print("⛷️⛷️⛷️⛷️⛷️");
           Map<String, bool> playerList = Map<String, bool>.from(
               data['data']['players']);
           Navigator.pushAndRemoveUntil(
@@ -98,8 +90,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
                 (Route<dynamic> route) => false,
           );
         }
-      }
-      else if (data['cmd'] == 'playerJoined') {
+      } else if (data['cmd'] == 'playerJoined') {
         _updatePlayerList();
       } else if (data['cmd'] == 'seekerStatusUpdated') {
         print('Seeker status updated');
@@ -108,46 +99,49 @@ class _WaitingScreenState extends State<WaitingScreen> {
     });
   }
 
-
   void _startGame() {
-
-    if(selectedPlayers.isEmpty){
+    if (selectedPlayers.length < 1) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return CustomAlertDialog1(
-              title: AppLocalizations.of(context)!.titre_popup_pas_assez_chercheurs,
-              content: AppLocalizations.of(context)!.texte_popup_pas_assez_chercheurs,
-              buttonText: AppLocalizations.of(context)!.ok,
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              scaleFactor: MediaQuery.of(context).textScaleFactor,
+          return AlertDialog(
+            title: Text(AppLocalizations.of(context)!.titre_popup_pas_assez_chercheurs),
+            content: Text(AppLocalizations.of(context)!.texte_popup_pas_assez_chercheurs),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text("OK"),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    } else if (selectedPlayers.length > (playersData.length - 1)) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(AppLocalizations.of(context)!.titre_popup_pas_assez_cacheurs),
+            content: Text(AppLocalizations.of(context)!.texte_popup_pas_assez_cacheurs),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text("OK"),
+              ),
+            ],
           );
         },
       );
       return;
     }
-    else if (selectedPlayers.length > (playersData.length-1)) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return CustomAlertDialog1(
-              title: AppLocalizations.of(context)!.titre_popup_pas_assez_cacheurs,
-              content: AppLocalizations.of(context)!.texte_popup_pas_assez_cacheurs,
-              buttonText: AppLocalizations.of(context)!.ok,
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              scaleFactor: MediaQuery.of(context).textScaleFactor,
-          );
-        },
-      );
-      return;
 
-    }
+    String auth = "chatappauthkey231r4";
     WebSocketManager.sendData('"email":"$email","cmd":"startGame", "gameCode":"${widget.gameCode}", "startingTimeStamp": ${DateTime.now().millisecondsSinceEpoch}');
-    //}
   }
 
   void _handleSeekerStatusUpdated(List<dynamic> selectedPlayersData) {
@@ -160,12 +154,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
   }
 
   void _updatePlayerList() {
-    if (_channel.closeCode == null) {
-      _channel.sink.add('{"email":"$email","auth":"chatappauthkey231r4","cmd":"UpdatePlayerlist", "gameCode":"${widget.gameCode}"}');
-    } else {
-      print('WebSocket connection is closed. Cannot update player list.');
-
-    }
+    WebSocketManager.sendData('"email":"$email","cmd":"UpdatePlayerlist", "gameCode":"${widget.gameCode}"');
   }
 
   void _getPref() async {
@@ -205,11 +194,9 @@ class _WaitingScreenState extends State<WaitingScreen> {
     WebSocketManager.sendData('"email":"$email","cmd":"updateSeekerStatus","gameCode":"${widget.gameCode}", "selectedPlayers": ${jsonEncode(selectedPlayers)}');
   }
 
-
-
   @override
   void dispose() {
-    // WebSocketManager.closeConnection(); // Fermer la connexion WebSocket
+    WebSocketManager.closeConnection();
     _playerListController.close();
     _selectedPlayersController.close();
     super.dispose();
@@ -281,22 +268,62 @@ class _WaitingScreenState extends State<WaitingScreen> {
           ),
           const Spacer(),
 
-          CustomButton(
-              text: AppLocalizations.of(context)!.partagerCodePartie + ' : ' + widget.gameCode,
-              onPressed: _shareGameCode,
-              scaleFactor: MediaQuery.of(context).textScaleFactor,
+          ElevatedButton(
+            onPressed: _shareGameCode,
+            style: ElevatedButton.styleFrom(
+              shape: SmoothRectangleBorder(
+                borderRadius: SmoothBorderRadius(
+                  cornerRadius: 20,
+                  cornerSmoothing: 1,
+                ),
+              ),
+              minimumSize: Size(MediaQuery.of(context).size.width - 30, 60),
               backgroundColor: const Color(0xFF5A5C98),
               foregroundColor: const Color(0xFF212348),
+            ),
+            child: Container(
+                width: MediaQuery.of(context).size.width - 80,
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.partagerCodePartie + ' : ',
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w500, fontFamily: 'Poppins', color: Colors.white),
+                      ),
+                      Text(
+                        widget.gameCode,
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w700, fontFamily: 'Poppins', color: Colors.white),
+                      ),
+                    ],
+                  ),
+                )),
           ),
 
           const SizedBox(height: 16),
 
           // Afficher le bouton "Start Game" et les cases à cocher si l'utilisateur est un administrateur
           if (widget.isAdmin)
-            CustomButton(
-                text: AppLocalizations.of(context)!.start_game,
-                onPressed: _startGame,
-                scaleFactor: MediaQuery.of(context).textScaleFactor
+            ElevatedButton(
+              onPressed: _startGame,
+              child: Text(
+                AppLocalizations.of(context)!.start_game,
+                style: const TextStyle(
+                    fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Colors.white),
+              ),
+              style: ElevatedButton.styleFrom(
+                shape: SmoothRectangleBorder(
+                  borderRadius: SmoothBorderRadius(
+                    cornerRadius: 20,
+                    cornerSmoothing: 1,
+                  ),
+                ),
+                minimumSize: Size(MediaQuery.of(context).size.width - 30, 80),
+                backgroundColor: const Color(0xFF373967),
+                foregroundColor: const Color(0xFF212348),
+              ),
             ),
           const SizedBox(height: 20),
         ],
@@ -374,9 +401,9 @@ class _PlayerListItemState extends State<PlayerListItem> {
         title: Text(
           widget.playerName,
           style: const TextStyle(color: Colors.black,
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-              fontFamily: 'Poppins',),
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+            fontFamily: 'Poppins',),
         ),
         trailing: Checkbox(
           value: isChecked,
