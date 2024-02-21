@@ -19,6 +19,6 @@ class WebSocketManager {
   }
 
   static Stream<dynamic> getStream() {
-    return _channel?.stream ?? Stream.empty();
+    return _channel?.stream ?? const Stream.empty();
   }
 }

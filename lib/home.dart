@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:hide_and_street/map_conf_screen.dart';
+import 'package:hide_and_street/Page/map_conf_screen.dart';
 
 import 'package:hide_and_street/room_joining.dart';
 

@@ -2,7 +2,6 @@ import 'dart:io' show Platform;
 import 'package:purchases_flutter/purchases_flutter.dart' ;
 
 Future<void> initPlatformState() async {
-  await Purchases.setDebugLogsEnabled(true);
 
   PurchasesConfiguration configuration;
   if (Platform.isAndroid) {
