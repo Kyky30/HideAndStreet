@@ -30,7 +30,6 @@ void main() async{
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => ChatModel()),
-        // Ajoutez d'autres providers si nécessaire
       ],
       child: const MyApp(),
     ),

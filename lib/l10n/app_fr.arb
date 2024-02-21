@@ -396,11 +396,11 @@
     "@hint_send_message": {
         "description": "Hint de envoyer un message"
     },
-    "timer_cachette": "Temps de cache : ",
+    "timer_cachette": "Temps pour se cacher : ",
     "@timer_cachette": {
         "description": "Timer de cachette"
     },
-    "timer_chasse": "Temps de jeu : ",
+    "timer_chasse": "Temps de recherche : ",
     "@timer_chasse": {
         "description": "Timer de chasse"
     },
