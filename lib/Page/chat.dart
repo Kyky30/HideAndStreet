@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../WebSocketManager.dart';
 
-import 'chatWebSocket.dart';
-import 'chat_model.dart';
+
+import '../chat_model.dart';
 
 
 class Chat extends StatefulWidget {
@@ -28,20 +29,17 @@ class Chat extends StatefulWidget {
 
 class _ChatState extends State<Chat> {
   final TextEditingController _controller = TextEditingController();
-  late final WebSocketChannel _channel;
   final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
-    _channel = WebSocketManager().channel;
     super.initState();
-    // N'écoutez pas les messages dans initState, cela sera géré ailleurs
+    WebSocketManager.connect(widget.email);
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Utiliser la même instance de WebSocketChannel partagée
   }
 
   @override
@@ -137,14 +135,7 @@ class _ChatState extends State<Chat> {
 
   void _sendMessage() {
     if (_controller.text.isNotEmpty) {
-      _channel.sink.add(jsonEncode({
-        'email': widget.email,
-        'auth': 'chatappauthkey231r4',
-        'gameCode' : widget.gameCode,
-        'cmd': 'sendMessage',
-        'message': _controller.text,
-        'timestamp': DateTime.now().millisecondsSinceEpoch,
-      }));
+      WebSocketManager.sendData('"email": "${widget.email}", "gameCode" : "${widget.gameCode}", "cmd": "sendMessage", "message": "${_controller.text}", "timestamp" : "${DateTime.now().millisecondsSinceEpoch}"');
       _controller.clear();
 
       // Scroll to bottom
