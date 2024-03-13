@@ -62,6 +62,7 @@ dependencies:
   path_provider: ^2.1.2
   provider: ^6.1.1
   just_audio: ^0.9.36
+  audioplayers: ^5.2.1
 
 
 dev_dependencies:
@@ -86,6 +87,8 @@ flutter:
     - assets/logo.png
     - assets/logo_problem.png
     - assets/background_white.jpg
+    - assets/Patate.mp3
+    - assets/PatateLong.mp3
 
 
   fonts:

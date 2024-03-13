@@ -17,8 +17,8 @@ import 'PreferencesManager.dart';
 import 'chatWebSocket.dart';
 import 'chat_model.dart';
 
-import 'package:just_audio/just_audio.dart';
 import 'package:flutter/services.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 import 'package:hide_and_street/components/inGamePlayerList.dart';
 import 'package:hide_and_street/components/buttons.dart';
@@ -95,6 +95,10 @@ class _GameMapState extends State<GameMap> {
 
   bool chatIsOpen = false;
   bool newMessage = false;
+
+  //Taunts audio
+  static AudioPlayer player = new AudioPlayer();
+
 
   @override
   void initState() {
@@ -582,7 +586,7 @@ class _GameMapState extends State<GameMap> {
                                       ? AppLocalizations.of(context)!.timer_cachette
                                       : AppLocalizations.of(context)!.timer_chasse,
                                   style: const TextStyle(
-                                    fontSize: 20,
+                                    fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                     fontFamily: "Poppins",
                                   ),
@@ -715,6 +719,7 @@ class _GameMapState extends State<GameMap> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         if (amITheSeeker == false && amIFound == false)
+                          //Bouton de taunt de son court--------------------
                           FloatingActionButton(
                               heroTag: 'button5',
                               child: const Icon(Symbols.celebration_rounded,
@@ -724,20 +729,16 @@ class _GameMapState extends State<GameMap> {
                                   opticalSize: 24),
                               onPressed: () async {
                                 // Trigger a haptic feedback
-                                HapticFeedback.lightImpact();
+                                HapticFeedback.heavyImpact();
 
-                                // Create a new AudioPlayer instance
-                                AudioPlayer player = AudioPlayer();
+                                // Play a sound
+                                player.setSourceAsset("Patate.mp3");
+                                player.play(player.source!);
 
-                                // Play the sound
-                                await player.setAsset('assets/sounds/your_sound_file.mp3');
-                                player.play();
-
-                                // Dispose the player when done
-                                player.dispose();
                               }
                           ),
                           const SizedBox(height: 10),
+                          //Bouton de taunt de position--------------------
                           FloatingActionButton(
                                 heroTag: 'button0',
                                 child: const Icon(Symbols.share_location_rounded,
@@ -751,7 +752,8 @@ class _GameMapState extends State<GameMap> {
                                 }
                             ),
                           const SizedBox(height: 10),
-                          FloatingActionButton(
+                        //Bouton de signalement--------------------
+                        FloatingActionButton(
                               heroTag: 'button1',
                               onPressed: () async {
                                 bool? result = await showDialog<bool>(
@@ -800,6 +802,7 @@ class _GameMapState extends State<GameMap> {
                                 opticalSize: 24),
                           ),
                           const SizedBox(height: 10),
+                          //Bouton de chat--------------------
                           Stack(
                             children: [
                               FloatingActionButton(
@@ -843,7 +846,8 @@ class _GameMapState extends State<GameMap> {
                             ],
                           ),
                           const SizedBox(height: 10),
-                          FloatingActionButton(
+                        //Bouton de liste des joueurs--------------------
+                        FloatingActionButton(
                             heroTag: 'button3',
                             onPressed: () {
                               Navigator.push(
