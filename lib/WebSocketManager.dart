@@ -9,7 +9,7 @@ class WebSocketManager {
   }
 
   static Future<void> closeConnection() async {
-    _channel?.sink.close();
+    await _channel?.sink.close();
     print("fermeture de la connexion");
   }
 

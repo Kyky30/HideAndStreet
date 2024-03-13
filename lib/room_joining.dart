@@ -151,9 +151,8 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
   }
 
   @override
-  Future<void> dispose() async {
+  void dispose() {
     // Fermez la connexion WebSocket lorsque la page est détruite
-    // WebSocketManager.closeConnection();
     super.dispose();
   }
 }

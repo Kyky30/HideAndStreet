@@ -44,13 +44,16 @@ class _WaitingScreenState extends State<WaitingScreen> {
     }
 
     // Connect to WebSocket using WebSocketManager
-    WebSocketManager.connect(email);
+    initWebSocketConnection();
 
     _getPref();
     _playerList = getPlayerList(widget.gameCode);
     _initWebSocket();
   }
 
+  Future<void> initWebSocketConnection() async {
+    await WebSocketManager.connect(email);
+  }
   void _initWebSocket() {
     WebSocketManager.getStream().listen((message) {
       final Map<String, dynamic> data = jsonDecode(message);
