@@ -86,10 +86,13 @@ class ForgotenPassword extends StatelessWidget {
 
                   // Créer une connexion WebSocket
                   WebSocketChannel channel = IOWebSocketChannel.connect('wss://app.hideandstreet.furrball.fr/resetPassword');
-
+                  email = emailController.text;
                   // Envoyer la demande de réinitialisation du mot de passe au backend
                   String resetData = '{"auth":"$auth","email":"$email","cmd":"resetPassword"}';
+                  print("❗❗❗---------------------------------------------------------------------❗❗❗");
                   print(resetData);
+                  print("❗❗❗---------------------------------------------------------------------❗❗❗");
+
                   channel.sink.add(resetData);
 
                   // Fermer la connexion après envoi
