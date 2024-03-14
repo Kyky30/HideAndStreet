@@ -61,6 +61,7 @@ dependencies:
   image_gallery_saver: ^2.0.3
   path_provider: ^2.1.2
   provider: ^6.1.1
+  audioplayers: ^5.0.1
 
 
 dev_dependencies:

@@ -18,6 +18,10 @@ import 'chatWebSocket.dart';
 import 'chat_model.dart';
 
 
+//Pour le beep
+import 'package:audioplayers/audioplayers.dart';
+
+
 import 'package:hide_and_street/components/inGamePlayerList.dart';
 import 'package:hide_and_street/components/buttons.dart';
 import 'package:hide_and_street/components/alertbox.dart';
@@ -100,7 +104,63 @@ class _GameMapState extends State<GameMap> {
     _initializeState();
   }
 
-  void _startTimers() {
+
+  //Essai création beep
+  //jouer son
+  void playBeepSound() {
+    final player = AudioCache();
+    player.play('beep_sound.mp3');
+  }
+
+  //En fonction de la proximité avec le joueur
+  void updateBeepFrequency(bool isNearby) {
+    // le son plus souvent
+    if (isNearby) {
+      playBeepSound();
+      Future.delayed(const Duration(milliseconds: 500), () {
+        updateBeepFrequency(isNearby);
+      });
+    } else {
+      // le son moins souvent
+      playBeepSound();
+      Future.delayed(const Duration(seconds: 2),() {
+        updateBeepFrequency(isNearby);
+      });
+
+    }
+  }
+
+  //Pour calculer la proximité des joueurs et mettre à jour la fréquence du beep
+  //void checkProximityAndPlaySound() {
+    // Déterminer proximiter joueur
+    bool isNearby = true; // Remplacez ceci par votre logique de proximité
+
+    // Mettez à jour la fréquence du "beep beep" en fonction de la proximité des joueurs
+    //updateBeepFrequency(isNearby);
+  //}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void _startTimers() {
     // Set endTime for timerCachette
     endTimeCachette = DateTime.now().millisecondsSinceEpoch +
         (tempsDeCachette * 60 * 1000);
