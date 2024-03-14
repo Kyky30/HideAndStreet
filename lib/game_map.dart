@@ -22,6 +22,7 @@ import 'chat_model.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 
+
 import 'package:hide_and_street/components/inGamePlayerList.dart';
 import 'package:hide_and_street/components/buttons.dart';
 import 'package:hide_and_street/components/alertbox.dart';
@@ -105,11 +106,20 @@ class _GameMapState extends State<GameMap> {
   }
 
 
+
+
+
+
+
+
+
+
+
   //Essai création beep
   //jouer son
   void playBeepSound() {
     final player = AudioCache();
-    player.play('beep_sound.mp3');
+    player.load('assets/beep_sound.mp3');
   }
 
   //En fonction de la proximité avec le joueur
@@ -132,11 +142,12 @@ class _GameMapState extends State<GameMap> {
 
   //Pour calculer la proximité des joueurs et mettre à jour la fréquence du beep
   //void checkProximityAndPlaySound() {
-    // Déterminer proximiter joueur
-    bool isNearby = true; // Remplacez ceci par votre logique de proximité
+    // Je recherche actuellement pour déterminer la proximiter du joueur
 
-    // Mettez à jour la fréquence du "beep beep" en fonction de la proximité des joueurs
-    //updateBeepFrequency(isNearby);
+  //Je pense utiliser ca : latestPositionSentToServer du hide
+  //Savoir si le joeur se cache et non ne cherche
+    bool isNearby = true;
+
   //}
 
 
