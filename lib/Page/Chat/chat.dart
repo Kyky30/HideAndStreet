@@ -1,26 +1,21 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../WebSocketManager.dart';
 
 
-import '../chat_model.dart';
+import 'chat_model.dart';
+import 'chat_controller.dart';
 
 
 class Chat extends StatefulWidget {
   final String email;
   final String gameCode;
-  final Stream broadcastChannel;
 
   const Chat({
     Key? key,
 
     required this.email,
     required this.gameCode,
-    required this.broadcastChannel,
   }) : super(key: key);
 
   @override
@@ -30,11 +25,12 @@ class Chat extends StatefulWidget {
 class _ChatState extends State<Chat> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  final ChatController _chatController = ChatController();
 
   @override
   void initState() {
     super.initState();
-    WebSocketManager.connect(widget.email);
+    _chatController.connect(widget.email);
   }
 
   @override
@@ -117,13 +113,20 @@ class _ChatState extends State<Chat> {
                 Expanded(
                   child: TextField(
                     controller: _controller,
-                    textInputAction: TextInputAction.go,
+                    textInputAction: TextInputAction.send,
+                    onSubmitted: (message) {
+                      _chatController.sendMessage(widget.email, widget.gameCode, message);
+                      _controller.clear();
+                    },
                     decoration: const InputDecoration(hintText: 'Send a message'),
                   ),
                 ),
                 IconButton(
                   icon: const Icon(Icons.send),
-                  onPressed: _sendMessage,
+                  onPressed: () {
+                    _chatController.sendMessage(widget.email, widget.gameCode, _controller.text);
+                    _controller.clear();
+                  },
                 ),
               ],
             ),
@@ -131,19 +134,5 @@ class _ChatState extends State<Chat> {
         ],
       ),
     );
-  }
-
-  void _sendMessage() {
-    if (_controller.text.isNotEmpty) {
-      WebSocketManager.sendData('"email": "${widget.email}", "gameCode" : "${widget.gameCode}", "cmd": "sendMessage", "message": "${_controller.text}", "timestamp" : "${DateTime.now().millisecondsSinceEpoch}"');
-      _controller.clear();
-
-      // Scroll to bottom
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeOut,
-      );
-    }
   }
 }
