@@ -12,7 +12,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import 'chat.dart';
+import 'Page/chat.dart';
 import 'PreferencesManager.dart';
 import 'chatWebSocket.dart';
 import 'chat_model.dart';
@@ -154,10 +154,12 @@ class _GameMapState extends State<GameMap> {
 
   @override
   void dispose() {
+    print("🚨🚨🚨DISPOSE🚨🚨🚨");
     timerCachette.cancel();
     timerPartie.cancel();
     timer1seconde.cancel();
     timer5secondes.cancel();
+    Provider.of<ChatModel>(context, listen: false).ResetMessage();
     super.dispose();
   }
 

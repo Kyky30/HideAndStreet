@@ -250,10 +250,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_image_compress_common
-      sha256: "7cad12802628706655920089cfe9ee1d1098300e7f39a079eb160458bbc47652"
+      sha256: "0756440ddc647696ebc56f393be8c1055e81ef1c1f58986fb1f078af393637d8"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.3"
+    version: "1.0.4"
   flutter_image_compress_macos:
     dependency: transitive
     description:
@@ -266,18 +266,18 @@ packages:
     dependency: transitive
     description:
       name: flutter_image_compress_platform_interface
-      sha256: eb4f055138b29b04498ebcb6d569aaaee34b64d75fb74ea0d40f9790bf47ee9d
+      sha256: "87d0964ae72ccab1cdfbc32f825ce6b57bf87fd3576a2842bf38189d392163b8"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.3"
+    version: "1.0.4"
   flutter_image_compress_web:
     dependency: transitive
     description:
       name: flutter_image_compress_web
-      sha256: da41cc3859f19d11c7d10be615f6a9dcf0907e7daffde7442bf4cc2486663660
+      sha256: "1c8cd505be95cb2e0573cdd9d236ac0ba39c166b8df06ef1823f2a17b60e1253"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.3+2"
+    version: "0.1.4"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -311,10 +311,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_map_location_marker
-      sha256: fc13d6e70f6744b92dbab172987e82f5ea840a2b81b576429347a2986bfa8bc6
+      sha256: "5873a47606b092bf181b6d17dd42a124e9a8d5d9caad58b5f98fc182e799994f"
       url: "https://pub.dev"
     source: hosted
-    version: "8.0.7"
+    version: "8.0.8"
   flutter_osm_interface:
     dependency: transitive
     description:
@@ -593,10 +593,10 @@ packages:
     dependency: transitive
     description:
       name: logger
-      sha256: "6bbb9d6f7056729537a4309bda2e74e18e5d9f14302489cc1e93f33b3fe32cac"
+      sha256: b3ff55aeb08d9d8901b767650285872cb1bb8f508373b3e348d60268b0c7f770
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.2+1"
+    version: "2.1.0"
   matcher:
     dependency: transitive
     description:
@@ -617,10 +617,10 @@ packages:
     dependency: "direct main"
     description:
       name: material_symbols_icons
-      sha256: fee941060cb717c74d370dbcb7a735f224d1e93d705dc5b552ee40e0697d5691
+      sha256: "4410e4bb5c6e16d811340f94532c0b3161d2a0ba60b41d0fa8a603186857cabe"
       url: "https://pub.dev"
     source: hosted
-    version: "4.2719.1"
+    version: "4.2719.3"
   meta:
     dependency: transitive
     description:
@@ -801,26 +801,26 @@ packages:
     dependency: "direct main"
     description:
       name: provider
-      sha256: "9a96a0a19b594dbc5bf0f1f27d2bc67d5f95957359b461cd9feb44ed6ae75096"
+      sha256: c8a055ee5ce3fd98d6fc872478b03823ffdb448699c6ebdbbc71d59b596fd48c
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.1"
+    version: "6.1.2"
   purchases_flutter:
     dependency: "direct main"
     description:
       name: purchases_flutter
-      sha256: f052ad084fa3befcd6831b9adc48098c5ea4e9c2fa8e02c5d5a119e594562fdc
+      sha256: "6ed4b0d61913caf1ee53eb5b0f38898399121a259b4007776fd84a82057e6baf"
       url: "https://pub.dev"
     source: hosted
-    version: "6.21.0"
+    version: "6.23.0"
   purchases_ui_flutter:
     dependency: "direct main"
     description:
       name: purchases_ui_flutter
-      sha256: "8848a8b0b81dcf132efda9687aef2082cf16fb5c61316e9a8e3478c494deaaf2"
+      sha256: d79f65b25734f294488ebc79e4039668d08b378fc8d5b36f3f5fd68dc49280dd
       url: "https://pub.dev"
     source: hosted
-    version: "6.21.0"
+    version: "6.23.0"
   routing_client_dart:
     dependency: transitive
     description:
@@ -998,10 +998,10 @@ packages:
     dependency: "direct main"
     description:
       name: url_launcher
-      sha256: c512655380d241a337521703af62d2c122bf7b77a46ff7dd750092aa9433499c
+      sha256: "0ecc004c62fd3ed36a2ffcbe0dd9700aee63bd7532d0b642a488b1ec310f492e"
       url: "https://pub.dev"
     source: hosted
-    version: "6.2.4"
+    version: "6.2.5"
   url_launcher_android:
     dependency: transitive
     description:
