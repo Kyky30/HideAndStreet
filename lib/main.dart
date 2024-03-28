@@ -5,12 +5,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'Page/Login/LoginPage.dart';
 import 'monetization/PremiumStatus.dart';
 
 import 'chat_model.dart';
 import 'home.dart';
 import 'l10n/l10n.dart';
-import 'Page/login.dart';
 import 'Page/shop.dart';
 import 'Page/account_settings.dart';
 
@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/home': (context) => const MyHomePage(),
         '/account_settings': (context) => const AccountSettingsPage(),
-        '/login': (context) => const LoginPage(),
+        '/login': (context) => LoginPage(),
       },
       supportedLocales: L10n.all,
       localizationsDelegates: const [
@@ -87,7 +87,7 @@ class MyApp extends StatelessWidget {
     if (loggedIn == true) {
       return const MyHomePage();
     } else {
-      return const LoginPage(); // Return the LoginPage widget
+      return LoginPage(); // Return the LoginPage widget
     }
   }
 }
