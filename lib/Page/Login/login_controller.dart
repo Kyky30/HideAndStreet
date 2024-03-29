@@ -6,7 +6,7 @@ import 'package:flutter_bcrypt/flutter_bcrypt.dart';
 import '../../components/alertbox.dart';
 import 'login_model.dart';
 
-class LoginController {
+class LoginController {//
   final LoginModel _model = LoginModel();
 
   Future<void> login(BuildContext context, String email, String password) async {
