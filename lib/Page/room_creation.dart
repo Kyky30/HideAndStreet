@@ -147,10 +147,11 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
       logo: 'assets/logo_connect.png',
       fields: [
         RoomCreationField(
-            label: AppLocalizations.of(context)!.champ_conf_duree,
-            hint: AppLocalizations.of(context)!.texte_champ_conf_duree,
-            controller: dureePartieController,
-            keyboardType: TextInputType.phone),
+          label: AppLocalizations.of(context)!.champ_conf_duree,
+          hint: AppLocalizations.of(context)!.texte_champ_conf_duree,
+          controller: dureePartieController,
+          keyboardType: TextInputType.number, // Modifiez cette ligne
+        ),
       ],
       onTap: () {
         if (dureePartieController.text.isEmpty) {
@@ -169,10 +170,11 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
       logo: 'assets/logo_connect.png',
       fields: [
         RoomCreationField(
-            label: AppLocalizations.of(context)!.champ_conf_duree_cachette,
-            hint: AppLocalizations.of(context)!.texte_champ_conf_duree_cachette,
-            controller: dureeCachetteController,
-            keyboardType: TextInputType.phone),
+          label: AppLocalizations.of(context)!.champ_conf_duree_cachette,
+          hint: AppLocalizations.of(context)!.texte_champ_conf_duree_cachette,
+          controller: dureeCachetteController,
+          keyboardType: TextInputType.number, // Modifiez cette ligne
+        ),
       ],
       onTap: () {
         if (dureeCachetteController.text.isEmpty) {
@@ -245,12 +247,13 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
                   for (var field in step.fields)
                     Padding(
                       padding: EdgeInsets.all(16.0 * scaleFactor),
-                      child:
-                        CustomTextField(
-                          hintText: field.hint ?? '',
-                          controller: field.controller,
-                          scaleFactor: scaleFactor,
+                      child: TextFormField(
+                        controller: field.controller,
+                        keyboardType: field.keyboardType,
+                        decoration: InputDecoration(
+                          hintText: field.hint,
                         ),
+                      ),
                     ),
                 ],
               ),
@@ -328,7 +331,7 @@ class RoomCreationField {
     required this.label,
     this.hint,
     required this.controller,
-    this.keyboardType = TextInputType.text, // Set the default keyboard type to text
+    this.keyboardType = TextInputType.number, // Set the default keyboard type to text
   });
 }
 
