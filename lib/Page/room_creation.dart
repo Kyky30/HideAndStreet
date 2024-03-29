@@ -251,7 +251,7 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
                         controller: field.controller,
                         keyboardType: field.keyboardType,
                         decoration: InputDecoration(
-                          hintText: field.hint,
+                          hintText: field.hint,//
                         ),
                       ),
                     ),

@@ -10,11 +10,7 @@ class LoginController {
   final LoginModel _model = LoginModel();
 
   Future<void> login(BuildContext context, String email, String password) async {
-    String hashedPassword = await FlutterBcrypt.hashPw(
-      password : password,
-      salt : await FlutterBcrypt.salt(),
-    );
-    bool success = await _model.login(email, hashedPassword);
+    bool success = await _model.login(email, password);
     if (success) {
       Navigator.pushReplacement(
         context,

@@ -123,7 +123,7 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
             CustomTextField(
               controller: _gameCodeController,
               hintText: AppLocalizations.of(context)!.exempleCodePartie,
-              scaleFactor: scaleFactor,
+              scaleFactor: scaleFactor,//
               textCapitalization: TextCapitalization.characters,
             ),
             SizedBox(height: 16.0 * scaleFactor),
