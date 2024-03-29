@@ -63,6 +63,7 @@ dependencies:
   provider: ^6.1.1
   just_audio: ^0.9.36
   audioplayers: ^5.2.1
+  flutter_bcrypt: ^1.0.8
 
 
 dev_dependencies:

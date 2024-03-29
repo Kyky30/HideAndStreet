@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bcrypt/flutter_bcrypt.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hide_and_street/PreferencesManager.dart';
 import 'package:hide_and_street/Page/login.dart';
@@ -9,6 +10,7 @@ import 'package:web_socket_channel/io.dart';
 
 import 'dart:developer' as developer;
 
+import 'Page/Login/LoginPage.dart';
 import 'components/alertbox.dart';
 import 'components/buttons.dart';
 import 'components/input.dart';
@@ -32,8 +34,12 @@ void signUp(BuildContext context, String emailValues, String pseudoValues, Strin
         return;
       }
       // Data that will be sent to Node.js
+      String hashedPassword = await FlutterBcrypt.hashPw(
+        password : passwordValues,
+        salt : await FlutterBcrypt.salt(),
+      );
       String signUpData =
-          "{'auth':'$auth','cmd':'signup','email':'$emailValues','username':'$pseudoValues','hash':'$confirmPasswordValues'}";
+          "{'auth':'$auth','cmd':'signup','email':'$emailValues','username':'$pseudoValues','hash':'$hashedPassword'}";
       // Send data to Node.js
       channel.sink.add(signUpData);
       // Listen for data from the server
@@ -48,7 +54,7 @@ void signUp(BuildContext context, String emailValues, String pseudoValues, Strin
           // Return user to login if successful
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const LoginPage()),
+            MaterialPageRoute(builder: (context) => LoginPage()),
           );
         } else {
           channel.sink.close();

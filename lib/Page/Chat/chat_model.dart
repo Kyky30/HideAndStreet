@@ -15,4 +15,13 @@ class ChatModel extends ChangeNotifier {
     _usernames.add(username);
     notifyListeners();
   }
+
+  void ResetMessage(){
+
+    _messages.clear();
+    _emails.clear();
+    _usernames.clear();
+    print("????⚙️??⛷️ reset" + _messages.toString() + _emails.toString() + _usernames.toString());
+    notifyListeners();
+  }
 }

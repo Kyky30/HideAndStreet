@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../WebSocketManager.dart';
 
-import 'chatWebSocket.dart';
+
 import 'chat_model.dart';
+import 'chat_controller.dart';
 
 
 class Chat extends StatefulWidget {
@@ -28,20 +30,19 @@ class Chat extends StatefulWidget {
 
 class _ChatState extends State<Chat> {
   final TextEditingController _controller = TextEditingController();
-  late final WebSocketChannel _channel;
   final ScrollController _scrollController = ScrollController();
+  final ChatController _chatController = ChatController();
 
   @override
   void initState() {
-    _channel = WebSocketManager().channel;
     super.initState();
-    // N'écoutez pas les messages dans initState, cela sera géré ailleurs
+    WebSocketManager.connect(widget.email);
+    _chatController.connect(widget.email);
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Utiliser la même instance de WebSocketChannel partagée
   }
 
   @override
@@ -55,15 +56,17 @@ class _ChatState extends State<Chat> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             // Autres logiques si nécessaire...
-            Navigator.pop(context); // Utilisez Navigator.pop pour revenir à l'écran précédent
+            Navigator.pop(
+                context); // Utilisez Navigator.pop pour revenir à l'écran précédent
           },
         ),
       ),
       body: Column(
         children: [
           Expanded(
-            child : Padding(
-              padding: const EdgeInsets.all(24.0), // Ajouter un padding sur les bords de l'écran
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              // Ajouter un padding sur les bords de l'écran
               child: ListView.builder(
                 controller: _scrollController,
                 itemCount: chatModel.messages.length,
@@ -77,32 +80,38 @@ class _ChatState extends State<Chat> {
                   bool isCurrentUser = widget.email == email;
 
                   // Vérifier si l'email de l'utilisateur qui a envoyé le message précédent est le même que l'email actuel
-                  bool isNewUser = index == 0 || chatModel.emails[index - 1] != email;
+                  bool isNewUser = index == 0 ||
+                      chatModel.emails[index - 1] != email;
 
                   // Créer une liste de widgets pour la colonne
                   List<Widget> columnWidgets = [];
 
                   // Ajouter le nom d'utilisateur uniquement si l'utilisateur actuel n'a pas envoyé le message et si c'est un nouvel utilisateur
                   if (!isCurrentUser && isNewUser) {
-                    columnWidgets.add(Text(username + " : ", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)));
+                    columnWidgets.add(Text(username + " : ",
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16)));
                   }
 
                   // Ajouter le message
                   columnWidgets.add(
                     Container(
-                      margin: const EdgeInsets.symmetric(vertical: 2.0), // Ajouter un padding vertical entre les messages
+                      margin: const EdgeInsets.symmetric(vertical: 2.0),
+                      // Ajouter un padding vertical entre les messages
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         color: isCurrentUser ? Colors.blue : Colors.black87,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Text(message, style: const TextStyle(color: Colors.white, fontSize: 16)),
+                      child: Text(message, style: const TextStyle(
+                          color: Colors.white, fontSize: 16)),
                     ),
                   );
 
                   // Retourner un widget Align avec le texte aligné à droite si l'utilisateur actuel a envoyé le message, sinon à gauche
                   return Align(
-                    alignment: isCurrentUser ? Alignment.centerRight : Alignment.centerLeft,
+                    alignment: isCurrentUser ? Alignment.centerRight : Alignment
+                        .centerLeft,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: columnWidgets,
@@ -120,12 +129,15 @@ class _ChatState extends State<Chat> {
                   child: TextField(
                     controller: _controller,
                     textInputAction: TextInputAction.go,
-                    decoration: const InputDecoration(hintText: 'Send a message'),
+                    decoration: const InputDecoration(
+                        hintText: 'Send a message'),
                   ),
                 ),
                 IconButton(
                   icon: const Icon(Icons.send),
-                  onPressed: _sendMessage,
+                  onPressed: () {
+                    _chatController.sendMessage(widget.email, widget.gameCode, _controller.text, _controller);
+                  },
                 ),
               ],
             ),
@@ -133,26 +145,5 @@ class _ChatState extends State<Chat> {
         ],
       ),
     );
-  }
-
-  void _sendMessage() {
-    if (_controller.text.isNotEmpty) {
-      _channel.sink.add(jsonEncode({
-        'email': widget.email,
-        'auth': 'chatappauthkey231r4',
-        'gameCode' : widget.gameCode,
-        'cmd': 'sendMessage',
-        'message': _controller.text,
-        'timestamp': DateTime.now().millisecondsSinceEpoch,
-      }));
-      _controller.clear();
-
-      // Scroll to bottom
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeOut,
-      );
-    }
   }
 }
