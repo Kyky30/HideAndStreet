@@ -13,10 +13,10 @@ class ChatController {
     WebSocketManager.connect(email);
   }
 
-  void sendMessage(String email, String gameCode, String message) {
+  void sendMessage(String email, String gameCode, String message, TextEditingController controller) {
     if (message.isNotEmpty) {
       WebSocketManager.sendData('"email": "$email", "gameCode" : "$gameCode", "cmd": "sendMessage", "message": "$message", "timestamp" : "${DateTime.now().millisecondsSinceEpoch}"');
-      _controller.clear();
+      controller.clear();
 
       // Scroll to bottom
       _scrollController.animateTo(
