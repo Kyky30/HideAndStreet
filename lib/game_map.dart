@@ -453,6 +453,42 @@ class _GameMapState extends State<GameMap> {
 
   }
 
+  void _bipbipSiHiderProche() {
+    //Fonction qui ajoute un marker si un Hider est proche seulement si on est le seeker
+
+    print("Fonction bipbipSiHiderProche executée --------------------------------------------------------------------------------------------");
+    if(amITheSeeker == true)
+    {
+      // Get the positions of other hiders
+      List<String> hiderIds = widget.playerList.keys.where((id) => seekersIds.contains(id) == false).toList();
+
+      getPositionForId(hiderIds).then((positions) {
+        positions.forEach((position) {
+          double distance = Geolocator.distanceBetween(
+            currentPosition.latitude,
+            currentPosition.longitude,
+            position.latitude,
+            position.longitude,
+          );
+
+          // Si la distance entre le chercheur et le hider est inférieure à 5m alors on émet un bip et une vibration
+          if(distance <= 5)
+          {
+            // Trigger a haptic feedback
+            HapticFeedback.heavyImpact();
+
+            // Play a sound
+            player.setSourceAsset("Patate.mp3");
+            player.play(player.source!);
+          }
+
+        });
+      });
+
+    }
+
+  }
+
 
   void _startLocationCheckTimer() {
     timer1seconde = Timer.periodic(const Duration(seconds: 5), (timer) {
@@ -463,6 +499,7 @@ class _GameMapState extends State<GameMap> {
     timer5secondes = Timer.periodic(const Duration(seconds: 5), (timer) {
       print("5️⃣ Timer tick...  ------------------");
       _sendPosToServer();
+      _bipbipSiHiderProche();
       _updateSeekersPositions();
     });
 
