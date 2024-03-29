@@ -36,6 +36,14 @@ flutter doctor
 
 Une fois ces étapes terminées, vous aurez correctement configuré votre environnement de développement pour commencer à travailler sur l'application avec Flutter et Android Studio.
 
+
+### 5. Installation de Dart
+
+Une fois que Flutter est installé, Dart est automatiquement installé avec lui. Dart est le langage de programmation utilisé pour développer des applications Flutter. Vous n'avez pas besoin d'installer Dart séparément, car il est inclus dans l'installation de Flutter.
+
+Assurez-vous simplement que Flutter est correctement configuré, comme mentionné dans les étapes précédentes, et Dart sera prêt à être utilisé dans votre projet Flutter.
+
+
 ---
 
 
