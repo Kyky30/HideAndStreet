@@ -9,7 +9,7 @@ class CustomTextField extends StatelessWidget {
   final double scaleFactor;
   final void Function(String)? onChanged;
   final TextInputType keyboardType;
-  final TextCapitalization textCapitalization; // Ajoutez cette ligne
+  final TextCapitalization textCapitalization;
 
   const CustomTextField({
     required this.hintText,
@@ -18,7 +18,7 @@ class CustomTextField extends StatelessWidget {
     required this.scaleFactor,
     this.onChanged,
     this.keyboardType = TextInputType.text,
-    this.textCapitalization = TextCapitalization.none, // Ajoutez cette ligne
+    this.textCapitalization = TextCapitalization.none,
   });
 
   @override

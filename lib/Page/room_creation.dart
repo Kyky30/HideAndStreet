@@ -150,7 +150,7 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
           label: AppLocalizations.of(context)!.champ_conf_duree,
           hint: AppLocalizations.of(context)!.texte_champ_conf_duree,
           controller: dureePartieController,
-          keyboardType: TextInputType.number, // Modifiez cette ligne
+          keyboardType: TextInputType.number,
         ),
       ],
       onTap: () {
@@ -247,14 +247,13 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
                   for (var field in step.fields)
                     Padding(
                       padding: EdgeInsets.all(16.0 * scaleFactor),
-                      child: TextFormField(
+                      child: CustomTextField(
                         controller: field.controller,
                         keyboardType: field.keyboardType,
-                        decoration: InputDecoration(
-                          hintText: field.hint,
+                        hintText: field.hint,
+                        scaleFactor: scaleFactor,
                         ),
                       ),
-                    ),
                 ],
               ),
             ),
@@ -323,15 +322,15 @@ class RoomCreationStep {
 
 class RoomCreationField {
   final String label;
-  final String? hint;
+  final String hint;
   final TextEditingController controller;
-  final TextInputType? keyboardType; // Add this property for keyboard type
+  final TextInputType keyboardType;
 
   RoomCreationField({
     required this.label,
-    this.hint,
+    this.hint = '',
     required this.controller,
-    this.keyboardType = TextInputType.number, // Set the default keyboard type to text
+    this.keyboardType = TextInputType.text,
   });
 }
 
