@@ -12,10 +12,10 @@ import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import 'Page/chat.dart';
 import 'PreferencesManager.dart';
 import 'chatWebSocket.dart';
-import 'chat_model.dart';
+import 'Page/Chat/chat_model.dart';
+import 'Page/Chat/chat.dart';
 
 import 'package:flutter/services.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -778,6 +778,7 @@ class _GameMapState extends State<GameMap> {
                           ),
                           const SizedBox(height: 10),
                           //Bouton de taunt de position--------------------
+                        if (amITheSeeker == false && amIFound == false)
                           FloatingActionButton(
                                 heroTag: 'button0',
                                 child: const Icon(Symbols.share_location_rounded,
@@ -792,7 +793,8 @@ class _GameMapState extends State<GameMap> {
                             ),
                           const SizedBox(height: 10),
                         //Bouton de signalement--------------------
-                        FloatingActionButton(
+                        if (amITheSeeker == false && amIFound == false)
+                          FloatingActionButton(
                               heroTag: 'button1',
                               onPressed: () async {
                                 bool? result = await showDialog<bool>(

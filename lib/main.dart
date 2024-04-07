@@ -8,11 +8,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'Page/Login/LoginPage.dart';
 import 'monetization/PremiumStatus.dart';
 
-import 'chat_model.dart';
 import 'home.dart';
 import 'l10n/l10n.dart';
 import 'Page/shop.dart';
 import 'Page/account_settings.dart';
+import 'Page/Chat/chat_model.dart';
 
 import 'package:material_symbols_icons/symbols.dart';
 
