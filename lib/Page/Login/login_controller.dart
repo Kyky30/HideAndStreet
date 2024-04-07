@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hide_and_street/main.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_bcrypt/flutter_bcrypt.dart';
 
 import '../../components/alertbox.dart';
 import 'login_model.dart';

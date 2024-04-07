@@ -97,7 +97,7 @@ class _GameMapState extends State<GameMap> {
   bool newMessage = false;
 
   //Taunts audio
-  static AudioPlayer player = new AudioPlayer();
+  static AudioPlayer player = AudioPlayer();
 
 
   @override
@@ -221,27 +221,25 @@ class _GameMapState extends State<GameMap> {
           point: LatLng(latitude, longitude),
           width: 80,
           height: 80,
-          child: Container(
-            child: Stack(
-              children: <Widget>[
-                const Align(
-                  alignment: Alignment.center,
-                  child: Icon(Symbols.location_on_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24, color: Colors.red, size: 30),
-                ),
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: Text(
-                    data['playerName'],
-                    style: const TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: "Poppins",
-                      color: Colors.red,
-                    ),
+          child: Stack(
+            children: <Widget>[
+              const Align(
+                alignment: Alignment.center,
+                child: Icon(Symbols.location_on_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24, color: Colors.red, size: 30),
+              ),
+              Align(
+                alignment: Alignment.topCenter,
+                child: Text(
+                  data['playerName'],
+                  style: const TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: "Poppins",
+                    color: Colors.red,
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
 
@@ -378,33 +376,31 @@ class _GameMapState extends State<GameMap> {
             point: LatLng(latitude, longitude),
             width: 80,
             height: 80,
-            child: Container(
-              child: Stack(
-                children: <Widget>[
-                  Align(
-                    alignment: Alignment.center,
-                    child: Container(
-                      width: 15,
-                      height: 15,
-                      decoration: const BoxDecoration(
-                        color: Colors.blue,
-                        shape: BoxShape.circle,
-                      ),
+            child: Stack(
+              children: <Widget>[
+                Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    width: 15,
+                    height: 15,
+                    decoration: const BoxDecoration(
+                      color: Colors.blue,
+                      shape: BoxShape.circle,
                     ),
                   ),
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Text(
-                      positionData['username'].toString(), // replace with the actual username
-                      style: const TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue,
-                      ),
+                ),
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Text(
+                    positionData['username'].toString(), // replace with the actual username
+                    style: const TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue,
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         );
@@ -574,15 +570,13 @@ class _GameMapState extends State<GameMap> {
         point: LatLng(position.latitude, position.longitude),
         width: 80,
         height: 80,
-        child: Container(
-          child: const Stack(
-            children: <Widget>[
-              Align(
-                alignment: Alignment.center,
-                child: Icon(Symbols.location_on_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24, color: Colors.blue, size: 30),
-              ),
-            ],
-          ),
+        child: const Stack(
+          children: <Widget>[
+            Align(
+              alignment: Alignment.center,
+              child: Icon(Symbols.location_on_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24, color: Colors.blue, size: 30),
+            ),
+          ],
         ),
       );
       setState(() {

@@ -63,7 +63,7 @@ class AdmobHelper {
   }
 
   static BannerAd getBannerAd() {
-    BannerAd bAd = new BannerAd(
+    BannerAd bAd = BannerAd(
       size: AdSize.fullBanner,
       adUnitId: "ca-app-pub-3940256099942544/6300978111",
       listener: BannerAdListener(

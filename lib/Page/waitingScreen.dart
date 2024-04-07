@@ -23,7 +23,7 @@ class WaitingScreen extends StatefulWidget {
 }
 
 class _WaitingScreenState extends State<WaitingScreen> {
-  AdmobHelper admobHelper = new AdmobHelper();
+  AdmobHelper admobHelper = AdmobHelper();
 
   late Future<List<String>> _playerList;
   String email = '';
