@@ -3,7 +3,7 @@ import 'package:hide_and_street/main.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../components/alertbox.dart';
-import 'login_model.dart';
+import 'loginModel.dart';
 
 class LoginController {//
   final LoginModel _model = LoginModel();

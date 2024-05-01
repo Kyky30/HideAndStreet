@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'Page/Login/LoginPage.dart';
+import 'Page/Login/loginPage.dart';
 import 'monetization/PremiumStatus.dart';
 
 import 'home.dart';

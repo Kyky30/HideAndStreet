@@ -4,8 +4,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../components/buttons.dart';
 import '../../components/input.dart';
 import '../../password_forgoten.dart';
-import '../../register.dart';
-import 'login_controller.dart';
+import '../../Page/Register/registerPage.dart';
+import 'loginController.dart';
 
 class LoginPage extends StatelessWidget {
   final LoginController _controller = LoginController();
