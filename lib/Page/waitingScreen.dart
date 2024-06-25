@@ -143,7 +143,6 @@ class _WaitingScreenState extends State<WaitingScreen> {
       return;
     }
 
-    String auth = "chatappauthkey231r4";
     WebSocketManager.sendData('"email":"$email","cmd":"startGame", "gameCode":"${widget.gameCode}", "startingTimeStamp": ${DateTime.now().millisecondsSinceEpoch}');
   }
 

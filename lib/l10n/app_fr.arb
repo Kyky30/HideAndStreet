@@ -487,5 +487,17 @@
     "erreur": "Erreur",
     "@erreur": {
         "description": "Texte d'erreur"
+    },
+    "locationPermissions" : "Permissions de localisation",
+    "@LocationPermissions": {
+        "description": "Permissions de localisation"
+    },
+    "locationPermissionsMessage" : "Cette application collecte des données de localisation pour activer les fonctionnalités de jeu. Rassurez-vous, elles sont suppimées après chaque partie.",
+    "@LocationPermissionsMessage": {
+        "description": "Message de permissions de localisation"
+    },
+    "boutonSupprimerCompte": "Supprimer mon compte",
+    "@boutonSupprimerCompte": {
+        "description": "Bouton de suppression de compte"
     }
 }

@@ -28,6 +28,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
   String cguUrl = 'https://hideandstreet.furrball.fr/CGU.html';
   String cgvUrl = 'https://hideandstreet.furrball.fr/CGV.html';
   String privacyUrl = 'https://hideandstreet.furrball.fr/privacy.html';
+  String deleteAccountUrl = 'https://hideandstreet.furrball.fr/deleteAccount.html';
 
   @override
   void initState() {
@@ -121,6 +122,16 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                 ),
               ),
               const Spacer(),
+              CustomButton(
+                  text: AppLocalizations.of(context)!.boutonSupprimerCompte,
+                  onPressed: () {
+                    launchUrl(Uri.parse(deleteAccountUrl));
+                  },
+                  scaleFactor: scaleFactor,
+                  height: 60,
+                  backgroundColor: const Color(0xFF8C2020),
+              ),
+              SizedBox(height: 10 * scaleFactor),
               CustomButton(
                   text: AppLocalizations.of(context)!.deconnexion,
                   onPressed: () => _logout(context),

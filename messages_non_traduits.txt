@@ -3,92 +3,137 @@
     "texte_popup_autre_erreur",
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte"
   ],
 
   "de": [
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte"
   ],
 
   "en": [
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte"
   ],
 
   "es": [
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte"
   ],
 
   "fi": [
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte"
   ],
 
   "hi": [
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte"
   ],
 
   "it": [
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte"
   ],
 
   "ja": [
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte"
   ],
 
   "ko": [
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte"
   ],
 
   "pl": [
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte"
   ],
 
   "pt": [
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte"
   ],
 
   "ru": [
     "texte_popup_autre_erreur",
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte"
   ],
 
   "sv": [
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte"
   ],
 
   "vi": [
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte"
   ],
 
   "zh": [
     "texte_popup_autre_erreur",
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte"
   ]
 }
