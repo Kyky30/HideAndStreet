@@ -91,8 +91,8 @@ class _ClassicModeState extends State<ClassicMode> {
           Expanded(
             child: FlutterMap(
               options: MapOptions(
-                center: widget.center,
-                zoom: 15.0,
+                initialCenter: widget.center,
+                initialZoom: 15.0,
               ),
               children: [
                 TileLayer(

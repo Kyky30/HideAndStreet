@@ -280,7 +280,7 @@ class _RegisterPageState extends State<RegisterPage> {
       firstDate: DateTime(1910),
       lastDate: DateTime.now(),
     );
-    if (pickedDate != null && pickedDate != model.selectedDate) {
+    if (pickedDate != model.selectedDate) {
       setState(() {
         model.selectedDate = pickedDate;
         model.TexteSelctionDate = model.selectedDate.toString().substring(0, 10);

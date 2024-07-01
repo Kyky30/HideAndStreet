@@ -20,6 +20,7 @@ class ServerUtilities with ChangeNotifier {
   Future<void> _init() async {
     await _getPrefs();
     await _connectWebSocket();
+    debugPrint('websocket connected');
   }
 
   Future<void> _getPrefs() async {
