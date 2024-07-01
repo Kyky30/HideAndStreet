@@ -21,7 +21,7 @@ class ChatModel extends ChangeNotifier {
     _messages.clear();
     _emails.clear();
     _usernames.clear();
-    print("????⚙️??⛷️ reset" + _messages.toString() + _emails.toString() + _usernames.toString());
+    debugPrint("????⚙️??⛷️ reset" + _messages.toString() + _emails.toString() + _usernames.toString());
     notifyListeners();
   }
 }

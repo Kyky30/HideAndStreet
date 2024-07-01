@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
-import 'package:hide_and_street/game_map.dart';
+// import 'package:hide_and_street/game_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:share/share.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hide_and_street/monetization/AdmobHelper.dart';
 import 'package:hide_and_street/monetization/PremiumStatus.dart';
 import '../WebSocketManager.dart';
-
+import 'Game/GameModes/ClassicMode.dart';
 
 class WaitingScreen extends StatefulWidget {
   final String gameCode;
@@ -54,6 +54,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
   Future<void> initWebSocketConnection() async {
     await WebSocketManager.connect(email);
   }
+
   void _initWebSocket() {
     WebSocketManager.getStream().listen((message) {
       final Map<String, dynamic> data = jsonDecode(message);
@@ -81,12 +82,12 @@ class _WaitingScreenState extends State<WaitingScreen> {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) =>
-                GameMap(
+                ClassicMode(
                   center: center,
                   radius: radius,
-                  tempsDePartie: data['data']['duration'],
-                  tempsDeCachette: data['data']['hidingDuration'],
-                  timeStampDebutPartie: data['data']['startingTimeStamp'],
+                  gameDuration : data['data']['duration'],
+                  hidingDuration : data['data']['hidingDuration'],
+                  timeStamGameStart : data['data']['startingTimeStamp'],
                   gameCode: widget.gameCode,
                   playerList: playerList,
                 )),
@@ -173,12 +174,11 @@ class _WaitingScreenState extends State<WaitingScreen> {
   }
 
   Future<List<String>> getPlayerList(String gameCode) async {
-    final StreamController<List<String>> controller =
-    StreamController<List<String>>();
-
     WebSocketManager.sendData('"email":"$email","cmd":"getPlayerlist", "gameCode":"${widget.gameCode}"');
-
-    return controller.stream.first;
+    final data = await WebSocketManager.getStream().first;
+    final Map<String, dynamic> decodedData = jsonDecode(data);
+    List<String> players = (decodedData['players'] as List<dynamic>).map((player) => player.toString()).toList();
+    return players;
   }
 
   void _togglePlayerSelection(String playerName) {
