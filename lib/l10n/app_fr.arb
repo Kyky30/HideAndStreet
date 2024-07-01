@@ -487,5 +487,13 @@
     "erreur": "Erreur",
     "@erreur": {
         "description": "Texte d'erreur"
+    },
+    "playedGames": "Parties jouées",
+    "@playedGames": {
+        "description": "Label de parties jouées"
+    },
+    "wonGames": "Parties gagnées",
+    "@wonGames": {
+        "description": "Label de parties gagnées"
     }
 }

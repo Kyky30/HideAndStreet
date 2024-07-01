@@ -32,6 +32,8 @@ class LoginModel {
           prefs.setString('username', responseData["username"]);
           prefs.setString('email', responseData["email"]);
           prefs.setString('DateCreation', responseData["DateCreation"]);
+          prefs.setString('nbGames', responseData["nbGames"]);
+          prefs.setString('nbWonGames', responseData["nbWonGames"]);
           completer.complete(true);
         } else {
           await WebSocketManager.closeConnection();

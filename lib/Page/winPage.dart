@@ -3,19 +3,50 @@ import 'package:hide_and_street/Page/map_conf_screen.dart';
 import 'package:hide_and_street/main.dart';
 import 'package:hide_and_street/room_joining.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:hide_and_street/WebSocketManager.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:async';
+
 
 import '../components/buttons.dart';
 
 class winPage extends StatefulWidget {
   final bool isSeekerWin;
+  final bool amISeeker;
 
-  const winPage({required this.isSeekerWin});
+  winPage({required this.isSeekerWin, required this.amISeeker});
 
   @override
   _WinPageState createState() => _WinPageState();
 }
 
+
 class _WinPageState extends State<winPage> {
+  @override
+  void initState() {
+    super.initState();
+    init();
+  }
+
+  Future<void> init () async{
+    debugPrint('🚨-------------------------------------------------------------------------------🚨');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    debugPrint('Envoi de la commande addPlayedGameForId pour le joueur ${prefs.getString('userId')??''}');
+    await WebSocketManager.connect(prefs.getString('email')??'');
+    await WebSocketManager.sendData("'cmd':'addPlayedGameForId','playerId':'${prefs.getString('userId')??''}'");
+
+
+
+    if(widget.isSeekerWin && widget.amISeeker){
+      debugPrint('Envoi de la commande addWonGameForId pour le joueur ${prefs.getString('userId')??''}');
+      await WebSocketManager.sendData("'cmd':'addWonGameForId','playerId':'${prefs.getString('userId')??''}'");
+    } else if (!widget.isSeekerWin && !widget.amISeeker){
+      debugPrint('Envoi de la commande addWonGameForId pour le joueur ${prefs.getString('userId')??''}');
+      await WebSocketManager.sendData("'cmd':'addWonGameForId','playerId':'${prefs.getString('userId')??''}'");
+    }
+    debugPrint('🚨-------------------------------------------------------------------------------🚨');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +61,7 @@ class _WinPageState extends State<winPage> {
             widget.isSeekerWin ? AppLocalizations.of(context)!.victoire_chercheur : AppLocalizations.of(context)!.victoire_cacheur,
             style: const TextStyle(fontSize: 25, fontWeight: FontWeight.w500, fontFamily: 'Poppins', color: Colors.blue),
           ),
-          const Spacer(),
+          SizedBox(height: 400 * MediaQuery.of(context).textScaleFactor),
           Center(
             child: Column(
               children: [

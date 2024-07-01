@@ -17,7 +17,6 @@ class ChatModel extends ChangeNotifier {
   }
 
   void ResetMessage(){
-
     _messages.clear();
     _emails.clear();
     _usernames.clear();

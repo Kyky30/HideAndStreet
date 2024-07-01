@@ -84,7 +84,6 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
               ),
-              const Spacer(),
               Positioned(
                 bottom: 0.04 * MediaQuery.of(context).size.height,
                 left: 0,

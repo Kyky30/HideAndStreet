@@ -3,92 +3,122 @@
     "texte_popup_autre_erreur",
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "playedGames",
+    "wonGames"
   ],
 
   "de": [
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "playedGames",
+    "wonGames"
   ],
 
   "en": [
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "playedGames",
+    "wonGames"
   ],
 
   "es": [
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "playedGames",
+    "wonGames"
   ],
 
   "fi": [
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "playedGames",
+    "wonGames"
   ],
 
   "hi": [
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "playedGames",
+    "wonGames"
   ],
 
   "it": [
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "playedGames",
+    "wonGames"
   ],
 
   "ja": [
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "playedGames",
+    "wonGames"
   ],
 
   "ko": [
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "playedGames",
+    "wonGames"
   ],
 
   "pl": [
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "playedGames",
+    "wonGames"
   ],
 
   "pt": [
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "playedGames",
+    "wonGames"
   ],
 
   "ru": [
     "texte_popup_autre_erreur",
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "playedGames",
+    "wonGames"
   ],
 
   "sv": [
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "playedGames",
+    "wonGames"
   ],
 
   "vi": [
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "playedGames",
+    "wonGames"
   ],
 
   "zh": [
     "texte_popup_autre_erreur",
     "ok",
     "erreurconnexion",
-    "erreur"
+    "erreur",
+    "playedGames",
+    "wonGames"
   ]
 }

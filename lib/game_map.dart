@@ -259,7 +259,7 @@ class _GameMapState extends State<GameMap> {
       {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const winPage(isSeekerWin: true)),
+          MaterialPageRoute(builder: (context) => winPage(isSeekerWin: true, amISeeker: amITheSeeker)),
               (Route<dynamic> route) => false,
         );
       }
@@ -640,7 +640,7 @@ class _GameMapState extends State<GameMap> {
                                       Navigator.pushAndRemoveUntil(
                                         context,
                                         MaterialPageRoute(builder: (context) =>
-                                            const winPage(isSeekerWin: false)),
+                                            winPage(isSeekerWin: false, amISeeker: amITheSeeker)),
                                             (Route<dynamic> route) => false,
                                       );
                                       print("🚨🚨🚨FIN DE PARTIE🚨🚨🚨");

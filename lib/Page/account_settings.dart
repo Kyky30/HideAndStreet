@@ -24,6 +24,8 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
   String username = '';
   String dateCreation = '';
   String email = '';
+  String playedGames = '';
+  String wonGames = '';
 
   String cguUrl = 'https://hideandstreet.furrball.fr/CGU.html';
   String cgvUrl = 'https://hideandstreet.furrball.fr/CGV.html';
@@ -43,6 +45,8 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
       dateCreation = dateCreation = (prefs.getString('DateCreation') ?? '').substring(0, 15);
       isBlindModeEnabled = blindMode;
       email = prefs.getString('email') ?? '';
+      playedGames = prefs.getString('nbGames') ?? '';
+      wonGames = prefs.getString('nbWonGames') ?? '';
     });
   }
 
@@ -106,6 +110,20 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                   leading: const Icon(Symbols.calendar_today_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
                   title: Text(AppLocalizations.of(context)!.creationDateLabel, style: TextStyle(fontSize: 18 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
                   subtitle: Text(dateCreation, style: TextStyle(fontSize: 16 * scaleFactor, fontWeight: FontWeight.w400, fontFamily: 'Poppins')),
+                ),
+              ),
+              Card(
+                child: ListTile(
+                  leading: const Icon(Symbols.sports_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
+                  title: Text(AppLocalizations.of(context)!.playedGames, style: TextStyle(fontSize: 18 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
+                  subtitle: Text(playedGames, style: TextStyle(fontSize: 16 * scaleFactor, fontWeight: FontWeight.w400, fontFamily: 'Poppins')),
+                ),
+              ),
+              Card(
+                child: ListTile(
+                  leading: const Icon(Symbols.trophy_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
+                  title: Text(AppLocalizations.of(context)!.wonGames, style: TextStyle(fontSize: 18 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
+                  subtitle: Text(wonGames, style: TextStyle(fontSize: 16 * scaleFactor, fontWeight: FontWeight.w400, fontFamily: 'Poppins')),
                 ),
               ),
               Card(

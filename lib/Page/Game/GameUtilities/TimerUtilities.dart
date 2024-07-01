@@ -1,17 +1,22 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 class TimerUtilities with ChangeNotifier {
   late Timer _timer;
   late int _endTime;
   late Function _onEnd;
   int _remainingTime = 0;
+  late IconData _icon = Symbols.timer_rounded;
+  late String _timerName = 'Timer :';
 
   // Start a timer with an optional start time
   void startTimer({
     required int durationInMinutes,
     required Function onEnd,
     DateTime? startTime,
+    required IconData icon,
+    required String timerName,
   }) {
     DateTime start = startTime ?? DateTime.now();
     _endTime = start.millisecondsSinceEpoch + (durationInMinutes * 60 * 1000);
@@ -24,6 +29,8 @@ class TimerUtilities with ChangeNotifier {
       }
       notifyListeners(); // Notify listeners to update the UI
     });
+    _icon = icon;
+    _timerName = timerName;
   }
 
   // Get remaining time in milliseconds
@@ -59,18 +66,44 @@ class TimerDisplay extends StatelessWidget {
       animation: timerUtilities,
       builder: (context, child) {
         return Container(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(16.0),
           decoration: BoxDecoration(
-            color: Colors.black,
+            color: Color(0xFF373967),
             borderRadius: BorderRadius.circular(8.0),
           ),
-          child: Text(
-            timerUtilities.formattedRemainingTime,
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                timerUtilities._timerName,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              Spacer(),
+              Text(
+                timerUtilities.formattedRemainingTime,
+                style: const TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              Spacer(),
+              Icon(
+                timerUtilities._icon,
+                fill: 1,
+                weight: 700,
+                grade: 200,
+                opticalSize: 24, // Icone du timer (horloge
+                color: Colors.white,
+                size: 24,
+              ),
+            ],
           ),
         );
       },

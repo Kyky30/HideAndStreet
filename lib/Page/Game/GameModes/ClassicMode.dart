@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 import '../GameUtilities/ServerUtilities.dart';
 import '../GameUtilities/TimerUtilities.dart';
@@ -49,6 +50,8 @@ class _ClassicModeState extends State<ClassicMode> {
       durationInMinutes: widget.hidingDuration,
       onEnd: onEnd,
       startTime: DateTime.fromMillisecondsSinceEpoch(widget.timeStamGameStart),
+      icon: Symbols.synagogue_rounded,
+      timerName: 'Hiding phase : ',
     );
     serverUtilities.addListener(_handleServerUpdates);
     List<String> playerIds = widget.playerList.keys.toList();
