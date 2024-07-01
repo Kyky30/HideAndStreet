@@ -13,6 +13,9 @@ class ServerUtilities with ChangeNotifier {
   late Position latestPositionSentToServer;
   late Position currentPosition;
 
+  // StreamController for WebSocket data
+  final _webSocketController = StreamController<dynamic>.broadcast();
+
   ServerUtilities({required this.gameCode}) {
     _init();
   }
@@ -37,27 +40,36 @@ class ServerUtilities with ChangeNotifier {
 
   // Get game data
   Future<dynamic> getPositionForId(List<String> ids) async {
+    final Completer<dynamic> completer = Completer<dynamic>();
+
+    // Declare the subscription variable before using it
+    late StreamSubscription subscription;
+
+    // Add a listener to the StreamController for the first response
+    subscription = _webSocketController.stream.listen((data) {
+      debugPrint("🛬 Received response: $data");
+      completer.complete(data); // Complete the future with the received data
+      subscription.cancel(); // Cancel the subscription after receiving the first response
+    });
+
     String data = "'cmd':'getPositionForId','gameCode':'$gameCode','ids':$ids";
     await WebSocketManager.sendData(data);
-    debugPrint("Sent data: $data");
+    debugPrint("🛫 Sent data: $data");
 
-    // Wait for the first response from the WebSocket
-    var response = await WebSocketManager.getStream().first;
-    debugPrint("Received response: $response");
-
-    return response;
+    return completer.future; // Return the future that completes with the response data
   }
 
   // Handle incoming data
   void _handleIncomingData(dynamic data) {
-    debugPrint("Received data: $data");
-
+    debugPrint("🛬 Received data: $data");
+    _webSocketController.add(data); // Add data to the StreamController
     notifyListeners();
   }
 
   @override
   void dispose() {
     _subscription?.cancel();
+    _webSocketController.close();
     WebSocketManager.closeConnection();
     super.dispose();
   }

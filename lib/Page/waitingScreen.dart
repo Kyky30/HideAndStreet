@@ -24,14 +24,14 @@ class WaitingScreen extends StatefulWidget {
 
 class _WaitingScreenState extends State<WaitingScreen> {
   AdmobHelper admobHelper = AdmobHelper();
-
   late Future<List<String>> _playerList;
   String email = '';
   String id = '';
   List<String> selectedPlayers = [];
-  final _playerListController = StreamController<List<String>>();
+  final _playerListController = StreamController<List<String>>.broadcast();
   final _selectedPlayersController = StreamController<List<String>>.broadcast();
   late List<dynamic> playersData;
+  late StreamSubscription _webSocketSubscription;
 
   @override
   void initState() {
@@ -52,11 +52,12 @@ class _WaitingScreenState extends State<WaitingScreen> {
   }
 
   Future<void> initWebSocketConnection() async {
+    debugPrint("websocket manager init");
     await WebSocketManager.connect(email);
   }
 
   void _initWebSocket() {
-    WebSocketManager.getStream().listen((message) {
+    _webSocketSubscription = WebSocketManager.getStream().listen((message) {
       final Map<String, dynamic> data = jsonDecode(message);
       print('Received message from server: $message');
       if (data['cmd'] == 'getPlayerlist' || data['cmd'] == 'UpdatePlayerlist') {
@@ -104,7 +105,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
   }
 
   void _startGame() {
-    if (selectedPlayers.length < 1) {
+    if (selectedPlayers.length < 0) { //TODO : Replace by 1
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -123,7 +124,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
         },
       );
       return;
-    } else if (selectedPlayers.length > (playersData.length - 1)) {
+    } else if (selectedPlayers.length > (playersData.length - 0)) { //TODO: Replace by one
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -151,10 +152,12 @@ class _WaitingScreenState extends State<WaitingScreen> {
   void _handleSeekerStatusUpdated(List<dynamic> selectedPlayersData) {
     List<String> updatedSelectedPlayers = selectedPlayersData.map((player) => player.toString()).toList();
     print('Updated selected players: $updatedSelectedPlayers');
-    setState(() {
-      selectedPlayers = updatedSelectedPlayers;
-    });
-    _selectedPlayersController.add(updatedSelectedPlayers);
+    if (mounted) {
+      setState(() {
+        selectedPlayers = updatedSelectedPlayers;
+      });
+      _selectedPlayersController.add(updatedSelectedPlayers);
+    }
   }
 
   void _updatePlayerList() {
@@ -199,7 +202,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
 
   @override
   void dispose() {
-    WebSocketManager.closeConnection();
+    _webSocketSubscription.cancel();
     _playerListController.close();
     _selectedPlayersController.close();
     super.dispose();

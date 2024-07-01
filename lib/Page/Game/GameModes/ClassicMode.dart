@@ -80,40 +80,42 @@ class _ClassicModeState extends State<ClassicMode> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TimerDisplay(
-              timerUtilities: timerUtilities,
-            ),
-          ),
-          Expanded(
-            child: FlutterMap(
-              options: MapOptions(
-                initialCenter: widget.center,
-                initialZoom: 15.0,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TimerDisplay(
+                timerUtilities: timerUtilities,
               ),
-              children: [
-                TileLayer(
-                  urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                ),
-                CircleLayer(circles: [
-                  CircleMarker(
-                    point: widget.center,
-                    color: Colors.blue.withOpacity(0.3),
-                    borderStrokeWidth: 2,
-                    borderColor: Colors.blue,
-                    useRadiusInMeter: true,
-                    radius: widget.radius,
-                  ),
-                ]),
-                MarkerLayer(markers: markers),
-                CurrentLocationLayer(),
-              ],
             ),
-          ),
-        ],
+            Expanded(
+              child: FlutterMap(
+                options: MapOptions(
+                  initialCenter: widget.center,
+                  initialZoom: 15.0,
+                ),
+                children: [
+                  TileLayer(
+                    urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  ),
+                  CircleLayer(circles: [
+                    CircleMarker(
+                      point: widget.center,
+                      color: Colors.blue.withOpacity(0.3),
+                      borderStrokeWidth: 2,
+                      borderColor: Colors.blue,
+                      useRadiusInMeter: true,
+                      radius: widget.radius,
+                    ),
+                  ]),
+                  MarkerLayer(markers: markers),
+                  CurrentLocationLayer(),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

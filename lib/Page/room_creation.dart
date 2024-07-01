@@ -65,6 +65,7 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
 
       // Listen to WebSocketManager stream for responses
       WebSocketManager.getStream().listen((message) {
+        if (!mounted) return; // Check if the widget is still mounted
         Map<String, dynamic> data = json.decode(message);
 
         // Check if the received message contains the game code
@@ -83,9 +84,8 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              return CustomAlertDialog1
-                (
-                title: AppLocalizations.of(context)!.erreur ,
+              return CustomAlertDialog1(
+                title: AppLocalizations.of(context)!.erreur,
                 content: AppLocalizations.of(context)!.erreurconnexion,
                 buttonText: AppLocalizations.of(context)!.ok,
                 onPressed: () {
@@ -99,24 +99,26 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
       });
     } catch (error) {
       print('Error sending data: $error');
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return CustomAlertDialog1
-            (
-            title: AppLocalizations.of(context)!.erreur ,
-            content: AppLocalizations.of(context)!.erreurconnexion,
-            buttonText: AppLocalizations.of(context)!.ok,
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            scaleFactor: MediaQuery.of(context).textScaleFactor,
-          );
-        },
-      );
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return CustomAlertDialog1(
+              title: AppLocalizations.of(context)!.erreur,
+              content: AppLocalizations.of(context)!.erreurconnexion,
+              buttonText: AppLocalizations.of(context)!.ok,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              scaleFactor: MediaQuery.of(context).textScaleFactor,
+            );
+          },
+        );
+      }
       // Handle error sending data
     }
   }
+
 
 
   void getCreatorId() async {
