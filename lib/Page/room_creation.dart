@@ -79,22 +79,6 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
               builder: (context) => WaitingScreen(gameCode: receivedGameCode, isAdmin: true),
             ),
           );
-        } else {
-          // Handle other responses from the server if needed
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return CustomAlertDialog1(
-                title: AppLocalizations.of(context)!.erreur,
-                content: AppLocalizations.of(context)!.erreurconnexion,
-                buttonText: AppLocalizations.of(context)!.ok,
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                scaleFactor: MediaQuery.of(context).textScaleFactor,
-              );
-            },
-          );
         }
       });
     } catch (error) {
