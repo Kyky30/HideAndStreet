@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -7,28 +8,28 @@ import '../../../WebSocketManager.dart';
 class ServerUtilities with ChangeNotifier {
   StreamSubscription<dynamic>? _subscription;
   late String email;
+  late String userId;
   final String gameCode;
-
-  // Position variables
-  late Position latestPositionSentToServer;
-  late Position currentPosition;
 
   // StreamController for WebSocket data
   final _webSocketController = StreamController<dynamic>.broadcast();
+  final _outOfZoneController = StreamController<Map<String, dynamic>>.broadcast();
 
   ServerUtilities({required this.gameCode}) {
     _init();
   }
 
+  Stream<Map<String, dynamic>> get outOfZoneStream => _outOfZoneController.stream;
+
   Future<void> _init() async {
     await _getPrefs();
     await _connectWebSocket();
-    debugPrint('websocket connected');
   }
 
   Future<void> _getPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     email = prefs.getString('email') ?? '';
+    userId = prefs.getString('userId') ?? '';
   }
 
   Future<void> _connectWebSocket() async {
@@ -59,9 +60,28 @@ class ServerUtilities with ChangeNotifier {
     return completer.future; // Return the future that completes with the response data
   }
 
+  Future<void> setPosition(Position newPosition) async {
+    String data = "'cmd':'setPositionPlayer','gameCode':'$gameCode','playerId':'$userId', 'position':'$newPosition'";
+    await WebSocketManager.sendData(data);
+    debugPrint("🛫 Sent data: $data");
+  }
+
+  Future<void> setPlayerOutOfZone(Position currentPosition) async {
+    String data = "'cmd':'setOutOfZone','gameCode':'$gameCode','playerId':'$userId', 'position':'$currentPosition'";
+    await WebSocketManager.sendData(data);
+    debugPrint("🛫 Sent data: $data");
+  }
+
   // Handle incoming data
   void _handleIncomingData(dynamic data) {
     debugPrint("🛬 Received data: $data");
+
+    // Parse data to check for 'setOutOfZone' command
+    var parsedData = jsonDecode(data);
+    if (parsedData['cmd'] == 'playerOutOfZone') {
+      _outOfZoneController.add(parsedData);
+    }
+
     _webSocketController.add(data); // Add data to the StreamController
     notifyListeners();
   }
@@ -70,6 +90,7 @@ class ServerUtilities with ChangeNotifier {
   void dispose() {
     _subscription?.cancel();
     _webSocketController.close();
+    _outOfZoneController.close();
     WebSocketManager.closeConnection();
     super.dispose();
   }
