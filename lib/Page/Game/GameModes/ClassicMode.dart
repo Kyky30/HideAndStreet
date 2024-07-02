@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:hide_and_street/Page/Game/GameUtilities/LocationUtilities.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 import '../GameUtilities/ServerUtilities.dart';
 import '../GameUtilities/TimerUtilities.dart';
@@ -32,32 +36,129 @@ class ClassicMode extends StatefulWidget {
 }
 
 class _ClassicModeState extends State<ClassicMode> {
-  late Position currentPosition;
   List<Marker> markers = [];
   TimerUtilities timerUtilities = TimerUtilities();
   late ServerUtilities serverUtilities;
+  late LocationUtilities locationUtilities;
+  late Position currentPosition;
 
   @override
   void initState() {
     super.initState();
     serverUtilities = ServerUtilities(gameCode: widget.gameCode);
-    _initialize();
+    locationUtilities = LocationUtilities(serverUtilities);
+    serverUtilities.outOfZoneStream.listen(_handleOutOfZone);
+    startHiddingTimer();
   }
 
-  Future<void> _initialize() async {
+  void startHiddingTimer() {
     timerUtilities.startTimer(
       durationInMinutes: widget.hidingDuration,
-      onEnd: onEnd,
+      onEnd: startGame,
       startTime: DateTime.fromMillisecondsSinceEpoch(widget.timeStamGameStart),
     );
-    serverUtilities.addListener(_handleServerUpdates);
-    List<String> playerIds = widget.playerList.keys.toList();
-    var positions = await serverUtilities.getPositionForId(playerIds);
-    // Traitez les positions ici
-    print('Received positions: $positions');
   }
 
-  void onEnd() {
+  void startGame() {
+    timerUtilities.startTimer(
+      durationInMinutes: widget.gameDuration,
+      onEnd: onEndGame,
+      startTime: DateTime.now(),
+    );
+    gameLoop();
+  }
+
+
+  void gameLoop() {
+    Future.delayed(const Duration(seconds: 5), () async {
+      currentPosition = await locationUtilities.updateMyPosition();
+      if (amIOutOfZone() == true) {
+        debugPrint('You are out of the zone');
+        serverUtilities.setPlayerOutOfZone(currentPosition);
+      }
+      gameLoop();
+    });
+  }
+
+  bool amIOutOfZone(){
+    return Geolocator.distanceBetween(
+      widget.center.latitude, widget.center.longitude,
+      currentPosition.latitude, currentPosition.longitude,
+    ) > widget.radius;
+  }
+
+  void _handleOutOfZone(Map<String, dynamic> data) {
+    if(data['playerId'] != serverUtilities.userId){
+      String positionString = data['position'];
+      List<String> positionParts = positionString.split(', ');
+
+      String latitudePart = positionParts[0];
+      double latitude = double.parse(latitudePart.split(': ')[1]);
+
+      String longitudePart = positionParts[1];
+      double longitude = double.parse(longitudePart.split(': ')[1]);
+
+      Marker marker = Marker(
+        point: LatLng(latitude, longitude),
+        width: 80,
+        height: 80,
+        child: Stack(
+          children: <Widget>[
+            const Align(
+              alignment: Alignment.center,
+              child: Icon(
+                Symbols.location_on_rounded,
+                fill: 1,
+                weight: 700,
+                grade: 200,
+                opticalSize: 24,
+                color: Colors.red,
+                size: 30,
+              ),
+            ),
+            Align(
+              alignment: Alignment.topCenter,
+              child: Text(
+                data['playerName'],
+                style: const TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: "Poppins",
+                  color: Colors.red,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+
+      print('Adding marker: $marker');
+      setState(() {
+        markers.add(marker);
+      });
+
+      Timer? periodicTimer;
+
+      periodicTimer = Timer.periodic(const Duration(milliseconds: 500), (timer) {
+        setState(() {
+          if (markers.contains(marker)) {
+            markers.remove(marker);
+          } else {
+            markers.add(marker);
+          }
+        });
+      });
+
+      Timer(const Duration(milliseconds: 9400), () {
+        periodicTimer?.cancel(); // Arrête le timer périodique après 4900 ms
+        setState(() {
+          markers.remove(marker);
+        });
+      });
+    }
+  }
+
+  void onEndGame() {
     debugPrint('Game ended');
     // Handle the end of the timer here
   }
@@ -68,6 +169,8 @@ class _ClassicModeState extends State<ClassicMode> {
       // Update the UI based on the new data from the server
     });
   }
+
+
 
   @override
   void dispose() {
