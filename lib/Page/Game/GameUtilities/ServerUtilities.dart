@@ -43,6 +43,8 @@ class ServerUtilities with ChangeNotifier {
     });
   }
 
+
+
   // Get game data
   Future<dynamic> getPositionForId(List<String> ids) async {
     final Completer<dynamic> completer = Completer<dynamic>();
@@ -72,6 +74,12 @@ class ServerUtilities with ChangeNotifier {
 
   Future<void> setPlayerOutOfZone(Position currentPosition) async {
     String data = "'cmd':'setOutOfZone','gameCode':'$gameCode','playerId':'$userId', 'position':'$currentPosition'";
+    await WebSocketManager.sendData(data);
+    debugPrint("🛫 Sent data: $data");
+  }
+
+  Future<void> setPlayerFound() async {
+    String data = "'cmd':'setFoundStatus','gameCode':'$gameCode','playerId':'$userId'";
     await WebSocketManager.sendData(data);
     debugPrint("🛫 Sent data: $data");
   }

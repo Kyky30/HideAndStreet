@@ -5,7 +5,9 @@
     "erreurconnexion",
     "erreur",
     "playedGames",
-    "wonGames"
+    "wonGames",
+    "carte",
+    "chat"
   ],
 
   "de": [
@@ -13,7 +15,9 @@
     "erreurconnexion",
     "erreur",
     "playedGames",
-    "wonGames"
+    "wonGames",
+    "carte",
+    "chat"
   ],
 
   "en": [
@@ -21,7 +25,9 @@
     "erreurconnexion",
     "erreur",
     "playedGames",
-    "wonGames"
+    "wonGames",
+    "carte",
+    "chat"
   ],
 
   "es": [
@@ -29,7 +35,9 @@
     "erreurconnexion",
     "erreur",
     "playedGames",
-    "wonGames"
+    "wonGames",
+    "carte",
+    "chat"
   ],
 
   "fi": [
@@ -37,7 +45,9 @@
     "erreurconnexion",
     "erreur",
     "playedGames",
-    "wonGames"
+    "wonGames",
+    "carte",
+    "chat"
   ],
 
   "hi": [
@@ -45,7 +55,9 @@
     "erreurconnexion",
     "erreur",
     "playedGames",
-    "wonGames"
+    "wonGames",
+    "carte",
+    "chat"
   ],
 
   "it": [
@@ -53,7 +65,9 @@
     "erreurconnexion",
     "erreur",
     "playedGames",
-    "wonGames"
+    "wonGames",
+    "carte",
+    "chat"
   ],
 
   "ja": [
@@ -61,7 +75,9 @@
     "erreurconnexion",
     "erreur",
     "playedGames",
-    "wonGames"
+    "wonGames",
+    "carte",
+    "chat"
   ],
 
   "ko": [
@@ -69,7 +85,9 @@
     "erreurconnexion",
     "erreur",
     "playedGames",
-    "wonGames"
+    "wonGames",
+    "carte",
+    "chat"
   ],
 
   "pl": [
@@ -77,7 +95,9 @@
     "erreurconnexion",
     "erreur",
     "playedGames",
-    "wonGames"
+    "wonGames",
+    "carte",
+    "chat"
   ],
 
   "pt": [
@@ -85,7 +105,9 @@
     "erreurconnexion",
     "erreur",
     "playedGames",
-    "wonGames"
+    "wonGames",
+    "carte",
+    "chat"
   ],
 
   "ru": [
@@ -94,7 +116,9 @@
     "erreurconnexion",
     "erreur",
     "playedGames",
-    "wonGames"
+    "wonGames",
+    "carte",
+    "chat"
   ],
 
   "sv": [
@@ -102,7 +126,9 @@
     "erreurconnexion",
     "erreur",
     "playedGames",
-    "wonGames"
+    "wonGames",
+    "carte",
+    "chat"
   ],
 
   "vi": [
@@ -110,7 +136,9 @@
     "erreurconnexion",
     "erreur",
     "playedGames",
-    "wonGames"
+    "wonGames",
+    "carte",
+    "chat"
   ],
 
   "zh": [
@@ -119,6 +147,8 @@
     "erreurconnexion",
     "erreur",
     "playedGames",
-    "wonGames"
+    "wonGames",
+    "carte",
+    "chat"
   ]
 }

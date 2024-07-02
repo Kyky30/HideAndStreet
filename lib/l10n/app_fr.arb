@@ -495,5 +495,13 @@
     "wonGames": "Parties gagnées",
     "@wonGames": {
         "description": "Label de parties gagnées"
+    },
+    "carte": "Carte",
+    "@carte": {
+        "description": "Bouton de carte"
+    },
+    "chat": "Chat",
+    "@chat": {
+        "description": "Bouton de chat"
     }
 }
