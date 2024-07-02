@@ -40,7 +40,7 @@ class LoginPage extends StatelessWidget {
               ),
               Positioned.fill(
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 0.0),
+                  padding: const EdgeInsets.only(top: 100.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -78,7 +78,7 @@ class LoginPage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(height: 0.02 * MediaQuery.of(context).size.height),
+                      SizedBox(height: 0.2 * MediaQuery.of(context).size.height),
                       buildLoginButton(context),
                     ],
                   ),

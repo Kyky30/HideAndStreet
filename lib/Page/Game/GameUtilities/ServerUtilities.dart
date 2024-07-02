@@ -14,12 +14,14 @@ class ServerUtilities with ChangeNotifier {
   // StreamController for WebSocket data
   final _webSocketController = StreamController<dynamic>.broadcast();
   final _outOfZoneController = StreamController<Map<String, dynamic>>.broadcast();
+  final _chatController = StreamController<Map<String, dynamic>>.broadcast();
 
   ServerUtilities({required this.gameCode}) {
     _init();
   }
 
   Stream<Map<String, dynamic>> get outOfZoneStream => _outOfZoneController.stream;
+  Stream<Map<String, dynamic>> get chatStream => _chatController.stream;
 
   Future<void> _init() async {
     await _getPrefs();
@@ -81,6 +83,9 @@ class ServerUtilities with ChangeNotifier {
     if (parsedData['cmd'] == 'playerOutOfZone') {
       _outOfZoneController.add(parsedData);
     }
+    if (parsedData['cmd'] == 'ReceiveMessage') {
+      _chatController.add(parsedData);
+    }
 
     _webSocketController.add(data); // Add data to the StreamController
     notifyListeners();
@@ -91,6 +96,7 @@ class ServerUtilities with ChangeNotifier {
     _subscription?.cancel();
     _webSocketController.close();
     _outOfZoneController.close();
+    _chatController.close();
     WebSocketManager.closeConnection();
     super.dispose();
   }

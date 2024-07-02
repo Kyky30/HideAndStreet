@@ -13,7 +13,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'PreferencesManager.dart';
-import 'chatWebSocket.dart';
 import 'Page/Chat/chat_model.dart';
 import 'Page/Chat/chat.dart';
 
@@ -23,6 +22,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:hide_and_street/components/inGamePlayerList.dart';
 import 'package:hide_and_street/components/buttons.dart';
 import 'package:hide_and_street/components/alertbox.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class GameMap extends StatefulWidget {
   final LatLng center;
@@ -124,6 +124,7 @@ class _GameMapState extends State<GameMap> {
     });
   }
 
+
   void _startTimerPartie() {
     // Start timerPartie
     timerPartie = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -169,7 +170,7 @@ class _GameMapState extends State<GameMap> {
       setState(() {
         currentPosition = position;
         latestPositionSentToServer = position;
-        _channel = WebSocketManager().channel;
+        //_channel = WebSocketManager().channel;
         timeStampDebutPartie = widget.timeStampDebutPartie;
         tempsDePartie = widget.tempsDePartie;
         tempsDeCachette = widget.tempsDeCachette;
@@ -200,6 +201,7 @@ class _GameMapState extends State<GameMap> {
         if(chatIsOpen == false)
         {
           newMessage = true;
+
           setState(() {});
         }
         Provider.of<ChatModel>(context, listen: false).addMessage(data['message'], data['email'], data['username']);

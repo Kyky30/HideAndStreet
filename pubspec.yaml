@@ -64,6 +64,7 @@ dependencies:
   just_audio: ^0.9.36
   audioplayers: ^6.0.0
   flutter_bcrypt: ^1.0.8
+  flutter_local_notifications: ^17.2.1
 
 
 dev_dependencies:

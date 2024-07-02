@@ -7,9 +7,17 @@ import 'package:geolocator/geolocator.dart';
 import 'package:hide_and_street/Page/Game/GameUtilities/LocationUtilities.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import '../../../PreferencesManager.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 import '../GameUtilities/ServerUtilities.dart';
 import '../GameUtilities/TimerUtilities.dart';
+
+import '../../../Page/Chat/chat_model.dart';
+import '../../../Page/Chat/chat.dart';
+import 'package:provider/provider.dart';
+
 
 class ClassicMode extends StatefulWidget {
   final LatLng center; // Center of the circle
@@ -42,13 +50,29 @@ class _ClassicModeState extends State<ClassicMode> {
   late LocationUtilities locationUtilities;
   late Position currentPosition;
 
+  //Checks
+  bool isLoading = true;
+
+  // Chat variables
+  bool chatIsOpen = false;
+  bool newMessage = false;
+  late SharedPreferences prefs;
+
   @override
   void initState() {
     super.initState();
     serverUtilities = ServerUtilities(gameCode: widget.gameCode);
     locationUtilities = LocationUtilities(serverUtilities);
     serverUtilities.outOfZoneStream.listen(_handleOutOfZone);
+    serverUtilities.chatStream.listen(_handleChatUpdates);
     startHiddingTimer();
+    isLoading = false;
+    _getPref();
+  }
+
+  Future<void> _getPref() async {
+    print("🔎 Récupération des préférences... ------------------");
+    prefs = await SharedPreferences.getInstance();
   }
 
   void startHiddingTimer() {
@@ -66,6 +90,8 @@ class _ClassicModeState extends State<ClassicMode> {
       durationInMinutes: widget.gameDuration,
       onEnd: onEndGame,
       startTime: DateTime.now(),
+      icon: Symbols.location_on_rounded,
+      timerName: 'Game phase : ',
     );
     gameLoop();
   }
@@ -134,6 +160,7 @@ class _ClassicModeState extends State<ClassicMode> {
         ),
       );
 
+
       print('Adding marker: $marker');
       setState(() {
         markers.add(marker);
@@ -166,12 +193,18 @@ class _ClassicModeState extends State<ClassicMode> {
   }
 
   void _handleServerUpdates() {
-    // Handle updates received from the server
-    setState(() {
-      // Update the UI based on the new data from the server
-    });
+
   }
 
+  void _handleChatUpdates(Map<String, dynamic> data) {
+    if(chatIsOpen == false)
+    {
+      newMessage = true;
+
+      setState(() {});
+    }
+    Provider.of<ChatModel>(context, listen: false).addMessage(data['message'], data['email'], data['username']);
+  }
 
 
   @override
@@ -180,48 +213,101 @@ class _ClassicModeState extends State<ClassicMode> {
     serverUtilities.removeListener(_handleServerUpdates);
     serverUtilities.dispose();
     super.dispose();
+    Provider.of<ChatModel>(context, listen: false).ResetMessage();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TimerDisplay(
-                timerUtilities: timerUtilities,
-              ),
-            ),
-            Expanded(
-              child: FlutterMap(
-                options: MapOptions(
-                  initialCenter: widget.center,
-                  initialZoom: 15.0,
-                ),
-                children: [
-                  TileLayer(
-                    urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    return Consumer<ChatModel>(
+        builder: (context, chatModel, child) {
+      if (isLoading) {
+        return const Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        );
+      } else {
+        return Scaffold(
+          body: SafeArea(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TimerDisplay(
+                    timerUtilities: timerUtilities,
                   ),
-                  CircleLayer(circles: [
-                    CircleMarker(
-                      point: widget.center,
-                      color: Colors.blue.withOpacity(0.3),
-                      borderStrokeWidth: 2,
-                      borderColor: Colors.blue,
-                      useRadiusInMeter: true,
-                      radius: widget.radius,
+                ),
+                Expanded(
+                  child: FlutterMap(
+                    options: MapOptions(
+                      initialCenter: widget.center,
+                      initialZoom: 15.0,
                     ),
-                  ]),
-                  MarkerLayer(markers: markers),
-                  CurrentLocationLayer(),
-                ],
-              ),
+                    children: [
+                      TileLayer(
+                        urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      ),
+                      CircleLayer(circles: [
+                        CircleMarker(
+                          point: widget.center,
+                          color: Colors.blue.withOpacity(0.3),
+                          borderStrokeWidth: 2,
+                          borderColor: Colors.blue,
+                          useRadiusInMeter: true,
+                          radius: widget.radius,
+                        ),
+                      ]),
+                      MarkerLayer(markers: markers),
+                      CurrentLocationLayer(),
+                    ],
+                  ),
+                ),
+                //Bouton de chat--------------------
+                Stack(
+                  children: [
+                    FloatingActionButton(
+                      heroTag: 'button2',
+                      onPressed: () async {
+                        // Naviguer vers l'écran Chat
+                        chatIsOpen = true;
+                        newMessage = false;
+                        setState(() {}); // Mettre à jour l'interface utilisateur
+
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Chat(
+                              email: prefs.getString('email') ?? '',
+                              gameCode: widget.gameCode,
+                              broadcastChannel: serverUtilities.chatStream,
+                            ),
+                          ),
+                        );
+
+                        // Mettre à jour l'état après le retour du Chat
+                        chatIsOpen = false;
+                        setState(() {});
+                      },
+                      child: const Icon(Symbols.chat_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
+                    ),
+                    if (newMessage)
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: Container(
+                          width: 10,
+                          height: 10,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.red,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-    );
+          ),
+        );
+      }
+    });
   }
 }
