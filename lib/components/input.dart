@@ -10,6 +10,7 @@ class CustomTextField extends StatelessWidget {
   final void Function(String)? onChanged;
   final TextInputType keyboardType;
   final TextCapitalization textCapitalization;
+  final double fontSize;
 
   const CustomTextField({
     required this.hintText,
@@ -19,6 +20,7 @@ class CustomTextField extends StatelessWidget {
     this.onChanged,
     this.keyboardType = TextInputType.text,
     this.textCapitalization = TextCapitalization.none,
+    this.fontSize = 20,
   });
 
   @override
@@ -30,7 +32,7 @@ class CustomTextField extends StatelessWidget {
       obscureText: obscureText,
       textCapitalization: textCapitalization,
       style: TextStyle(
-        fontSize: 20 * scaleFactor, // Adapter la taille de la police en fonction du facteur de zoom
+        fontSize: fontSize, // Adapter la taille de la police en fonction du facteur de zoom
         fontWeight: FontWeight.w600,
         fontFamily: 'Poppins',
         color: Colors.black,
@@ -38,7 +40,7 @@ class CustomTextField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: TextStyle(
-          fontSize: 20 * scaleFactor, // Adapter la taille de la police en fonction du facteur de zoom
+          fontSize: fontSize, // Adapter la taille de la police en fonction du facteur de zoom
           fontWeight: FontWeight.w600,
           fontFamily: 'Poppins',
           color: Colors.grey,

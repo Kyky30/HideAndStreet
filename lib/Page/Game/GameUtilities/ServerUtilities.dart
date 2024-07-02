@@ -84,6 +84,12 @@ class ServerUtilities with ChangeNotifier {
     debugPrint("🛫 Sent data: $data");
   }
 
+  Future<void> leaveGame() async {
+    String data = "'cmd':'leaveGame','gameCode':'$gameCode','playerId':'$userId'";
+    await WebSocketManager.sendData(data);
+    debugPrint("🛫 Sent data: $data");
+  }
+
   // Handle incoming data
   void _handleIncomingData(dynamic data) {
     debugPrint("🛬 Received data: $data");

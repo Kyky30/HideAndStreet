@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../WebSocketManager.dart';
-
+import 'package:figma_squircle/figma_squircle.dart';
+import 'package:material_symbols_icons/symbols.dart';
+import 'package:hide_and_street/components/input.dart';
 
 import 'chat_model.dart';
 import 'chat_controller.dart';
@@ -48,15 +50,7 @@ class _ChatState extends State<Chat> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.titre_page_chat),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            // Autres logiques si nécessaire...
-            Navigator.pop(
-                context); // Utilisez Navigator.pop pour revenir à l'écran précédent
-          },
-        ),
+        title: Text(AppLocalizations.of(context)!.titre_page_chat, style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w600, fontFamily: 'Poppins',)),
       ),
       body: Column(
         children: [
@@ -96,12 +90,15 @@ class _ChatState extends State<Chat> {
                       margin: const EdgeInsets.symmetric(vertical: 2.0),
                       // Ajouter un padding vertical entre les messages
                       padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: isCurrentUser ? Colors.blue : Colors.black87,
-                        borderRadius: BorderRadius.circular(10),
+                        decoration: BoxDecoration(
+                          color: isCurrentUser ? Color(0xFF373967) : Colors.black87,
+                          borderRadius: SmoothBorderRadius(
+                            cornerRadius: 15,
+                            cornerSmoothing: 1,
+                          ),
                       ),
                       child: Text(message, style: const TextStyle(
-                          color: Colors.white, fontSize: 16)),
+                          color: Colors.white, fontSize: 18, fontFamily: 'Montserrat',)),
                     ),
                   );
 
@@ -123,18 +120,31 @@ class _ChatState extends State<Chat> {
             child: Row(
               children: [
                 Expanded(
-                  child: TextField(
+                  child: CustomTextField(
                     controller: _controller,
-                    textInputAction: TextInputAction.go,
-                    decoration: const InputDecoration(
-                        hintText: 'Send a message'),
+                    scaleFactor: MediaQuery.of(context).textScaleFactor,
+                    hintText: 'Send a message',
+                    fontSize: 15,
                   ),
                 ),
+                SizedBox(width: 10,),
                 IconButton(
-                  icon: const Icon(Icons.send),
+                  icon: const Icon(Symbols.send_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24, size: 40,),
                   onPressed: () {
                     _chatController.sendMessage(widget.email, widget.gameCode, _controller.text, _controller);
                   },
+                  style: ElevatedButton.styleFrom(
+                    shape: SmoothRectangleBorder(
+                      borderRadius: SmoothBorderRadius(
+                        cornerRadius: 20,
+                        cornerSmoothing: 1,
+                      ),
+                    ),
+                    padding: const EdgeInsets.all(10),
+                    backgroundColor: const Color(0xFF373967),
+                    foregroundColor: Colors.white,
+
+                  )
                 ),
               ],
             ),
