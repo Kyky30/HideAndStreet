@@ -131,7 +131,7 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
 
   @override
   void dispose() {
-
+    _pageController.dispose();
     super.dispose();
   }
 

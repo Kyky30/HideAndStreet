@@ -192,10 +192,6 @@ class _ClassicModeState extends State<ClassicMode> {
     // Handle the end of the timer here
   }
 
-  void _handleServerUpdates() {
-
-  }
-
   void _handleChatUpdates(Map<String, dynamic> data) {
     if(chatIsOpen == false)
     {
@@ -210,7 +206,6 @@ class _ClassicModeState extends State<ClassicMode> {
   @override
   void dispose() {
     timerUtilities.dispose();
-    serverUtilities.removeListener(_handleServerUpdates);
     serverUtilities.dispose();
     super.dispose();
     Provider.of<ChatModel>(context, listen: false).ResetMessage();

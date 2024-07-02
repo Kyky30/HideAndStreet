@@ -153,7 +153,6 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
 
   @override
   void dispose() {
-    WebSocketManager.closeConnection();
     super.dispose();
   }
 }

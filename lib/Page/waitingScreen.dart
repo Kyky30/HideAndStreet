@@ -385,6 +385,7 @@ class _PlayerListItemState extends State<PlayerListItem> {
   @override
   void initState() {
     super.initState();
+    WebSocketManager.connect('email');
     isChecked = widget.selectedPlayers.contains(widget.playerName);
     _selectedPlayersSubscription =
         widget.selectedPlayersStream.listen((selectedPlayers) {

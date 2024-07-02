@@ -20,12 +20,12 @@ class LoginModel {
         var responseData = json.decode(event);
 
         if (responseData["status"] == 'wrong_mail' || responseData["status"] == 'wrong_pass') {
-          await WebSocketManager.closeConnection();
+          // await WebSocketManager.closeConnection();
           completer.complete(false);
         }
 
         if (responseData["status"] == 'success') {
-          await WebSocketManager.closeConnection();
+          // await WebSocketManager.closeConnection();
           SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setBool('loggedin', true);
           prefs.setString('userId', responseData["userId"]);
@@ -36,7 +36,7 @@ class LoginModel {
           prefs.setString('nbWonGames', responseData["nbWonGames"]);
           completer.complete(true);
         } else {
-          await WebSocketManager.closeConnection();
+          // await WebSocketManager.closeConnection();
           completer.complete(false);
         }
       });
