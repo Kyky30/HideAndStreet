@@ -7,8 +7,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:hide_and_street/Page/Game/GameUtilities/LocationUtilities.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import '../../../PreferencesManager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hide_and_street/Page/winPage.dart';
+
 
 
 import '../GameUtilities/ServerUtilities.dart';
@@ -58,6 +59,10 @@ class _ClassicModeState extends State<ClassicMode> {
   bool newMessage = false;
   late SharedPreferences prefs;
 
+  //Joueur
+  bool amITheSeeker = false;
+  bool amIFound = false;
+
   @override
   void initState() {
     super.initState();
@@ -65,6 +70,7 @@ class _ClassicModeState extends State<ClassicMode> {
     locationUtilities = LocationUtilities(serverUtilities);
     serverUtilities.outOfZoneStream.listen(_handleOutOfZone);
     serverUtilities.chatStream.listen(_handleChatUpdates);
+    serverUtilities.seekerWinStream.listen(_handleSeekerWin);
     startHiddingTimer();
     isLoading = false;
     _getPref();
@@ -189,7 +195,12 @@ class _ClassicModeState extends State<ClassicMode> {
 
   void onEndGame() {
     debugPrint('Game ended');
-    // Handle the end of the timer here
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) =>
+          winPage(isSeekerWin: false, amISeeker: amITheSeeker)),
+          (Route<dynamic> route) => false,
+    );
   }
 
   void _handleChatUpdates(Map<String, dynamic> data) {
@@ -200,6 +211,14 @@ class _ClassicModeState extends State<ClassicMode> {
       setState(() {});
     }
     Provider.of<ChatModel>(context, listen: false).addMessage(data['message'], data['email'], data['username']);
+  }
+
+  void _handleSeekerWin(Map<String, dynamic> data) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => winPage(isSeekerWin: true, amISeeker: amITheSeeker)),
+          (Route<dynamic> route) => false,
+    );
   }
 
 
