@@ -238,7 +238,7 @@ class _ClassicModeState extends State<ClassicMode> {
                     ),
                     children: [
                       TileLayer(
-                        urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                       ),
                       CircleLayer(circles: [
                         CircleMarker(
