@@ -288,11 +288,15 @@ class _ClassicModeState extends State<ClassicMode> {
 
   void onEndGame() {
     debugPrint('Game ended');
-    Navigator.pushAndRemoveUntil(
-      context,
+
+    // Appeler la méthode dispose pour libérer les ressources
+    dispose();
+
+    // Naviguer vers la page de victoire et supprimer toutes les routes précédentes
+    Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(
-          builder: (context) =>
-              winPage(isSeekerWin: false, amISeeker: amITheSeeker)),
+          builder: (context) => winPage(isSeekerWin: false, amISeeker: amITheSeeker)
+      ),
           (Route<dynamic> route) => false,
     );
   }
@@ -321,9 +325,10 @@ class _ClassicModeState extends State<ClassicMode> {
   void dispose() {
     timerUtilities.dispose();
     serverUtilities.dispose();
-    super.dispose();
     Provider.of<ChatModel>(context, listen: false).ResetMessage();
+    super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
