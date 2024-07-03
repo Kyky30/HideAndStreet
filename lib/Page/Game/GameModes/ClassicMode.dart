@@ -119,13 +119,13 @@ class _ClassicModeState extends State<ClassicMode> {
   void gameLoop() {
     Future.delayed(const Duration(seconds: 5), () async {
       currentPosition = await locationUtilities.updateMyPosition();
-      debugPrint('❤️  ${amIFound} ${amITheSeeker || amIFound}' );
-      // if (amITheSeeker || amIFound == false) {
-      //   if (amIOutOfZone() == true) {
-      //     serverUtilities.setPlayerOutOfZone(currentPosition);
-      //   }
-      // }
-      if(amITheSeeker){
+
+      if (!amITheSeeker && !amIFound) {
+        if (amIOutOfZone() == true) {
+          serverUtilities.setPlayerOutOfZone(currentPosition);
+        }
+      }
+      if (amITheSeeker && seekerList.length > 1) {
         displayOtherSeekerPosition();
       }
       gameLoop();
@@ -143,7 +143,6 @@ class _ClassicModeState extends State<ClassicMode> {
 
 
   void displayOtherSeekerPosition() {
-    debugPrint('😂 Displaying other seeker positions');
 
     // Envoyer la liste des seekers pour récupérer les positions
     serverUtilities.getPositionForId(seekerList).then((response) {
@@ -210,6 +209,7 @@ class _ClassicModeState extends State<ClassicMode> {
     }).catchError((error) {
       debugPrint('Error getting positions for seekers: $error');
     });
+
   }
 
 
