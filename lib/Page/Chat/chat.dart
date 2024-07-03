@@ -5,6 +5,7 @@ import '../../WebSocketManager.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:hide_and_street/components/input.dart';
+import 'package:hide_and_street/Page/Game/GameUtilities/ModerationUtilities.dart';
 
 import 'chat_model.dart';
 import 'chat_controller.dart';
@@ -31,6 +32,7 @@ class _ChatState extends State<Chat> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final ChatController _chatController = ChatController();
+  final ModerationUtilities _moderationUtilities = ModerationUtilities();
 
   @override
   void initState() {
@@ -63,9 +65,14 @@ class _ChatState extends State<Chat> {
                 itemCount: chatModel.messages.length,
                 itemBuilder: (context, index) {
                   // Récupérer le message, l'email et le nom d'utilisateur de l'utilisateur qui a envoyé le message
-                  String message = chatModel.messages[index];
                   String email = chatModel.emails[index];
                   String username = chatModel.usernames[index];
+                  String message;
+                  if (_moderationUtilities.isPlayerHidden(username)) {
+                    message = AppLocalizations.of(context)!.message_masque;
+                  } else {
+                    message = chatModel.messages[index];
+                  }
 
                   // Vérifier si l'email de l'utilisateur actuel est le même que l'email de l'utilisateur qui a envoyé le message
                   bool isCurrentUser = widget.email == email;
@@ -79,9 +86,22 @@ class _ChatState extends State<Chat> {
 
                   // Ajouter le nom d'utilisateur uniquement si l'utilisateur actuel n'a pas envoyé le message et si c'est un nouvel utilisateur
                   if (!isCurrentUser && isNewUser) {
-                    columnWidgets.add(Text(username + " : ",
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16)));
+                    columnWidgets.add(
+                        Row(
+                          children: [
+                            IconButton(
+                                onPressed: () {
+                                  _moderationUtilities.openModerationMenu(username, context);
+                                },
+                                icon: Icon(Symbols.report_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24, size: 40)
+                            ),
+                            Text(
+                                username + " : ",
+                                style: const TextStyle( fontWeight: FontWeight.bold, fontSize: 16)
+                            )
+                          ],
+                        )
+                    );
                   }
 
                   // Ajouter le message
