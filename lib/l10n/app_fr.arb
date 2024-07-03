@@ -511,5 +511,25 @@
     "texte_popup_deconnexion": "Êtes-vous sûr de vouloir vous déconnecter ?",
     "@texte_popup_deconnexion": {
         "description": "Texte de popup de déconnexion"
+    },
+    "titre_popup_moderation": "Un problème avec un joueur ?",
+    "@titre_popup_moderation": {
+        "description": "Titre de popup de modération"
+    },
+    "texte_popup_moderation": "Masquez ses messages ou signalez la conversation à l'équipe de modération !",
+    "@texte_popup_moderation": {
+        "description": "Texte de popup de modération"
+    },
+    "bouton_masquer": "Masquer",
+    "@bouton_masquer": {
+        "description": "Bouton de masquer"
+    },
+    "bouton_signaler": "Signaler",
+    "@bouton_signaler": {
+        "description": "Bouton de signaler"
+    },
+    "message_masque": "Message masqué",
+    "@message_masque": {
+        "description": "Message de masqué"
     }
 }

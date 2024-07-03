@@ -9,7 +9,12 @@
     "carte",
     "chat",
     "titre_popup_deconnexion",
-    "texte_popup_deconnexion"
+    "texte_popup_deconnexion",
+    "titre_popup_moderation",
+    "texte_popup_moderation",
+    "bouton_masquer",
+    "bouton_signaler",
+    "message_masque"
   ],
 
   "de": [
@@ -21,7 +26,12 @@
     "carte",
     "chat",
     "titre_popup_deconnexion",
-    "texte_popup_deconnexion"
+    "texte_popup_deconnexion",
+    "titre_popup_moderation",
+    "texte_popup_moderation",
+    "bouton_masquer",
+    "bouton_signaler",
+    "message_masque"
   ],
 
   "en": [
@@ -33,7 +43,12 @@
     "carte",
     "chat",
     "titre_popup_deconnexion",
-    "texte_popup_deconnexion"
+    "texte_popup_deconnexion",
+    "titre_popup_moderation",
+    "texte_popup_moderation",
+    "bouton_masquer",
+    "bouton_signaler",
+    "message_masque"
   ],
 
   "es": [
@@ -45,7 +60,12 @@
     "carte",
     "chat",
     "titre_popup_deconnexion",
-    "texte_popup_deconnexion"
+    "texte_popup_deconnexion",
+    "titre_popup_moderation",
+    "texte_popup_moderation",
+    "bouton_masquer",
+    "bouton_signaler",
+    "message_masque"
   ],
 
   "fi": [
@@ -57,7 +77,12 @@
     "carte",
     "chat",
     "titre_popup_deconnexion",
-    "texte_popup_deconnexion"
+    "texte_popup_deconnexion",
+    "titre_popup_moderation",
+    "texte_popup_moderation",
+    "bouton_masquer",
+    "bouton_signaler",
+    "message_masque"
   ],
 
   "hi": [
@@ -69,7 +94,12 @@
     "carte",
     "chat",
     "titre_popup_deconnexion",
-    "texte_popup_deconnexion"
+    "texte_popup_deconnexion",
+    "titre_popup_moderation",
+    "texte_popup_moderation",
+    "bouton_masquer",
+    "bouton_signaler",
+    "message_masque"
   ],
 
   "it": [
@@ -81,7 +111,12 @@
     "carte",
     "chat",
     "titre_popup_deconnexion",
-    "texte_popup_deconnexion"
+    "texte_popup_deconnexion",
+    "titre_popup_moderation",
+    "texte_popup_moderation",
+    "bouton_masquer",
+    "bouton_signaler",
+    "message_masque"
   ],
 
   "ja": [
@@ -93,7 +128,12 @@
     "carte",
     "chat",
     "titre_popup_deconnexion",
-    "texte_popup_deconnexion"
+    "texte_popup_deconnexion",
+    "titre_popup_moderation",
+    "texte_popup_moderation",
+    "bouton_masquer",
+    "bouton_signaler",
+    "message_masque"
   ],
 
   "ko": [
@@ -105,7 +145,12 @@
     "carte",
     "chat",
     "titre_popup_deconnexion",
-    "texte_popup_deconnexion"
+    "texte_popup_deconnexion",
+    "titre_popup_moderation",
+    "texte_popup_moderation",
+    "bouton_masquer",
+    "bouton_signaler",
+    "message_masque"
   ],
 
   "pl": [
@@ -117,7 +162,12 @@
     "carte",
     "chat",
     "titre_popup_deconnexion",
-    "texte_popup_deconnexion"
+    "texte_popup_deconnexion",
+    "titre_popup_moderation",
+    "texte_popup_moderation",
+    "bouton_masquer",
+    "bouton_signaler",
+    "message_masque"
   ],
 
   "pt": [
@@ -129,7 +179,12 @@
     "carte",
     "chat",
     "titre_popup_deconnexion",
-    "texte_popup_deconnexion"
+    "texte_popup_deconnexion",
+    "titre_popup_moderation",
+    "texte_popup_moderation",
+    "bouton_masquer",
+    "bouton_signaler",
+    "message_masque"
   ],
 
   "ru": [
@@ -142,7 +197,12 @@
     "carte",
     "chat",
     "titre_popup_deconnexion",
-    "texte_popup_deconnexion"
+    "texte_popup_deconnexion",
+    "titre_popup_moderation",
+    "texte_popup_moderation",
+    "bouton_masquer",
+    "bouton_signaler",
+    "message_masque"
   ],
 
   "sv": [
@@ -154,7 +214,12 @@
     "carte",
     "chat",
     "titre_popup_deconnexion",
-    "texte_popup_deconnexion"
+    "texte_popup_deconnexion",
+    "titre_popup_moderation",
+    "texte_popup_moderation",
+    "bouton_masquer",
+    "bouton_signaler",
+    "message_masque"
   ],
 
   "vi": [
@@ -166,7 +231,12 @@
     "carte",
     "chat",
     "titre_popup_deconnexion",
-    "texte_popup_deconnexion"
+    "texte_popup_deconnexion",
+    "titre_popup_moderation",
+    "texte_popup_moderation",
+    "bouton_masquer",
+    "bouton_signaler",
+    "message_masque"
   ],
 
   "zh": [
@@ -179,6 +249,11 @@
     "carte",
     "chat",
     "titre_popup_deconnexion",
-    "texte_popup_deconnexion"
+    "texte_popup_deconnexion",
+    "titre_popup_moderation",
+    "texte_popup_moderation",
+    "bouton_masquer",
+    "bouton_signaler",
+    "message_masque"
   ]
 }
