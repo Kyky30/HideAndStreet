@@ -7,7 +7,9 @@
     "playedGames",
     "wonGames",
     "carte",
-    "chat"
+    "chat",
+    "titre_popup_deconnexion",
+    "texte_popup_deconnexion"
   ],
 
   "de": [
@@ -17,7 +19,9 @@
     "playedGames",
     "wonGames",
     "carte",
-    "chat"
+    "chat",
+    "titre_popup_deconnexion",
+    "texte_popup_deconnexion"
   ],
 
   "en": [
@@ -27,7 +31,9 @@
     "playedGames",
     "wonGames",
     "carte",
-    "chat"
+    "chat",
+    "titre_popup_deconnexion",
+    "texte_popup_deconnexion"
   ],
 
   "es": [
@@ -37,7 +43,9 @@
     "playedGames",
     "wonGames",
     "carte",
-    "chat"
+    "chat",
+    "titre_popup_deconnexion",
+    "texte_popup_deconnexion"
   ],
 
   "fi": [
@@ -47,7 +55,9 @@
     "playedGames",
     "wonGames",
     "carte",
-    "chat"
+    "chat",
+    "titre_popup_deconnexion",
+    "texte_popup_deconnexion"
   ],
 
   "hi": [
@@ -57,7 +67,9 @@
     "playedGames",
     "wonGames",
     "carte",
-    "chat"
+    "chat",
+    "titre_popup_deconnexion",
+    "texte_popup_deconnexion"
   ],
 
   "it": [
@@ -67,7 +79,9 @@
     "playedGames",
     "wonGames",
     "carte",
-    "chat"
+    "chat",
+    "titre_popup_deconnexion",
+    "texte_popup_deconnexion"
   ],
 
   "ja": [
@@ -77,7 +91,9 @@
     "playedGames",
     "wonGames",
     "carte",
-    "chat"
+    "chat",
+    "titre_popup_deconnexion",
+    "texte_popup_deconnexion"
   ],
 
   "ko": [
@@ -87,7 +103,9 @@
     "playedGames",
     "wonGames",
     "carte",
-    "chat"
+    "chat",
+    "titre_popup_deconnexion",
+    "texte_popup_deconnexion"
   ],
 
   "pl": [
@@ -97,7 +115,9 @@
     "playedGames",
     "wonGames",
     "carte",
-    "chat"
+    "chat",
+    "titre_popup_deconnexion",
+    "texte_popup_deconnexion"
   ],
 
   "pt": [
@@ -107,7 +127,9 @@
     "playedGames",
     "wonGames",
     "carte",
-    "chat"
+    "chat",
+    "titre_popup_deconnexion",
+    "texte_popup_deconnexion"
   ],
 
   "ru": [
@@ -118,7 +140,9 @@
     "playedGames",
     "wonGames",
     "carte",
-    "chat"
+    "chat",
+    "titre_popup_deconnexion",
+    "texte_popup_deconnexion"
   ],
 
   "sv": [
@@ -128,7 +152,9 @@
     "playedGames",
     "wonGames",
     "carte",
-    "chat"
+    "chat",
+    "titre_popup_deconnexion",
+    "texte_popup_deconnexion"
   ],
 
   "vi": [
@@ -138,7 +164,9 @@
     "playedGames",
     "wonGames",
     "carte",
-    "chat"
+    "chat",
+    "titre_popup_deconnexion",
+    "texte_popup_deconnexion"
   ],
 
   "zh": [
@@ -149,6 +177,8 @@
     "playedGames",
     "wonGames",
     "carte",
-    "chat"
+    "chat",
+    "titre_popup_deconnexion",
+    "texte_popup_deconnexion"
   ]
 }

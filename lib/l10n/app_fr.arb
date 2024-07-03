@@ -503,5 +503,13 @@
     "chat": "Chat",
     "@chat": {
         "description": "Bouton de chat"
+    },
+    "titre_popup_deconnexion": "Déconnexion",
+    "@titre_popup_deconnexion": {
+        "description": "Titre de popup de déconnexion"
+    },
+    "texte_popup_deconnexion": "Êtes-vous sûr de vouloir vous déconnecter ?",
+    "@texte_popup_deconnexion": {
+        "description": "Texte de popup de déconnexion"
     }
 }
