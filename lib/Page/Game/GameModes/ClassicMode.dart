@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:hide_and_street/Page/Game/GameUtilities/GlobalUtilities.dart';
 import 'package:hide_and_street/Page/Game/GameUtilities/LocationUtilities.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -66,14 +68,19 @@ class _ClassicModeState extends State<ClassicMode> {
 
   // Joueur
   bool amITheSeeker = false;
+  List<String> seekerList = [];
   bool amIFound = false;
 
   @override
   void initState() {
     super.initState();
     _initializePreferences();
+
     serverUtilities = ServerUtilities(gameCode: widget.gameCode);
     locationUtilities = LocationUtilities(serverUtilities);
+
+    seekerList = GlobalUtilities().getSeekers(widget.playerList);
+
     serverUtilities.outOfZoneStream.listen(_handleOutOfZone);
     serverUtilities.chatStream.listen(_handleChatUpdates);
     serverUtilities.seekerWinStream.listen(_handleSeekerWin);
@@ -82,6 +89,7 @@ class _ClassicModeState extends State<ClassicMode> {
 
   Future<void> _initializePreferences() async {
     prefs = await SharedPreferences.getInstance();
+    amITheSeeker = seekerList.contains(prefs.getString('userId'));
     setState(() {
       isLoading = false;
     });
@@ -92,7 +100,7 @@ class _ClassicModeState extends State<ClassicMode> {
       durationInMinutes: widget.hidingDuration,
       onEnd: startGame,
       startTime: DateTime.fromMillisecondsSinceEpoch(widget.timeStamGameStart),
-      icon: Symbols.synagogue_rounded,
+      icon: Symbols.run_circle,
       timerName: 'Hiding phase : ',
     );
   }
@@ -111,9 +119,14 @@ class _ClassicModeState extends State<ClassicMode> {
   void gameLoop() {
     Future.delayed(const Duration(seconds: 5), () async {
       currentPosition = await locationUtilities.updateMyPosition();
-      if (amIOutOfZone() == true) {
-        debugPrint('You are out of the zone');
-        serverUtilities.setPlayerOutOfZone(currentPosition);
+      debugPrint('❤️  ${amIFound} ${amITheSeeker || amIFound}' );
+      // if (amITheSeeker || amIFound == false) {
+      //   if (amIOutOfZone() == true) {
+      //     serverUtilities.setPlayerOutOfZone(currentPosition);
+      //   }
+      // }
+      if(amITheSeeker){
+        displayOtherSeekerPosition();
       }
       gameLoop();
     });
@@ -127,6 +140,79 @@ class _ClassicModeState extends State<ClassicMode> {
       currentPosition.longitude,
     ) > widget.radius;
   }
+
+
+  void displayOtherSeekerPosition() {
+    debugPrint('😂 Displaying other seeker positions');
+
+    // Envoyer la liste des seekers pour récupérer les positions
+    serverUtilities.getPositionForId(seekerList).then((response) {
+      // Convertir la réponse en map et accéder à la clé 'positions'
+      var responseData = jsonDecode(response) as Map<String, dynamic>;
+      List<dynamic> dataList = responseData['positions']; // Extraire la liste de positions
+
+      // Nouveau set de marqueurs
+      List<Marker> newMarkers = [];
+
+      for (var data in dataList) {
+        if (data['userId'].toString() != serverUtilities.userId) {
+          String positionString = data['position'];
+          List<String> positionParts = positionString.split(', ');
+
+          String latitudePart = positionParts[0];
+          double latitude = double.parse(latitudePart.split(': ')[1]);
+
+          String longitudePart = positionParts[1];
+          double longitude = double.parse(longitudePart.split(': ')[1]);
+
+          Marker marker = Marker(
+            point: LatLng(latitude, longitude),
+            width: 80,
+            height: 80,
+            child: Stack(
+              children: <Widget>[
+                const Align(
+                  alignment: Alignment.center,
+                  child: Icon(
+                    Symbols.location_on_rounded,
+                    fill: 1,
+                    weight: 700,
+                    grade: 200,
+                    opticalSize: 24,
+                    color: Colors.blue,
+                    size: 30,
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Text(
+                    data['username'],
+                    style: const TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "Poppins",
+                      color: Colors.blue,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+
+          newMarkers.add(marker);
+        }
+      }
+
+      // Mettre à jour l'état avec le nouveau set de marqueurs
+      setState(() {
+        markers = newMarkers;
+      });
+    }).catchError((error) {
+      debugPrint('Error getting positions for seekers: $error');
+    });
+  }
+
+
 
   void _handleOutOfZone(Map<String, dynamic> data) {
     if (data['playerId'] != serverUtilities.userId) {
@@ -314,7 +400,7 @@ class _ClassicModeState extends State<ClassicMode> {
             children: [
               TileLayer(
                 urlTemplate:
-                'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
               ),
               CircleLayer(circles: [
                 CircleMarker(

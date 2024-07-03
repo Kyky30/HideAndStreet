@@ -111,7 +111,6 @@ class ServerUtilities with ChangeNotifier {
     _outOfZoneController.close();
     _chatController.close();
     _seekerWinController.close();
-    WebSocketManager.closeConnection();
     super.dispose();
   }
 }
