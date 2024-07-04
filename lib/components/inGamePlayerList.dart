@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:hide_and_street/Page/Game/GameModes/ClassicMode.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -21,7 +22,6 @@ class inGamePlayerlist extends StatefulWidget {
 }
 
 class _inGamePlayerlist extends State<inGamePlayerlist> {
-  late WebSocketChannel _channel;
   String email = '';
   final _playerListController = StreamController<List<dynamic>>();
   late ServerUtilities serverUtilities;
@@ -29,27 +29,16 @@ class _inGamePlayerlist extends State<inGamePlayerlist> {
   @override
   void initState() {
     super.initState();
-    _channel = IOWebSocketChannel.connect(
-        'wss://app.hideandstreet.furrball.fr/getInGamePlayerlist');
     _getPref();
-    _initWebSocket();
     serverUtilities = ServerUtilities(gameCode: widget.gameCode);
-
+    getPlayerList();
+    ();
   }
 
-  void _initWebSocket() {
-    _channel.stream.listen((message) {
-      print('📥 Received message: $message'); // Print incoming message
-      final Map<String, dynamic> data = jsonDecode(message);
-      if (data['cmd'] == 'returnPlayerList') {
-        print(
-            '🎉 Success! Players data: ${data['players']}'); // Print success message and players data
-        _playerListController.add(data['players']);
-      }
-    });
-    print('📤 Sending request to server...'); // Print outgoing message
-    _channel.sink.add(
-        '{"email":"$email","auth":"chatappauthkey231r4","cmd":"getInGamePlayerlist", "gameCode":"${widget.gameCode}"}');
+  void getPlayerList() async{
+    dynamic response = await serverUtilities.getPlayerList();
+    List<dynamic> players = jsonDecode(response)['players'];
+    _playerListController.add(players);
   }
 
   void _getPref() async {
@@ -75,11 +64,12 @@ class _inGamePlayerlist extends State<inGamePlayerlist> {
               Navigator.of(context).pop(true);
               serverUtilities.leaveGame();
               //Ramener à la page d'accueil
-              Navigator.pushReplacement(
+              Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const MyHomePage(),
                 ),
+                    (Route<dynamic> route) => false, // This predicate means "remove all routes"
               );
 
             },
@@ -92,7 +82,6 @@ class _inGamePlayerlist extends State<inGamePlayerlist> {
 
   @override
   void dispose() {
-    _channel.sink.close();
     _playerListController.close();
     super.dispose();
   }

@@ -16,6 +16,7 @@ class ServerUtilities with ChangeNotifier {
   final _outOfZoneController = StreamController<Map<String, dynamic>>.broadcast();
   final _chatController = StreamController<Map<String, dynamic>>.broadcast();
   final _seekerWinController = StreamController<Map<String, dynamic>>.broadcast();
+  final _leavegameController = StreamController<Map<String, dynamic>>.broadcast();
 
   ServerUtilities({required this.gameCode}) {
     _init();
@@ -24,6 +25,7 @@ class ServerUtilities with ChangeNotifier {
   Stream<Map<String, dynamic>> get outOfZoneStream => _outOfZoneController.stream;
   Stream<Map<String, dynamic>> get chatStream => _chatController.stream;
   Stream<Map<String, dynamic>> get seekerWinStream => _seekerWinController.stream;
+  Stream<Map<String, dynamic>> get leavegameStream => _leavegameController.stream;
 
   Future<void> _init() async {
     await _getPrefs();
@@ -60,6 +62,28 @@ class ServerUtilities with ChangeNotifier {
     });
 
     String data = "'cmd':'getPositionForId','gameCode':'$gameCode','ids':$ids";
+    await WebSocketManager.sendData(data);
+    debugPrint("🛫 Sent data: $data");
+
+    return completer.future; // Return the future that completes with the response data
+  }
+
+
+
+  Future<dynamic> getPlayerList() async {
+    final Completer<dynamic> completer = Completer<dynamic>();
+
+    // Declare the subscription variable before using it
+    late StreamSubscription subscription;
+
+    // Add a listener to the StreamController for the first response
+    subscription = _webSocketController.stream.listen((data) {
+      debugPrint("🛬 Received response: $data");
+      completer.complete(data); // Complete the future with the received data
+      subscription.cancel(); // Cancel the subscription after receiving the first response
+    });
+
+    String data = "'cmd':'getInGamePlayerlist','gameCode':'$gameCode'";
     await WebSocketManager.sendData(data);
     debugPrint("🛫 Sent data: $data");
 
@@ -105,6 +129,9 @@ class ServerUtilities with ChangeNotifier {
     if(parsedData['cmd'] == 'seekerWin') {
       _seekerWinController.add(parsedData);
     }
+    if(parsedData['cmd'] == 'leaveGame' && parsedData['status'] == 'success') {
+      _leavegameController.add(parsedData);
+    }
 
     _webSocketController.add(data); // Add data to the StreamController
     notifyListeners();
@@ -117,6 +144,7 @@ class ServerUtilities with ChangeNotifier {
     _outOfZoneController.close();
     _chatController.close();
     _seekerWinController.close();
+    _leavegameController.close();
     super.dispose();
   }
 }

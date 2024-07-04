@@ -71,6 +71,9 @@ class _ClassicModeState extends State<ClassicMode> {
   List<String> seekerList = [];
   bool amIFound = false;
 
+  // Variable to control the game loop
+  bool isGameActive = true;
+
   // Taunts
   late TauntsUtilities tauntUtilities;
 
@@ -82,6 +85,10 @@ class _ClassicModeState extends State<ClassicMode> {
     super.initState();
     _initializePreferences();
 
+    // Initialiser l'index et le PageController pour commencer sur la page de la carte
+    _currentIndex = 1;
+    _pageController = PageController(initialPage: _currentIndex);
+
     serverUtilities = ServerUtilities(gameCode: widget.gameCode);
     locationUtilities = LocationUtilities(serverUtilities);
 
@@ -90,6 +97,7 @@ class _ClassicModeState extends State<ClassicMode> {
     serverUtilities.outOfZoneStream.listen(_handleOutOfZone);
     serverUtilities.chatStream.listen(_handleChatUpdates);
     serverUtilities.seekerWinStream.listen(_handleSeekerWin);
+    serverUtilities.leavegameStream.listen(_handleLeaveGame);
     startHiddingTimer();
   }
 
@@ -112,6 +120,10 @@ class _ClassicModeState extends State<ClassicMode> {
   }
 
   void startGame() {
+    setState(() {
+      isGameActive = true;
+    });
+
     timerUtilities.startTimer(
       durationInMinutes: widget.gameDuration,
       onEnd: onEndGame,
@@ -146,12 +158,16 @@ class _ClassicModeState extends State<ClassicMode> {
   }
 
   void gameLoop() {
+    if (!isGameActive) return; // Exit the loop if the game is not active
+
     Future.delayed(const Duration(seconds: 5), () async {
+      if (!isGameActive) return; // Check again if the game is still active
+
       currentPosition = await locationUtilities.updateMyPosition();
       serverUtilities.setPosition(currentPosition);
 
       if (!amITheSeeker && !amIFound) {
-        if (amIOutOfZone() == true) {
+        if (amIOutOfZone()) {
           serverUtilities.setPlayerOutOfZone(currentPosition);
         }
       }
@@ -171,11 +187,15 @@ class _ClassicModeState extends State<ClassicMode> {
     ) > widget.radius;
   }
 
+
   void displayOtherSeekerPosition() {
+    // Envoyer la liste des seekers pour récupérer les positions
     serverUtilities.getPositionForId(seekerList).then((response) {
+      // Convertir la réponse en map et accéder à la clé 'positions'
       var responseData = jsonDecode(response) as Map<String, dynamic>;
       List<dynamic> dataList = responseData['positions'];
 
+      // Nouveau set de marqueurs
       List<Marker> newMarkers = [];
 
       for (var data in dataList) {
@@ -227,13 +247,17 @@ class _ClassicModeState extends State<ClassicMode> {
         }
       }
 
+      // Mettre à jour l'état avec le nouveau set de marqueurs
       setState(() {
         markers = newMarkers;
       });
     }).catchError((error) {
       debugPrint('Error getting positions for seekers: $error');
     });
+
   }
+
+
 
   void _handleOutOfZone(Map<String, dynamic> data) {
     if (data['playerId'] != serverUtilities.userId) {
@@ -299,7 +323,7 @@ class _ClassicModeState extends State<ClassicMode> {
           });
 
       Timer(const Duration(milliseconds: 9400), () {
-        periodicTimer?.cancel();
+        periodicTimer?.cancel(); // Arrête le timer périodique après 9400 ms
         setState(() {
           markers.remove(marker);
         });
@@ -307,14 +331,31 @@ class _ClassicModeState extends State<ClassicMode> {
     }
   }
 
+  void _handleLeaveGame(Map<String, dynamic> data)
+  {
+    setState(() {
+      isGameActive = false; // Stop the game loop
+    });
+
+    // Appeler la méthode dispose pour libérer les ressources
+    dispose();
+  }
+
   void onEndGame() {
     debugPrint('Game ended');
 
-    Navigator.pushAndRemoveUntil(
-      context,
+    setState(() {
+      isGameActive = false; // Stop the game loop
+    });
+
+    // Appeler la méthode dispose pour libérer les ressources
+    dispose();
+
+    // Naviguer vers la page de victoire et supprimer toutes les routes précédentes
+    Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(
-          builder: (context) =>
-              winPage(isSeekerWin: false, amISeeker: amITheSeeker)),
+          builder: (context) => winPage(isSeekerWin: false, amISeeker: amITheSeeker)
+      ),
           (Route<dynamic> route) => false,
     );
   }
@@ -330,6 +371,10 @@ class _ClassicModeState extends State<ClassicMode> {
   }
 
   void _handleSeekerWin(Map<String, dynamic> data) {
+    setState(() {
+      isGameActive = false; // Stop the game loop
+    });
+
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
@@ -343,8 +388,20 @@ class _ClassicModeState extends State<ClassicMode> {
   void dispose() {
     timerUtilities.dispose();
     serverUtilities.dispose();
-    super.dispose();
     Provider.of<ChatModel>(context, listen: false).ResetMessage();
+    isGameActive = false; // Stop the game loop if the widget is disposed
+    super.dispose();
+  }
+
+  Future<bool> _onWillPop() async {
+    // Nettoyer les ressources et réinitialiser l'état
+    timerUtilities.dispose();
+    serverUtilities.dispose();
+    Provider.of<ChatModel>(context, listen: false).ResetMessage();
+    setState(() {
+      isGameActive = false; // Stop the game loop
+    });
+    return true; // Permet de quitter la page
   }
 
   @override
@@ -355,52 +412,52 @@ class _ClassicModeState extends State<ClassicMode> {
       );
     } else {
       return Consumer<ChatModel>(builder: (context, chatModel, child) {
-        return Scaffold(
-          body: PageView(
-            controller: _pageController,
-            onPageChanged: (index) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
-            children: [
-              Chat(
-                email: prefs.getString('email') ?? '',
-                gameCode: widget.gameCode,
-                broadcastChannel: serverUtilities.chatStream,
-              ),
-              buildMapScreen(),
-              inGamePlayerlist(gameCode: widget.gameCode),
-            ],
-          ),
-          bottomNavigationBar: BottomNavigationBar(
-            currentIndex: _currentIndex,
-            onTap: (index) {
-              _pageController.jumpToPage(index);
-              setState(() {
-                _currentIndex = index;
-              });
-            },
-            items: [
-              BottomNavigationBarItem(
-                icon: Icon(Symbols.chat_rounded,
-                    fill: 1, weight: 700, grade: 200, opticalSize: 24),
-                label: AppLocalizations.of(context)!.chat,
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Symbols.map_rounded,
-                    fill: 1, weight: 700, grade: 200, opticalSize: 24),
-                label: AppLocalizations.of(context)!.carte,
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Symbols.people_rounded,
-                    fill: 1, weight: 700, grade: 200, opticalSize: 24),
-                label: AppLocalizations.of(context)!.joueurs,
-              ),
-            ],
-            selectedFontSize: 20,
-            unselectedFontSize: 18,
-            iconSize: 30,
+        return WillPopScope(
+          onWillPop: _onWillPop,
+          child: Scaffold(
+            body: PageView(
+              controller: _pageController,
+              onPageChanged: (index) {
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+              children: [
+                Chat(
+                  email: prefs.getString('email') ?? '',
+                  gameCode: widget.gameCode,
+                  broadcastChannel: serverUtilities.chatStream,
+                ),
+                buildMapScreen(),
+                inGamePlayerlist(gameCode: widget.gameCode),
+              ],
+            ),
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: _currentIndex,
+              onTap: (index) {
+                _pageController.jumpToPage(index);
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+              items: [
+                BottomNavigationBarItem(
+                  icon: Icon(Symbols.chat_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
+                  label: AppLocalizations.of(context)!.chat,
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Symbols.map_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
+                  label: AppLocalizations.of(context)!.carte,
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Symbols.people_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
+                  label: AppLocalizations.of(context)!.joueurs,
+                ),
+              ],
+              selectedFontSize: 20,
+              unselectedFontSize: 18,
+              iconSize: 30,
+            ),
           ),
         );
       });
