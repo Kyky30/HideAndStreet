@@ -520,9 +520,13 @@
     "@texte_popup_moderation": {
         "description": "Texte de popup de modération"
     },
-    "bouton_masquer": "Masquer",
+    "bouton_masquer": "Masquer le joueur",
     "@bouton_masquer": {
         "description": "Bouton de masquer"
+    },
+    "bouton_demasquer": "Démasquer le joueur",
+    "@bouton_demasquer": {
+        "description": "Bouton de démasquer"
     },
     "bouton_signaler": "Signaler",
     "@bouton_signaler": {

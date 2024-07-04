@@ -93,7 +93,7 @@ class _ChatState extends State<Chat> {
                                 onPressed: () {
                                   _moderationUtilities.openModerationMenu(username, context);
                                 },
-                                icon: Icon(Symbols.report_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24, size: 40)
+                                icon: Icon(Symbols.report_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24, size: 20)
                             ),
                             Text(
                                 username + " : ",
