@@ -16,6 +16,7 @@ class ServerUtilities with ChangeNotifier {
   final _outOfZoneController = StreamController<Map<String, dynamic>>.broadcast();
   final _chatController = StreamController<Map<String, dynamic>>.broadcast();
   final _seekerWinController = StreamController<Map<String, dynamic>>.broadcast();
+  final _leavegameController = StreamController<Map<String, dynamic>>.broadcast();
 
   ServerUtilities({required this.gameCode}) {
     _init();
@@ -24,6 +25,7 @@ class ServerUtilities with ChangeNotifier {
   Stream<Map<String, dynamic>> get outOfZoneStream => _outOfZoneController.stream;
   Stream<Map<String, dynamic>> get chatStream => _chatController.stream;
   Stream<Map<String, dynamic>> get seekerWinStream => _seekerWinController.stream;
+  Stream<Map<String, dynamic>> get leavegameStream => _leavegameController.stream;
 
   Future<void> _init() async {
     await _getPrefs();
@@ -127,6 +129,9 @@ class ServerUtilities with ChangeNotifier {
     if(parsedData['cmd'] == 'seekerWin') {
       _seekerWinController.add(parsedData);
     }
+    if(parsedData['cmd'] == 'leaveGame' && parsedData['status'] == 'success') {
+      _leavegameController.add(parsedData);
+    }
 
     _webSocketController.add(data); // Add data to the StreamController
     notifyListeners();
@@ -139,6 +144,7 @@ class ServerUtilities with ChangeNotifier {
     _outOfZoneController.close();
     _chatController.close();
     _seekerWinController.close();
+    _leavegameController.close();
     super.dispose();
   }
 }

@@ -90,6 +90,7 @@ class _ClassicModeState extends State<ClassicMode> {
     serverUtilities.outOfZoneStream.listen(_handleOutOfZone);
     serverUtilities.chatStream.listen(_handleChatUpdates);
     serverUtilities.seekerWinStream.listen(_handleSeekerWin);
+    serverUtilities.leavegameStream.listen(_handleLeaveGame);
     startHiddingTimer();
   }
 
@@ -293,6 +294,16 @@ class _ClassicModeState extends State<ClassicMode> {
         });
       });
     }
+  }
+
+  void _handleLeaveGame(Map<String, dynamic> data)
+  {
+    setState(() {
+      isGameActive = false; // Stop the game loop
+    });
+
+    // Appeler la méthode dispose pour libérer les ressources
+    dispose();
   }
 
   void onEndGame() {

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:hide_and_street/Page/Game/GameModes/ClassicMode.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -63,11 +64,12 @@ class _inGamePlayerlist extends State<inGamePlayerlist> {
               Navigator.of(context).pop(true);
               serverUtilities.leaveGame();
               //Ramener à la page d'accueil
-              Navigator.pushReplacement(
+              Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const MyHomePage(),
                 ),
+                    (Route<dynamic> route) => false, // This predicate means "remove all routes"
               );
 
             },
