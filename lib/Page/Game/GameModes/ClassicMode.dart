@@ -20,7 +20,6 @@ import '../../../Page/Chat/chat.dart';
 import 'package:provider/provider.dart';
 import 'package:hide_and_street/components/inGamePlayerList.dart';
 
-
 class ClassicMode extends StatefulWidget {
   final LatLng center; // Center of the circle
   final double radius; // Radius of the circle
@@ -71,6 +70,9 @@ class _ClassicModeState extends State<ClassicMode> {
   List<String> seekerList = [];
   bool amIFound = false;
 
+  // Variable to control the game loop
+  bool isGameActive = true;
+
   @override
   void initState() {
     super.initState();
@@ -110,6 +112,10 @@ class _ClassicModeState extends State<ClassicMode> {
   }
 
   void startGame() {
+    setState(() {
+      isGameActive = true;
+    });
+
     timerUtilities.startTimer(
       durationInMinutes: widget.gameDuration,
       onEnd: onEndGame,
@@ -121,11 +127,15 @@ class _ClassicModeState extends State<ClassicMode> {
   }
 
   void gameLoop() {
+    if (!isGameActive) return; // Exit the loop if the game is not active
+
     Future.delayed(const Duration(seconds: 5), () async {
+      if (!isGameActive) return; // Check again if the game is still active
+
       currentPosition = await locationUtilities.updateMyPosition();
 
       if (!amITheSeeker && !amIFound) {
-        if (amIOutOfZone() == true) {
+        if (amIOutOfZone()) {
           serverUtilities.setPlayerOutOfZone(currentPosition);
         }
       }
@@ -145,9 +155,7 @@ class _ClassicModeState extends State<ClassicMode> {
     ) > widget.radius;
   }
 
-
   void displayOtherSeekerPosition() {
-
     // Envoyer la liste des seekers pour récupérer les positions
     serverUtilities.getPositionForId(seekerList).then((response) {
       // Convertir la réponse en map et accéder à la clé 'positions'
@@ -213,10 +221,7 @@ class _ClassicModeState extends State<ClassicMode> {
     }).catchError((error) {
       debugPrint('Error getting positions for seekers: $error');
     });
-
   }
-
-
 
   void _handleOutOfZone(Map<String, dynamic> data) {
     if (data['playerId'] != serverUtilities.userId) {
@@ -282,7 +287,7 @@ class _ClassicModeState extends State<ClassicMode> {
           });
 
       Timer(const Duration(milliseconds: 9400), () {
-        periodicTimer?.cancel(); // Arrête le timer périodique après 4900 ms
+        periodicTimer?.cancel(); // Arrête le timer périodique après 9400 ms
         setState(() {
           markers.remove(marker);
         });
@@ -292,6 +297,10 @@ class _ClassicModeState extends State<ClassicMode> {
 
   void onEndGame() {
     debugPrint('Game ended');
+
+    setState(() {
+      isGameActive = false; // Stop the game loop
+    });
 
     // Appeler la méthode dispose pour libérer les ressources
     dispose();
@@ -316,6 +325,10 @@ class _ClassicModeState extends State<ClassicMode> {
   }
 
   void _handleSeekerWin(Map<String, dynamic> data) {
+    setState(() {
+      isGameActive = false; // Stop the game loop
+    });
+
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
@@ -330,9 +343,20 @@ class _ClassicModeState extends State<ClassicMode> {
     timerUtilities.dispose();
     serverUtilities.dispose();
     Provider.of<ChatModel>(context, listen: false).ResetMessage();
+    isGameActive = false; // Stop the game loop if the widget is disposed
     super.dispose();
   }
 
+  Future<bool> _onWillPop() async {
+    // Nettoyer les ressources et réinitialiser l'état
+    timerUtilities.dispose();
+    serverUtilities.dispose();
+    Provider.of<ChatModel>(context, listen: false).ResetMessage();
+    setState(() {
+      isGameActive = false; // Stop the game loop
+    });
+    return true; // Permet de quitter la page
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -342,49 +366,52 @@ class _ClassicModeState extends State<ClassicMode> {
       );
     } else {
       return Consumer<ChatModel>(builder: (context, chatModel, child) {
-        return Scaffold(
-          body: PageView(
-            controller: _pageController,
-            onPageChanged: (index) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
-            children: [
-              Chat(
-                email: prefs.getString('email') ?? '',
-                gameCode: widget.gameCode,
-                broadcastChannel: serverUtilities.chatStream,
-              ),
-              buildMapScreen(),
-              inGamePlayerlist(gameCode: widget.gameCode),
-            ],
-          ),
-          bottomNavigationBar: BottomNavigationBar(
-            currentIndex: _currentIndex,
-            onTap: (index) {
-              _pageController.jumpToPage(index);
-              setState(() {
-                _currentIndex = index;
-              });
-            },
-            items: [
-              BottomNavigationBarItem(
-                icon: Icon(Symbols.chat_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
-                label: AppLocalizations.of(context)!.chat,
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Symbols.map_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
-                label: AppLocalizations.of(context)!.carte,
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Symbols.people_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
-                label: AppLocalizations.of(context)!.joueurs,
-              ),
-            ],
-            selectedFontSize: 20,
-            unselectedFontSize: 18,
-            iconSize: 30,
+        return WillPopScope(
+          onWillPop: _onWillPop,
+          child: Scaffold(
+            body: PageView(
+              controller: _pageController,
+              onPageChanged: (index) {
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+              children: [
+                Chat(
+                  email: prefs.getString('email') ?? '',
+                  gameCode: widget.gameCode,
+                  broadcastChannel: serverUtilities.chatStream,
+                ),
+                buildMapScreen(),
+                inGamePlayerlist(gameCode: widget.gameCode),
+              ],
+            ),
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: _currentIndex,
+              onTap: (index) {
+                _pageController.jumpToPage(index);
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+              items: [
+                BottomNavigationBarItem(
+                  icon: Icon(Symbols.chat_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
+                  label: AppLocalizations.of(context)!.chat,
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Symbols.map_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
+                  label: AppLocalizations.of(context)!.carte,
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Symbols.people_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
+                  label: AppLocalizations.of(context)!.joueurs,
+                ),
+              ],
+              selectedFontSize: 20,
+              unselectedFontSize: 18,
+              iconSize: 30,
+            ),
           ),
         );
       });
