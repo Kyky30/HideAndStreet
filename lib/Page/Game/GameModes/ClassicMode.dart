@@ -76,6 +76,10 @@ class _ClassicModeState extends State<ClassicMode> {
     super.initState();
     _initializePreferences();
 
+    // Initialiser l'index et le PageController pour commencer sur la page de la carte
+    _currentIndex = 1;
+    _pageController = PageController(initialPage: _currentIndex);
+
     serverUtilities = ServerUtilities(gameCode: widget.gameCode);
     locationUtilities = LocationUtilities(serverUtilities);
 
