@@ -20,6 +20,7 @@ import '../../../Page/Chat/chat_model.dart';
 import '../../../Page/Chat/chat.dart';
 import 'package:provider/provider.dart';
 import 'package:hide_and_street/components/inGamePlayerList.dart';
+import 'package:hide_and_street/Page/Game/GameUtilities/TauntsUtilities.dart';
 
 class ClassicMode extends StatefulWidget {
   final LatLng center; // Center of the circle
@@ -75,6 +76,12 @@ class _ClassicModeState extends State<ClassicMode> {
   // Variable to control the game loop
   bool isGameActive = true;
 
+  // Taunts
+  late TauntsUtilities tauntUtilities;
+
+  // Flag to show/hide buttons
+  bool showButtons = false;
+
   @override
   void initState() {
     super.initState();
@@ -127,6 +134,29 @@ class _ClassicModeState extends State<ClassicMode> {
       icon: Symbols.location_on_rounded,
       timerName: 'Game phase : ',
     );
+
+    tauntUtilities = TauntsUtilities(
+      serverUtilities: serverUtilities,
+      position: Position(
+        latitude: 0,
+        longitude: 0,
+        timestamp: DateTime.now(),
+        accuracy: 0,
+        altitude: 0,
+        heading: 0,
+        speed: 0,
+        speedAccuracy: 0,
+        isMocked: false,
+        floor: 0,
+        altitudeAccuracy: 0,
+        headingAccuracy: 0,
+      ),
+    );
+
+    setState(() {
+      showButtons = true;
+    });
+
     gameLoop();
   }
 
@@ -137,6 +167,7 @@ class _ClassicModeState extends State<ClassicMode> {
       if (!isGameActive) return; // Check again if the game is still active
 
       currentPosition = await locationUtilities.updateMyPosition();
+      serverUtilities.setPosition(currentPosition);
 
       if (!amITheSeeker && !amIFound) {
         if (amIOutOfZone()) {
@@ -165,12 +196,13 @@ class _ClassicModeState extends State<ClassicMode> {
     ) > widget.radius;
   }
 
+
   void displayOtherSeekerPosition() {
     // Envoyer la liste des seekers pour récupérer les positions
     serverUtilities.getPositionForId(seekerList).then((response) {
       // Convertir la réponse en map et accéder à la clé 'positions'
       var responseData = jsonDecode(response) as Map<String, dynamic>;
-      List<dynamic> dataList = responseData['positions']; // Extraire la liste de positions
+      List<dynamic> dataList = responseData['positions'];
 
       // Nouveau set de marqueurs
       List<Marker> newMarkers = [];
@@ -231,7 +263,10 @@ class _ClassicModeState extends State<ClassicMode> {
     }).catchError((error) {
       debugPrint('Error getting positions for seekers: $error');
     });
+
   }
+
+
 
   void _handleOutOfZone(Map<String, dynamic> data) {
     if (data['playerId'] != serverUtilities.userId) {
@@ -439,37 +474,109 @@ class _ClassicModeState extends State<ClassicMode> {
   }
 
   Widget buildMapScreen() {
-    return Column(
+    return Stack(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: TimerDisplay(
-            timerUtilities: timerUtilities,
-          ),
-        ),
-        Expanded(
-          child: FlutterMap(
-            options: MapOptions(
-              initialCenter: widget.center,
-              initialZoom: 15.0,
-            ),
-            children: [
-              TileLayer(
-                urlTemplate:
-                'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+        Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TimerDisplay(
+                timerUtilities: timerUtilities,
               ),
-              CircleLayer(circles: [
-                CircleMarker(
-                  point: widget.center,
-                  color: Colors.blue.withOpacity(0.3),
-                  borderStrokeWidth: 2,
-                  borderColor: Colors.blue,
-                  useRadiusInMeter: true,
-                  radius: widget.radius,
+            ),
+            Expanded(
+              child: FlutterMap(
+                options: MapOptions(
+                  initialCenter: widget.center,
+                  initialZoom: 15.0,
                 ),
-              ]),
-              MarkerLayer(markers: markers),
-              CurrentLocationLayer(),
+                children: [
+                  TileLayer(
+                    urlTemplate:
+                    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  ),
+                  CircleLayer(circles: [
+                    CircleMarker(
+                      point: widget.center,
+                      color: Colors.blue.withOpacity(0.3),
+                      borderStrokeWidth: 2,
+                      borderColor: Colors.blue,
+                      useRadiusInMeter: true,
+                      radius: widget.radius,
+                    ),
+                  ]),
+                  MarkerLayer(markers: markers),
+                  CurrentLocationLayer(),
+                ],
+              ),
+            ),
+          ],
+        ),
+        if (showButtons) afficherBoutonsFlottants(),
+      ],
+    );
+  }
+
+  Stack afficherBoutonsFlottants() {
+    debugPrint('🙊🙊🙊🙊🙊🙊🙊🙊🙊🙊🙊🙊🙊🙊 Affichage des boutons flottants');
+    return Stack(
+      children: [
+        Positioned(
+          bottom: 30,
+          right: 10,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.all(20.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  backgroundColor: Color(0xFF373967),
+
+                ),
+                onPressed: () async {
+                  bool? result = await showDialog<bool>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return CustomAlertDialog2(
+                        title: AppLocalizations.of(context)!.confirmer,
+                        content: AppLocalizations.of(context)!.confirmer_trouve,
+                        buttonText1: AppLocalizations.of(context)!.non,
+                        buttonText2: AppLocalizations.of(context)!.oui,
+                        onPressed1: () {
+                          Navigator.of(context).pop(false);
+                        },
+                        onPressed2: () {
+                          Navigator.of(context).pop(true);
+                        },
+                        scaleFactor: MediaQuery.of(context).textScaleFactor,
+                      );
+                    },
+                  );
+
+                  if (result == true) {
+                    serverUtilities.setPlayerFound();
+
+                    //Local
+                    amIFound = true;
+                  }
+                },
+
+                child: const Icon(Symbols.hand_gesture, fill: 1,
+                    weight: 700,
+                    grade: 200,
+                    opticalSize: 24,
+                    color: Colors.white,
+                    size: 25
+                ),
+              ),
+              const SizedBox(height: 10),
+              ChangeNotifierProvider.value(
+                value: tauntUtilities,
+                child: TauntsButton(),
+              ),
             ],
           ),
         ),

@@ -13,6 +13,7 @@
     "titre_popup_moderation",
     "texte_popup_moderation",
     "bouton_masquer",
+    "bouton_demasquer",
     "bouton_signaler",
     "message_masque"
   ],
@@ -30,6 +31,7 @@
     "titre_popup_moderation",
     "texte_popup_moderation",
     "bouton_masquer",
+    "bouton_demasquer",
     "bouton_signaler",
     "message_masque"
   ],
@@ -47,6 +49,7 @@
     "titre_popup_moderation",
     "texte_popup_moderation",
     "bouton_masquer",
+    "bouton_demasquer",
     "bouton_signaler",
     "message_masque"
   ],
@@ -64,6 +67,7 @@
     "titre_popup_moderation",
     "texte_popup_moderation",
     "bouton_masquer",
+    "bouton_demasquer",
     "bouton_signaler",
     "message_masque"
   ],
@@ -81,6 +85,7 @@
     "titre_popup_moderation",
     "texte_popup_moderation",
     "bouton_masquer",
+    "bouton_demasquer",
     "bouton_signaler",
     "message_masque"
   ],
@@ -98,6 +103,7 @@
     "titre_popup_moderation",
     "texte_popup_moderation",
     "bouton_masquer",
+    "bouton_demasquer",
     "bouton_signaler",
     "message_masque"
   ],
@@ -115,6 +121,7 @@
     "titre_popup_moderation",
     "texte_popup_moderation",
     "bouton_masquer",
+    "bouton_demasquer",
     "bouton_signaler",
     "message_masque"
   ],
@@ -132,6 +139,7 @@
     "titre_popup_moderation",
     "texte_popup_moderation",
     "bouton_masquer",
+    "bouton_demasquer",
     "bouton_signaler",
     "message_masque"
   ],
@@ -149,6 +157,7 @@
     "titre_popup_moderation",
     "texte_popup_moderation",
     "bouton_masquer",
+    "bouton_demasquer",
     "bouton_signaler",
     "message_masque"
   ],
@@ -166,6 +175,7 @@
     "titre_popup_moderation",
     "texte_popup_moderation",
     "bouton_masquer",
+    "bouton_demasquer",
     "bouton_signaler",
     "message_masque"
   ],
@@ -183,6 +193,7 @@
     "titre_popup_moderation",
     "texte_popup_moderation",
     "bouton_masquer",
+    "bouton_demasquer",
     "bouton_signaler",
     "message_masque"
   ],
@@ -201,6 +212,7 @@
     "titre_popup_moderation",
     "texte_popup_moderation",
     "bouton_masquer",
+    "bouton_demasquer",
     "bouton_signaler",
     "message_masque"
   ],
@@ -218,6 +230,7 @@
     "titre_popup_moderation",
     "texte_popup_moderation",
     "bouton_masquer",
+    "bouton_demasquer",
     "bouton_signaler",
     "message_masque"
   ],
@@ -235,6 +248,7 @@
     "titre_popup_moderation",
     "texte_popup_moderation",
     "bouton_masquer",
+    "bouton_demasquer",
     "bouton_signaler",
     "message_masque"
   ],
@@ -253,6 +267,7 @@
     "titre_popup_moderation",
     "texte_popup_moderation",
     "bouton_masquer",
+    "bouton_demasquer",
     "bouton_signaler",
     "message_masque"
   ]

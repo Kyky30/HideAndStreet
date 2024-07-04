@@ -782,7 +782,6 @@ class _GameMapState extends State<GameMap> {
                                     weight: 700,
                                     grade: 200,
                                     opticalSize: 24),
-                                //Montre la position pendant 5 secondes
                                 onPressed: () {
                                   _sendOutOfZoneCommand();
                                 }
