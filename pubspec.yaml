@@ -90,6 +90,7 @@ flutter:
     - assets/logo_problem.png
     - assets/background_white.jpg
     - assets/Patate.mp3
+    - assets/Beep.wav
     - assets/PatateLong.mp3
 
 
