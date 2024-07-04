@@ -21,7 +21,6 @@ class inGamePlayerlist extends StatefulWidget {
 }
 
 class _inGamePlayerlist extends State<inGamePlayerlist> {
-  late WebSocketChannel _channel;
   String email = '';
   final _playerListController = StreamController<List<dynamic>>();
   late ServerUtilities serverUtilities;
@@ -29,27 +28,16 @@ class _inGamePlayerlist extends State<inGamePlayerlist> {
   @override
   void initState() {
     super.initState();
-    _channel = IOWebSocketChannel.connect(
-        'wss://app.hideandstreet.furrball.fr/getInGamePlayerlist');
     _getPref();
-    _initWebSocket();
     serverUtilities = ServerUtilities(gameCode: widget.gameCode);
-
+    getPlayerList();
+    ();
   }
 
-  void _initWebSocket() {
-    _channel.stream.listen((message) {
-      print('📥 Received message: $message'); // Print incoming message
-      final Map<String, dynamic> data = jsonDecode(message);
-      if (data['cmd'] == 'returnPlayerList') {
-        print(
-            '🎉 Success! Players data: ${data['players']}'); // Print success message and players data
-        _playerListController.add(data['players']);
-      }
-    });
-    print('📤 Sending request to server...'); // Print outgoing message
-    _channel.sink.add(
-        '{"email":"$email","auth":"chatappauthkey231r4","cmd":"getInGamePlayerlist", "gameCode":"${widget.gameCode}"}');
+  void getPlayerList() async{
+    dynamic response = await serverUtilities.getPlayerList();
+    List<dynamic> players = jsonDecode(response)['players'];
+    _playerListController.add(players);
   }
 
   void _getPref() async {
@@ -92,7 +80,6 @@ class _inGamePlayerlist extends State<inGamePlayerlist> {
 
   @override
   void dispose() {
-    _channel.sink.close();
     _playerListController.close();
     super.dispose();
   }

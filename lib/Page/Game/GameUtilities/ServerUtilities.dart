@@ -66,6 +66,28 @@ class ServerUtilities with ChangeNotifier {
     return completer.future; // Return the future that completes with the response data
   }
 
+
+
+  Future<dynamic> getPlayerList() async {
+    final Completer<dynamic> completer = Completer<dynamic>();
+
+    // Declare the subscription variable before using it
+    late StreamSubscription subscription;
+
+    // Add a listener to the StreamController for the first response
+    subscription = _webSocketController.stream.listen((data) {
+      debugPrint("🛬 Received response: $data");
+      completer.complete(data); // Complete the future with the received data
+      subscription.cancel(); // Cancel the subscription after receiving the first response
+    });
+
+    String data = "'cmd':'getInGamePlayerlist','gameCode':'$gameCode'";
+    await WebSocketManager.sendData(data);
+    debugPrint("🛫 Sent data: $data");
+
+    return completer.future; // Return the future that completes with the response data
+  }
+
   Future<void> setPosition(Position newPosition) async {
     String data = "'cmd':'setPositionPlayer','gameCode':'$gameCode','playerId':'$userId', 'position':'$newPosition'";
     await WebSocketManager.sendData(data);
