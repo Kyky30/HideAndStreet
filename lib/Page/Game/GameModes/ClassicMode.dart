@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hide_and_street/Page/winPage.dart';
 import 'package:hide_and_street/components/alertbox.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../GameUtilities/BlindUtilities.dart';
 import '../GameUtilities/ServerUtilities.dart';
 import '../GameUtilities/TimerUtilities.dart';
 import '../../../Page/Chat/chat_model.dart';
@@ -51,6 +52,7 @@ class _ClassicModeState extends State<ClassicMode> {
   TimerUtilities timerUtilities = TimerUtilities();
   late ServerUtilities serverUtilities;
   late LocationUtilities locationUtilities;
+  late BlindUtilities blindUtilities = BlindUtilities();
   late Position currentPosition;
 
   // Page controller
@@ -97,6 +99,7 @@ class _ClassicModeState extends State<ClassicMode> {
 
     serverUtilities = ServerUtilities(gameCode: widget.gameCode);
     locationUtilities = LocationUtilities(serverUtilities);
+    blindUtilities.initialize(serverUtilities);
 
     seekerList = GlobalUtilities().getSeekers(widget.playerList);
 
@@ -193,6 +196,12 @@ class _ClassicModeState extends State<ClassicMode> {
       }
       if (amITheSeeker && seekerList.length > 1) {
         displayOtherSeekerPosition();
+      }
+      debugPrint(((prefs.getBool("_keyBlindToggle"))).toString());
+      if (amITheSeeker && (prefs.getBool("_keyBlindToggle") ?? false))
+      {
+        debugPrint('Blind mode activated😍');
+        blindUtilities.blindHaptic(widget.playerList, seekerList, LatLng(currentPosition.latitude, currentPosition.longitude));
       }
       gameLoop();
     });
