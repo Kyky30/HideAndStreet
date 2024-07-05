@@ -27,12 +27,6 @@ class TauntsUtilities extends ChangeNotifier {
     player.play(player.source!);
   }
 
-  void tauntSonoreLong() {
-    HapticFeedback.heavyImpact();
-    player.setSourceAsset("PatateLong.mp3");
-    player.play(player.source!);
-  }
-
   void updatePosition(Position position) {
     position = position;
   }

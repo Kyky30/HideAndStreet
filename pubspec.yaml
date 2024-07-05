@@ -91,6 +91,9 @@ flutter:
     - assets/background_white.jpg
     - assets/Patate.mp3
     - assets/PatateLong.mp3
+    - assets/HidersMusic.mp3
+    - assets/SeekersMusic.mp3
+    - assets/Waiting.mp3
 
 
   fonts:

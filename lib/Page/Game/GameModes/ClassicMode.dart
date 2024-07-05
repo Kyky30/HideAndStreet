@@ -20,6 +20,7 @@ import '../../../Page/Chat/chat.dart';
 import 'package:provider/provider.dart';
 import 'package:hide_and_street/components/inGamePlayerList.dart';
 import 'package:hide_and_street/Page/Game/GameUtilities/TauntsUtilities.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class ClassicMode extends StatefulWidget {
   final LatLng center; // Center of the circle
@@ -60,6 +61,7 @@ class _ClassicModeState extends State<ClassicMode> {
 
   // Checks
   bool isLoading = true;
+  ValueNotifier<bool> isOutsideZoneNotifier = ValueNotifier<bool>(false);
 
   // Chat variables
   bool chatIsOpen = false;
@@ -79,6 +81,10 @@ class _ClassicModeState extends State<ClassicMode> {
 
   // Flag to show/hide buttons
   bool showButtons = false;
+
+  //Musique
+  AudioPlayer musique = AudioPlayer();
+
 
   @override
   void initState() {
@@ -109,6 +115,16 @@ class _ClassicModeState extends State<ClassicMode> {
     });
   }
 
+  initializeMusic() {
+    if (amITheSeeker) {
+      musique.setSourceAsset('SeekersMusic.mp3');
+    } else {
+      musique.setSourceAsset('HidersMusic.mp3');
+    }
+    musique.setReleaseMode(ReleaseMode.loop);
+    musique.play(musique.source!, volume: 0.5);
+  }
+
   void startHiddingTimer() {
     timerUtilities.startTimer(
       durationInMinutes: widget.hidingDuration,
@@ -117,6 +133,8 @@ class _ClassicModeState extends State<ClassicMode> {
       icon: Symbols.run_circle,
       timerName: 'Hiding phase : ',
     );
+    initializeMusic();
+
   }
 
   void startGame() {
@@ -165,6 +183,8 @@ class _ClassicModeState extends State<ClassicMode> {
 
       currentPosition = await locationUtilities.updateMyPosition();
       serverUtilities.setPosition(currentPosition);
+      isOutsideZoneNotifier.value = amIOutOfZone();
+
 
       if (!amITheSeeker && !amIFound) {
         if (amIOutOfZone()) {
@@ -390,6 +410,7 @@ class _ClassicModeState extends State<ClassicMode> {
     serverUtilities.dispose();
     Provider.of<ChatModel>(context, listen: false).ResetMessage();
     isGameActive = false; // Stop the game loop if the widget is disposed
+    musique.dispose();
     super.dispose();
   }
 
@@ -471,8 +492,24 @@ class _ClassicModeState extends State<ClassicMode> {
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: TimerDisplay(
-                timerUtilities: timerUtilities,
+              child: Column(
+                children: [
+                  TimerDisplay(timerUtilities: timerUtilities),
+                  ValueListenableBuilder<bool>(
+                    valueListenable: isOutsideZoneNotifier,
+                    builder: (context, isOutsideZone, child) {
+                      return Text(
+                        isOutsideZone
+                            ? AppLocalizations.of(context)!.etat_en_dehors_de_la_zone
+                            : AppLocalizations.of(context)!.etat_dans_la_zone,
+                        style: TextStyle(fontSize: 22.0,
+                            fontFamily: "Poppins",
+                            fontWeight: FontWeight.w600,
+                            color: isOutsideZone ? Colors.red : Colors.green),
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
             Expanded(
