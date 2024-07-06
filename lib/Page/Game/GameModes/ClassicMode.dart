@@ -21,7 +21,10 @@ import '../../../Page/Chat/chat.dart';
 import 'package:provider/provider.dart';
 import 'package:hide_and_street/components/inGamePlayerList.dart';
 import 'package:hide_and_street/Page/Game/GameUtilities/TauntsUtilities.dart';
+import 'package:hide_and_street/Page/Game/GameUtilities/TtsUtilities.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
+
 
 class ClassicMode extends StatefulWidget {
   final LatLng center; // Center of the circle
@@ -74,6 +77,7 @@ class _ClassicModeState extends State<ClassicMode> {
   bool amITheSeeker = false;
   List<String> seekerList = [];
   bool amIFound = false;
+  bool isBlindModeEnabled = false;
 
   // Variable to control the game loop
   bool isGameActive = true;
@@ -84,13 +88,17 @@ class _ClassicModeState extends State<ClassicMode> {
   // Flag to show/hide buttons
   bool showButtons = false;
 
-  //Musique
+  //Musique et tts
   AudioPlayer musique = AudioPlayer();
+  TtsUtilities ttsUtilities = TtsUtilities();
+
+  get onStart => null;
 
 
   @override
   void initState() {
     super.initState();
+    initializeService();
     _initializePreferences();
 
     // Initialiser l'index et le PageController pour commencer sur la page de la carte
@@ -98,7 +106,7 @@ class _ClassicModeState extends State<ClassicMode> {
     _pageController = PageController(initialPage: _currentIndex);
 
     serverUtilities = ServerUtilities(gameCode: widget.gameCode);
-    locationUtilities = LocationUtilities(serverUtilities);
+    locationUtilities = LocationUtilities(serverUtilities, context);
     blindUtilities.initialize(serverUtilities);
 
     seekerList = GlobalUtilities().getSeekers(widget.playerList);
@@ -112,10 +120,29 @@ class _ClassicModeState extends State<ClassicMode> {
 
   Future<void> _initializePreferences() async {
     prefs = await SharedPreferences.getInstance();
+    isBlindModeEnabled = prefs.getBool('_keyBlindToggle') ?? false;
     amITheSeeker = seekerList.contains(prefs.getString('userId'));
     setState(() {
       isLoading = false;
     });
+  }
+
+  Future<void> initializeService() async {
+    final service = FlutterBackgroundService();
+
+    await service.configure(
+      iosConfiguration: IosConfiguration(
+        autoStart: true,
+        onForeground: null,
+        onBackground: null,
+      ),
+      androidConfiguration: AndroidConfiguration(
+        autoStart: true,
+        onStart: onStart,
+        isForegroundMode: false,
+        autoStartOnBoot: true,
+      ),
+    );
   }
 
   initializeMusic() {
@@ -129,6 +156,9 @@ class _ClassicModeState extends State<ClassicMode> {
   }
 
   void startHiddingTimer() {
+    if (isBlindModeEnabled) {
+      ttsUtilities.speak(AppLocalizations.of(context)!.tts_debut_cachette);
+    }
     timerUtilities.startTimer(
       durationInMinutes: widget.hidingDuration,
       onEnd: startGame,
@@ -141,6 +171,9 @@ class _ClassicModeState extends State<ClassicMode> {
   }
 
   void startGame() {
+    if (isBlindModeEnabled) {
+      ttsUtilities.speak(AppLocalizations.of(context)!.tts_debut_chasse);
+    }
     setState(() {
       isGameActive = true;
     });
@@ -204,6 +237,17 @@ class _ClassicModeState extends State<ClassicMode> {
         blindUtilities.blindHaptic(widget.playerList, seekerList, LatLng(currentPosition.latitude, currentPosition.longitude));
       }
       gameLoop();
+    });
+
+    Future.delayed(const Duration(seconds: 30), () async {
+      if (isGameActive && isBlindModeEnabled) {
+        if (amIOutOfZone()) {
+          ttsUtilities.speak(AppLocalizations.of(context)!.tts_hors_zone);
+        }
+        else {
+          ttsUtilities.speak(AppLocalizations.of(context)!.tts_in_zone);
+        }
+      }
     });
   }
 
@@ -397,6 +441,7 @@ class _ClassicModeState extends State<ClassicMode> {
     }
     Provider.of<ChatModel>(context, listen: false)
         .addMessage(data['message'], data['email'], data['username']);
+    ttsUtilities.speak("${data['username']}" + AppLocalizations.of(context)!.tts_a_dit + "${data['message']}");
   }
 
   void _handleSeekerWin(Map<String, dynamic> data) {
@@ -507,6 +552,7 @@ class _ClassicModeState extends State<ClassicMode> {
                   ValueListenableBuilder<bool>(
                     valueListenable: isOutsideZoneNotifier,
                     builder: (context, isOutsideZone, child) {
+
                       return Text(
                         isOutsideZone
                             ? AppLocalizations.of(context)!.etat_en_dehors_de_la_zone
@@ -556,68 +602,74 @@ class _ClassicModeState extends State<ClassicMode> {
 
   Stack afficherBoutonsFlottants() {
     debugPrint('🙊🙊🙊🙊🙊🙊🙊🙊🙊🙊🙊🙊🙊🙊 Affichage des boutons flottants');
-    return Stack(
-      children: [
-        Positioned(
-          bottom: 30,
-          right: 10,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.all(20.0),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+    if (amITheSeeker = false) {
+      return Stack(
+        children: [
+          Positioned(
+            bottom: 30,
+            right: 10,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.all(20.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    backgroundColor: Color(0xFF373967),
+
                   ),
-                  backgroundColor: Color(0xFF373967),
+                  onPressed: () async {
+                    bool? result = await showDialog<bool>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return CustomAlertDialog2(
+                          title: AppLocalizations.of(context)!.confirmer,
+                          content: AppLocalizations.of(context)!.confirmer_trouve,
+                          buttonText1: AppLocalizations.of(context)!.non,
+                          buttonText2: AppLocalizations.of(context)!.oui,
+                          onPressed1: () {
+                            Navigator.of(context).pop(false);
+                          },
+                          onPressed2: () {
+                            Navigator.of(context).pop(true);
+                          },
+                          scaleFactor: MediaQuery.of(context).textScaleFactor,
+                        );
+                      },
+                    );
 
+                    if (result == true) {
+                      serverUtilities.setPlayerFound();
+
+                      //Local
+                      amIFound = true;
+                    }
+                  },
+
+                  child: const Icon(Symbols.hand_gesture, fill: 1,
+                      weight: 700,
+                      grade: 200,
+                      opticalSize: 24,
+                      color: Colors.white,
+                      size: 25
+                  ),
                 ),
-                onPressed: () async {
-                  bool? result = await showDialog<bool>(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return CustomAlertDialog2(
-                        title: AppLocalizations.of(context)!.confirmer,
-                        content: AppLocalizations.of(context)!.confirmer_trouve,
-                        buttonText1: AppLocalizations.of(context)!.non,
-                        buttonText2: AppLocalizations.of(context)!.oui,
-                        onPressed1: () {
-                          Navigator.of(context).pop(false);
-                        },
-                        onPressed2: () {
-                          Navigator.of(context).pop(true);
-                        },
-                        scaleFactor: MediaQuery.of(context).textScaleFactor,
-                      );
-                    },
-                  );
-
-                  if (result == true) {
-                    serverUtilities.setPlayerFound();
-
-                    //Local
-                    amIFound = true;
-                  }
-                },
-
-                child: const Icon(Symbols.hand_gesture, fill: 1,
-                    weight: 700,
-                    grade: 200,
-                    opticalSize: 24,
-                    color: Colors.white,
-                    size: 25
+                const SizedBox(height: 10),
+                ChangeNotifierProvider.value(
+                  value: tauntUtilities,
+                  child: TauntsButton(),
                 ),
-              ),
-              const SizedBox(height: 10),
-              ChangeNotifierProvider.value(
-                value: tauntUtilities,
-                child: TauntsButton(),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
-    );
+        ],
+      );
+    }
+    else {
+      return Stack();
+    }
+
   }
 }

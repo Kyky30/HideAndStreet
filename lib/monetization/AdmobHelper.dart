@@ -15,7 +15,7 @@ class AdmobHelper {
     Completer<void> completer = Completer<void>();
 
     InterstitialAd.load(
-      adUnitId: "ca-app-pub-3940256099942544/1033173712",
+      adUnitId: "ca-app-pub-2973083761727471/9921542261",
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {
@@ -65,7 +65,7 @@ class AdmobHelper {
   static BannerAd getBannerAd() {
     BannerAd bAd = BannerAd(
       size: AdSize.fullBanner,
-      adUnitId: "ca-app-pub-3940256099942544/6300978111",
+      adUnitId: "ca-app-pub-2973083761727471/9921542261",
       listener: BannerAdListener(
         onAdClosed: (Ad ad) => print('Ad closed.'),
         onAdFailedToLoad: (Ad ad, LoadAdError error) {

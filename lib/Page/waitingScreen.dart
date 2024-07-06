@@ -34,6 +34,9 @@ class _WaitingScreenState extends State<WaitingScreen> {
   late List<dynamic> playersData;
   late StreamSubscription _webSocketSubscription;
 
+  // Music
+  AudioPlayer musique = AudioPlayer();
+
   @override
   void initState() {
     super.initState();
@@ -50,6 +53,14 @@ class _WaitingScreenState extends State<WaitingScreen> {
     _getPref();
     _playerList = getPlayerList(widget.gameCode);
     _initWebSocket();
+
+    initializeMusic();
+  }
+
+  initializeMusic() {
+    musique.setSourceAsset('Waiting.mp3');
+    musique.setReleaseMode(ReleaseMode.loop);
+    musique.play(musique.source!, volume: 0.5);
   }
 
   Future<void> initWebSocketConnection() async {
@@ -146,7 +157,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
       return;
     }
 
-    String auth = "chatappauthkey231r4";
+    musique.dispose();
     WebSocketManager.sendData('"email":"$email","cmd":"startGame", "gameCode":"${widget.gameCode}", "startingTimeStamp": ${DateTime.now().millisecondsSinceEpoch}');
   }
 

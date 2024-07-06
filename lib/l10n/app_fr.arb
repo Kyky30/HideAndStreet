@@ -535,5 +535,41 @@
     "message_masque": "Message masqué",
     "@message_masque": {
         "description": "Message de masqué"
+    },
+    "locationPermissions" : "Permissions de localisation",
+    "@LocationPermissions": {
+        "description": "Permissions de localisation"
+    },
+    "locationPermissionsMessage" : "Cette application collecte des données de localisation pour activer les fonctionnalités de jeu. Rassurez-vous, elles sont suppimées après chaque partie.",
+    "@LocationPermissionsMessage": {
+        "description": "Message de permissions de localisation"
+    },
+    "boutonSupprimerCompte": "Supprimer mon compte",
+    "@boutonSupprimerCompte": {
+        "description": "Bouton de suppression de compte"
+    },
+    "tts_hors_zone": "Vous êtes en dehors de la zone",
+    "@tts_hors_zone": {
+        "description": "Text to speech de sortie de zone"
+    },
+    "tts_in_zone": "Vous êtes dans la zone",
+    "@tts_in_zone": {
+        "description": "Text to speech d'entrée de zone"
+    },
+    "tts_trouve": "Vous avez été trouvé",
+    "@tts_trouve": {
+        "description": "Text to speech de trouvé"
+    },
+    "tts_debut_cachette": "Début du temps de cachette",
+    "@tts_debut_cachette": {
+        "description": "Text to speech de début de cachette"
+    },
+    "tts_debut_chasse": "Début du temps de chasse",
+    "@tts_debut_chasse": {
+        "description": "Text to speech de début de chasse"
+    },
+    "tts_a_dit": "a dit",
+    "@tts_a_dit": {
+        "description": "Text to speech de a dit"
     }
 }

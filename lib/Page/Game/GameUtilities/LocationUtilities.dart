@@ -1,13 +1,17 @@
 import 'package:geolocator/geolocator.dart';
 import 'ServerUtilities.dart';
+import 'package:hide_and_street/components/alertbox.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter/material.dart';
 
 class LocationUtilities {
   static Position? _currentPosition;
+  final BuildContext context;
   final ServerUtilities serverUtilities;
 
-  LocationUtilities(this.serverUtilities);
+  LocationUtilities(this.serverUtilities, this.context);
 
-  static Future<Position> determinePosition() async {
+  Future<Position> determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
 
@@ -20,6 +24,20 @@ class LocationUtilities {
     // Vérifier les permissions de localisation
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return CustomAlertDialog1(
+            title: AppLocalizations.of(context)!.locationPermissions,
+            content: AppLocalizations.of(context)!.locationPermissionsMessage,
+            buttonText: AppLocalizations.of(context)!.ok,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            scaleFactor: MediaQuery.of(context).textScaleFactor,
+          );
+        },
+      );
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         return Future.error('Les permissions de localisation sont refusées');

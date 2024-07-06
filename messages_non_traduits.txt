@@ -15,7 +15,16 @@
     "bouton_masquer",
     "bouton_demasquer",
     "bouton_signaler",
-    "message_masque"
+    "message_masque",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte",
+    "tts_hors_zone",
+    "tts_in_zone",
+    "tts_trouve",
+    "tts_debut_cachette",
+    "tts_debut_chasse",
+    "tts_a_dit"
   ],
 
   "de": [
@@ -33,7 +42,16 @@
     "bouton_masquer",
     "bouton_demasquer",
     "bouton_signaler",
-    "message_masque"
+    "message_masque",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte",
+    "tts_hors_zone",
+    "tts_in_zone",
+    "tts_trouve",
+    "tts_debut_cachette",
+    "tts_debut_chasse",
+    "tts_a_dit"
   ],
 
   "en": [
@@ -51,7 +69,16 @@
     "bouton_masquer",
     "bouton_demasquer",
     "bouton_signaler",
-    "message_masque"
+    "message_masque",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte",
+    "tts_hors_zone",
+    "tts_in_zone",
+    "tts_trouve",
+    "tts_debut_cachette",
+    "tts_debut_chasse",
+    "tts_a_dit"
   ],
 
   "es": [
@@ -69,7 +96,16 @@
     "bouton_masquer",
     "bouton_demasquer",
     "bouton_signaler",
-    "message_masque"
+    "message_masque",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte",
+    "tts_hors_zone",
+    "tts_in_zone",
+    "tts_trouve",
+    "tts_debut_cachette",
+    "tts_debut_chasse",
+    "tts_a_dit"
   ],
 
   "fi": [
@@ -87,7 +123,16 @@
     "bouton_masquer",
     "bouton_demasquer",
     "bouton_signaler",
-    "message_masque"
+    "message_masque",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte",
+    "tts_hors_zone",
+    "tts_in_zone",
+    "tts_trouve",
+    "tts_debut_cachette",
+    "tts_debut_chasse",
+    "tts_a_dit"
   ],
 
   "hi": [
@@ -105,7 +150,16 @@
     "bouton_masquer",
     "bouton_demasquer",
     "bouton_signaler",
-    "message_masque"
+    "message_masque",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte",
+    "tts_hors_zone",
+    "tts_in_zone",
+    "tts_trouve",
+    "tts_debut_cachette",
+    "tts_debut_chasse",
+    "tts_a_dit"
   ],
 
   "it": [
@@ -123,7 +177,16 @@
     "bouton_masquer",
     "bouton_demasquer",
     "bouton_signaler",
-    "message_masque"
+    "message_masque",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte",
+    "tts_hors_zone",
+    "tts_in_zone",
+    "tts_trouve",
+    "tts_debut_cachette",
+    "tts_debut_chasse",
+    "tts_a_dit"
   ],
 
   "ja": [
@@ -141,7 +204,16 @@
     "bouton_masquer",
     "bouton_demasquer",
     "bouton_signaler",
-    "message_masque"
+    "message_masque",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte",
+    "tts_hors_zone",
+    "tts_in_zone",
+    "tts_trouve",
+    "tts_debut_cachette",
+    "tts_debut_chasse",
+    "tts_a_dit"
   ],
 
   "ko": [
@@ -159,7 +231,16 @@
     "bouton_masquer",
     "bouton_demasquer",
     "bouton_signaler",
-    "message_masque"
+    "message_masque",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte",
+    "tts_hors_zone",
+    "tts_in_zone",
+    "tts_trouve",
+    "tts_debut_cachette",
+    "tts_debut_chasse",
+    "tts_a_dit"
   ],
 
   "pl": [
@@ -177,7 +258,16 @@
     "bouton_masquer",
     "bouton_demasquer",
     "bouton_signaler",
-    "message_masque"
+    "message_masque",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte",
+    "tts_hors_zone",
+    "tts_in_zone",
+    "tts_trouve",
+    "tts_debut_cachette",
+    "tts_debut_chasse",
+    "tts_a_dit"
   ],
 
   "pt": [
@@ -195,7 +285,16 @@
     "bouton_masquer",
     "bouton_demasquer",
     "bouton_signaler",
-    "message_masque"
+    "message_masque",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte",
+    "tts_hors_zone",
+    "tts_in_zone",
+    "tts_trouve",
+    "tts_debut_cachette",
+    "tts_debut_chasse",
+    "tts_a_dit"
   ],
 
   "ru": [
@@ -214,7 +313,16 @@
     "bouton_masquer",
     "bouton_demasquer",
     "bouton_signaler",
-    "message_masque"
+    "message_masque",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte",
+    "tts_hors_zone",
+    "tts_in_zone",
+    "tts_trouve",
+    "tts_debut_cachette",
+    "tts_debut_chasse",
+    "tts_a_dit"
   ],
 
   "sv": [
@@ -232,7 +340,16 @@
     "bouton_masquer",
     "bouton_demasquer",
     "bouton_signaler",
-    "message_masque"
+    "message_masque",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte",
+    "tts_hors_zone",
+    "tts_in_zone",
+    "tts_trouve",
+    "tts_debut_cachette",
+    "tts_debut_chasse",
+    "tts_a_dit"
   ],
 
   "vi": [
@@ -250,7 +367,16 @@
     "bouton_masquer",
     "bouton_demasquer",
     "bouton_signaler",
-    "message_masque"
+    "message_masque",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte",
+    "tts_hors_zone",
+    "tts_in_zone",
+    "tts_trouve",
+    "tts_debut_cachette",
+    "tts_debut_chasse",
+    "tts_a_dit"
   ],
 
   "zh": [
@@ -269,6 +395,15 @@
     "bouton_masquer",
     "bouton_demasquer",
     "bouton_signaler",
-    "message_masque"
+    "message_masque",
+    "locationPermissions",
+    "locationPermissionsMessage",
+    "boutonSupprimerCompte",
+    "tts_hors_zone",
+    "tts_in_zone",
+    "tts_trouve",
+    "tts_debut_cachette",
+    "tts_debut_chasse",
+    "tts_a_dit"
   ]
 }

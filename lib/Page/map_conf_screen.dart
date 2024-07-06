@@ -4,6 +4,8 @@ import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:hide_and_street/components/alertbox.dart';
+
 
 import 'room_creation.dart';
 import '../PreferencesManager.dart';
@@ -61,6 +63,20 @@ class _MapConfScreenState extends State<MapConfScreen> {
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return CustomAlertDialog1(
+            title: AppLocalizations.of(context)!.locationPermissions,
+            content: AppLocalizations.of(context)!.locationPermissionsMessage,
+            buttonText: AppLocalizations.of(context)!.ok,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            scaleFactor: MediaQuery.of(context).textScaleFactor,
+          );
+        },
+      );
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         // Permissions are denied, request permissions again.

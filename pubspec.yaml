@@ -65,6 +65,9 @@ dependencies:
   audioplayers: ^6.0.0
   flutter_bcrypt: ^1.0.8
   flutter_local_notifications: ^17.2.1
+  flutter_background_service: ^5.0.6
+  flutter_tts: ^4.0.2
+
 
 
 dev_dependencies:
