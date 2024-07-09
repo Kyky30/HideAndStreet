@@ -1,6 +1,8 @@
 {
   "ar": [
     "identifiants_ou_mdp_incorect",
+    "veuillez_entrer_un_code",
+    "aucune_partie_lie_a_ce_code_trouve",
     "texte_popup_autre_erreur",
     "ok",
     "erreurconnexion",
@@ -33,6 +35,8 @@
 
   "de": [
     "identifiants_ou_mdp_incorect",
+    "veuillez_entrer_un_code",
+    "aucune_partie_lie_a_ce_code_trouve",
     "ok",
     "erreurconnexion",
     "erreur",
@@ -64,6 +68,8 @@
 
   "en": [
     "identifiants_ou_mdp_incorect",
+    "veuillez_entrer_un_code",
+    "aucune_partie_lie_a_ce_code_trouve",
     "ok",
     "erreurconnexion",
     "erreur",
@@ -95,6 +101,8 @@
 
   "es": [
     "identifiants_ou_mdp_incorect",
+    "veuillez_entrer_un_code",
+    "aucune_partie_lie_a_ce_code_trouve",
     "ok",
     "erreurconnexion",
     "erreur",
@@ -126,6 +134,8 @@
 
   "fi": [
     "identifiants_ou_mdp_incorect",
+    "veuillez_entrer_un_code",
+    "aucune_partie_lie_a_ce_code_trouve",
     "ok",
     "erreurconnexion",
     "erreur",
@@ -157,6 +167,8 @@
 
   "hi": [
     "identifiants_ou_mdp_incorect",
+    "veuillez_entrer_un_code",
+    "aucune_partie_lie_a_ce_code_trouve",
     "ok",
     "erreurconnexion",
     "erreur",
@@ -188,6 +200,8 @@
 
   "it": [
     "identifiants_ou_mdp_incorect",
+    "veuillez_entrer_un_code",
+    "aucune_partie_lie_a_ce_code_trouve",
     "ok",
     "erreurconnexion",
     "erreur",
@@ -219,6 +233,8 @@
 
   "ja": [
     "identifiants_ou_mdp_incorect",
+    "veuillez_entrer_un_code",
+    "aucune_partie_lie_a_ce_code_trouve",
     "ok",
     "erreurconnexion",
     "erreur",
@@ -250,6 +266,8 @@
 
   "ko": [
     "identifiants_ou_mdp_incorect",
+    "veuillez_entrer_un_code",
+    "aucune_partie_lie_a_ce_code_trouve",
     "ok",
     "erreurconnexion",
     "erreur",
@@ -281,6 +299,8 @@
 
   "pl": [
     "identifiants_ou_mdp_incorect",
+    "veuillez_entrer_un_code",
+    "aucune_partie_lie_a_ce_code_trouve",
     "ok",
     "erreurconnexion",
     "erreur",
@@ -312,6 +332,8 @@
 
   "pt": [
     "identifiants_ou_mdp_incorect",
+    "veuillez_entrer_un_code",
+    "aucune_partie_lie_a_ce_code_trouve",
     "ok",
     "erreurconnexion",
     "erreur",
@@ -343,6 +365,8 @@
 
   "ru": [
     "identifiants_ou_mdp_incorect",
+    "veuillez_entrer_un_code",
+    "aucune_partie_lie_a_ce_code_trouve",
     "texte_popup_autre_erreur",
     "ok",
     "erreurconnexion",
@@ -375,6 +399,8 @@
 
   "sv": [
     "identifiants_ou_mdp_incorect",
+    "veuillez_entrer_un_code",
+    "aucune_partie_lie_a_ce_code_trouve",
     "ok",
     "erreurconnexion",
     "erreur",
@@ -406,6 +432,8 @@
 
   "vi": [
     "identifiants_ou_mdp_incorect",
+    "veuillez_entrer_un_code",
+    "aucune_partie_lie_a_ce_code_trouve",
     "ok",
     "erreurconnexion",
     "erreur",
@@ -437,6 +465,8 @@
 
   "zh": [
     "identifiants_ou_mdp_incorect",
+    "veuillez_entrer_un_code",
+    "aucune_partie_lie_a_ce_code_trouve",
     "texte_popup_autre_erreur",
     "ok",
     "erreurconnexion",

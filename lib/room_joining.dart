@@ -23,6 +23,7 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
   final TextEditingController _gameCodeController = TextEditingController();
   String email = '';
   String userID = '';
+  bool _isDialogShowing = false;
 
   double getScaleFactor(BuildContext context) {
     final mediaQueryData = MediaQuery.of(context);
@@ -65,43 +66,43 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
                   builder: (context) => WaitingScreen(gameCode: gameCode, isAdmin: false),
                 ),
               );
-            } else {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return CustomAlertDialog1(
-                    title: AppLocalizations.of(context)!.erreur,
-                    content: AppLocalizations.of(context)!.erreurconnexion,
-                    buttonText: AppLocalizations.of(context)!.ok,
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    scaleFactor: getScaleFactor(context),
-                  );
-                },
-              );
             }
+          } else {
+            _showErrorDialog(AppLocalizations.of(context)!.aucune_partie_lie_a_ce_code_trouve);
           }
         }
       });
     } else {
+      _showErrorDialog(AppLocalizations.of(context)!.veuillez_entrer_un_code);
+    }
+  }
+
+  void _showErrorDialog(String message) {
+    if (!_isDialogShowing) {
+      _isDialogShowing = true;
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return CustomAlertDialog1(
             title: AppLocalizations.of(context)!.erreur,
-            content: AppLocalizations.of(context)!.erreurconnexion,
-            buttonText: AppLocalizations.of(context)!.erreurconnexion,
+            content: message,
+            buttonText: AppLocalizations.of(context)!.ok,
             onPressed: () {
               Navigator.of(context).pop();
+              setState(() {
+                _isDialogShowing = false;
+              });
             },
             scaleFactor: getScaleFactor(context),
           );
         },
-      );
+      ).then((_) {
+        setState(() {
+          _isDialogShowing = false;
+        });
+      });
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -153,6 +154,7 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
 
   @override
   void dispose() {
+    _gameCodeController.dispose();
     super.dispose();
   }
 }
