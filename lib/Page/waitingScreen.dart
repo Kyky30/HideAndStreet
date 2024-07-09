@@ -7,11 +7,14 @@ import 'package:latlong2/latlong.dart';
 import 'package:share/share.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../PreferencesManager.dart';
 import 'package:hide_and_street/monetization/AdmobHelper.dart';
 import 'package:hide_and_street/monetization/PremiumStatus.dart';
 import '../WebSocketManager.dart';
 import 'Game/GameModes/ClassicMode.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:hide_and_street/monetization/AdmobHelper.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class WaitingScreen extends StatefulWidget {
   final String gameCode;
@@ -57,10 +60,11 @@ class _WaitingScreenState extends State<WaitingScreen> {
     initializeMusic();
   }
 
-  initializeMusic() {
+  initializeMusic() async {
     musique.setSourceAsset('Waiting.mp3');
     musique.setReleaseMode(ReleaseMode.loop);
-    musique.play(musique.source!, volume: 0.5);
+    double volume = await PreferencesManager.getMusicVolume();
+    musique.play(musique.source!, volume: volume);
   }
 
   Future<void> initWebSocketConnection() async {
@@ -224,11 +228,19 @@ class _WaitingScreenState extends State<WaitingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.waitingRoomTitle),
+        title: Text(AppLocalizations.of(context)!.waitingRoomTitle , style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins',)),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Container(
+            child: AdWidget(
+              ad: AdmobHelper.getBannerAd()..load(),
+              key: UniqueKey(),
+            ),
+            height: 75
+          ),
+
           const SizedBox(height: 20),
 
           Center(

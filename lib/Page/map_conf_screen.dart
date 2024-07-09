@@ -101,7 +101,9 @@ class _MapConfScreenState extends State<MapConfScreen> {
       );
     } else {
       return Scaffold(
-        appBar: AppBar(title: Text(AppLocalizations.of(context)!.configmaptitle)),
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.configmaptitle, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins',)),
+        ),
         body: Column(
           children: [
             Expanded(

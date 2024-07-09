@@ -11,6 +11,8 @@ import 'package:hide_and_street/components/buttons.dart';
 import 'package:hide_and_street/components/alertbox.dart';
 import 'package:hide_and_street/Page/Game/GameUtilities/ServerUtilities.dart';
 import 'package:hide_and_street/main.dart';
+import 'package:hide_and_street/monetization/AdmobHelper.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class inGamePlayerlist extends StatefulWidget {
   final String gameCode;
@@ -101,6 +103,13 @@ class _inGamePlayerlist extends State<inGamePlayerlist> {
       ),
       body: Column(
         children: [
+          Container(
+              child: AdWidget(
+                ad: AdmobHelper.getBannerAd()..load(),
+                key: UniqueKey(),
+              ),
+              height: 75
+          ),
           Expanded(
             child: StreamBuilder<List<dynamic>>(
               stream: _playerListController.stream,

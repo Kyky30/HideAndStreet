@@ -571,5 +571,17 @@
     "tts_a_dit": "a dit",
     "@tts_a_dit": {
         "description": "Text to speech de a dit"
+    },
+    "tts_partie_terminee": "Partie terminée",
+    "@tts_partie_terminee": {
+        "description": "Text to speech de partie terminée"
+    },
+    "volume_label": "Volume musique :",
+    "@volume_label": {
+        "description": "Label de volume"
+    },
+    "boutique_bientot_dispo": "Boutique bientôt disponible",
+    "@boutique_bientot_dispo": {
+        "description": "Boutique bientôt disponible"
     }
 }
