@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bcrypt/flutter_bcrypt.dart';
 import 'package:web_socket_channel/io.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'dart:developer' as developer;
 
@@ -63,6 +64,7 @@ class RegisterModel {
           developer.log(signUpData);
           event = event.replaceAll(RegExp("'"), '"');
           var signupData = json.decode(event);
+          debugPrint(signupData.toString());
           // Check if the status is successful
           if (signupData["status"] == 'success') {
             // Close connection.
@@ -72,12 +74,40 @@ class RegisterModel {
               context,
               MaterialPageRoute(builder: (context) => LoginPage()),
             );
-          } else {
+          } else if (signupData["status"] == 'user_exists') {
             channel.sink.close();
-            print("Error signing up");
+            AlertDialog(
+              title: Text(AppLocalizations.of(context)!.titre_popup_champ_vide),
+              content: Text(AppLocalizations.of(context)!.nom_dutilisateur_deja_utilise),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(AppLocalizations.of(context)!.ok),
+                ),
+              ],
+            );
+          }
+          else if (signupData["status"] == 'mail_exists') {
+            channel.sink.close();
+            AlertDialog(
+              title: Text(AppLocalizations.of(context)!.erreur),
+              content: Text(AppLocalizations.of(context)!.email_deja_utilise),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(AppLocalizations.of(context)!.ok),
+                ),
+              ],
+            );
           }
         });
-      } else {
+      }
+
+      else {
         print("Passwords do not match");
       }
     } else {

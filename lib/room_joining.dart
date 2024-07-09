@@ -70,6 +70,12 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
           } else if (data['message'] == 'Room not found'){
             _showErrorDialog(AppLocalizations.of(context)!.aucune_partie_lie_a_ce_code_trouve);
           }
+          else if (data['message'] == 'User is already part of the game'){
+            _showErrorDialog(AppLocalizations.of(context)!.cet_utilisateur_est_deja_connecte);
+          }
+          else if (data['message'] == 'Game has already started'){
+            _showErrorDialog(AppLocalizations.of(context)!.cette_partie_a_deja_commence);
+          }
         }
       });
     } else {

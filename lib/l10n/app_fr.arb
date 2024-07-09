@@ -205,6 +205,14 @@
     "@titre_popup_mdp": {
         "description": "Titre de popup de mot de passe"
     },
+    "cet_utilisateur_est_deja_connecte": "Cet utilisateur est déjà connecté à la partie",
+    "@cet_utilisateur_est_deja_connecte": {
+        "description": "Cet utilisateur est déjà connecté à la partie"
+    },
+    "cette_partie_a_deja_commence": "Cette partie a déjà commencé",
+    "@cette_partie_a_deja_commence": {
+        "description": "Cette partie a déjà commencé"
+    },
     "texte_popup_mdp": "Les mots de passe ne correspondent pas",
     "@texte_popup_mdp": {
         "description": "Texte de popup de mot de passe"
@@ -492,6 +500,14 @@
     "erreurconnexion": "Erreur lors de la connexion vérifiez vôtre connection et redémarrez l'application",
     "@erreurconnexion": {
         "description": "Message d'erreur de connexion"
+    },
+    "nom_dutilisateur_deja_utilise": "Ce nom d'utilisateur est déjà utilisé",
+    "@nom_dutilisateur_deja_utilise": {
+        "description": "Message de nom d'utilisateur déjà utilisé"
+    },
+    "email_deja_utilise": "Cet email est déjà utilisé",
+    "@email_deja_utilise": {
+        "description": "Message d'email déjà utilisé"
     },
     "erreur": "Erreur",
     "@erreur": {
