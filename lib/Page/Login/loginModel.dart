@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hide_and_street/WebSocketManager.dart';
 
@@ -10,34 +11,34 @@ class LoginModel {
       return false;
     }
 
+    Completer<bool> completer = Completer<bool>();
+
     try {
       await WebSocketManager.connect(email);
 
-      Completer<bool> completer = Completer<bool>();
-
-      WebSocketManager.getStream().listen((event) async {
+      StreamSubscription? subscription;
+      subscription = WebSocketManager.getStream().listen((event) async {
         event = event.replaceAll(RegExp("'"), '"');
         var responseData = json.decode(event);
 
-        if (responseData["status"] == 'wrong_mail' || responseData["status"] == 'wrong_pass') {
-          // await WebSocketManager.closeConnection();
-          completer.complete(false);
-        }
+        if (!completer.isCompleted) {
+          if (responseData["status"] == 'wrong_mail' || responseData["status"] == 'wrong_pass') {
+            completer.complete(false);
+          } else if (responseData["status"] == 'success') {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.setBool('loggedin', true);
+            await prefs.setString('userId', responseData["userId"]);
+            await prefs.setString('username', responseData["username"]);
+            await prefs.setString('email', responseData["email"]);
+            await prefs.setString('DateCreation', responseData["DateCreation"]);
+            await prefs.setString('nbGames', responseData["nbGames"]);
+            await prefs.setString('nbWonGames', responseData["nbWonGames"]);
+            completer.complete(true);
+          } else {
+            completer.complete(false);
+          }
 
-        if (responseData["status"] == 'success') {
-          // await WebSocketManager.closeConnection();
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          prefs.setBool('loggedin', true);
-          prefs.setString('userId', responseData["userId"]);
-          prefs.setString('username', responseData["username"]);
-          prefs.setString('email', responseData["email"]);
-          prefs.setString('DateCreation', responseData["DateCreation"]);
-          prefs.setString('nbGames', responseData["nbGames"]);
-          prefs.setString('nbWonGames', responseData["nbWonGames"]);
-          completer.complete(true);
-        } else {
-          // await WebSocketManager.closeConnection();
-          completer.complete(false);
+          await subscription?.cancel();
         }
       });
 
@@ -46,7 +47,10 @@ class LoginModel {
       return completer.future;
     } catch (e) {
       print("Erreur lors de la connexion au WebSocket: " + e.toString());
-      return false;
+      if (!completer.isCompleted) {
+        completer.complete(false);
+      }
+      return completer.future;
     }
   }
 }

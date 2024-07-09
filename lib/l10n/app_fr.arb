@@ -192,6 +192,10 @@
     "@texte_popup_age": {
         "description": "Texte de popup d'âge"
     },
+    "identifiants_ou_mdp_incorect": "Identifiants ou mot de passe incorrect",
+    "@identifiants_ou_mdp_incorect": {
+        "description": "Identifiants ou mot de passe incorrect"
+    },
     "titre_popup_mdp": "Confirmation de mot de passe",
     "@titre_popup_mdp": {
         "description": "Titre de popup de mot de passe"

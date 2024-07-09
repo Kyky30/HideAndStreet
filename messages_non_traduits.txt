@@ -1,5 +1,6 @@
 {
   "ar": [
+    "identifiants_ou_mdp_incorect",
     "texte_popup_autre_erreur",
     "ok",
     "erreurconnexion",
@@ -31,6 +32,7 @@
   ],
 
   "de": [
+    "identifiants_ou_mdp_incorect",
     "ok",
     "erreurconnexion",
     "erreur",
@@ -61,6 +63,7 @@
   ],
 
   "en": [
+    "identifiants_ou_mdp_incorect",
     "ok",
     "erreurconnexion",
     "erreur",
@@ -91,6 +94,7 @@
   ],
 
   "es": [
+    "identifiants_ou_mdp_incorect",
     "ok",
     "erreurconnexion",
     "erreur",
@@ -121,6 +125,7 @@
   ],
 
   "fi": [
+    "identifiants_ou_mdp_incorect",
     "ok",
     "erreurconnexion",
     "erreur",
@@ -151,6 +156,7 @@
   ],
 
   "hi": [
+    "identifiants_ou_mdp_incorect",
     "ok",
     "erreurconnexion",
     "erreur",
@@ -181,6 +187,7 @@
   ],
 
   "it": [
+    "identifiants_ou_mdp_incorect",
     "ok",
     "erreurconnexion",
     "erreur",
@@ -211,6 +218,7 @@
   ],
 
   "ja": [
+    "identifiants_ou_mdp_incorect",
     "ok",
     "erreurconnexion",
     "erreur",
@@ -241,6 +249,7 @@
   ],
 
   "ko": [
+    "identifiants_ou_mdp_incorect",
     "ok",
     "erreurconnexion",
     "erreur",
@@ -271,6 +280,7 @@
   ],
 
   "pl": [
+    "identifiants_ou_mdp_incorect",
     "ok",
     "erreurconnexion",
     "erreur",
@@ -301,6 +311,7 @@
   ],
 
   "pt": [
+    "identifiants_ou_mdp_incorect",
     "ok",
     "erreurconnexion",
     "erreur",
@@ -331,6 +342,7 @@
   ],
 
   "ru": [
+    "identifiants_ou_mdp_incorect",
     "texte_popup_autre_erreur",
     "ok",
     "erreurconnexion",
@@ -362,6 +374,7 @@
   ],
 
   "sv": [
+    "identifiants_ou_mdp_incorect",
     "ok",
     "erreurconnexion",
     "erreur",
@@ -392,6 +405,7 @@
   ],
 
   "vi": [
+    "identifiants_ou_mdp_incorect",
     "ok",
     "erreurconnexion",
     "erreur",
@@ -422,6 +436,7 @@
   ],
 
   "zh": [
+    "identifiants_ou_mdp_incorect",
     "texte_popup_autre_erreur",
     "ok",
     "erreurconnexion",
