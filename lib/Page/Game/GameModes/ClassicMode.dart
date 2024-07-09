@@ -7,6 +7,7 @@ import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hide_and_street/Page/Game/GameUtilities/GlobalUtilities.dart';
 import 'package:hide_and_street/Page/Game/GameUtilities/LocationUtilities.dart';
+import 'package:hide_and_street/Page/Game/GameUtilities/NotificationUtilities.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,6 +17,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../GameUtilities/BlindUtilities.dart';
 import '../GameUtilities/ServerUtilities.dart';
 import '../GameUtilities/TimerUtilities.dart';
+import '../GameUtilities/NotificationUtilities.dart';
+
 import '../../../Page/Chat/chat_model.dart';
 import '../../../Page/Chat/chat.dart';
 import '/PreferencesManager.dart';
@@ -102,6 +105,8 @@ class _ClassicModeState extends State<ClassicMode> {
     super.initState();
     initializeService();
     _initializePreferences();
+
+    NotificationUtilities().initNotification();
 
     // Initialiser l'index et le PageController pour commencer sur la page de la carte
     _currentIndex = 1;
@@ -442,7 +447,9 @@ class _ClassicModeState extends State<ClassicMode> {
       isGameActive = false; // Stop the game loop
     });
 
-    ttsUtilities.speak(AppLocalizations.of(context)!.tts_partie_terminee);
+    if (isBlindModeEnabled) {
+      ttsUtilities.speak(AppLocalizations.of(context)!.tts_partie_terminee);
+    }
 
     // Appeler la méthode dispose pour libérer les ressources
     dispose();
@@ -459,12 +466,20 @@ class _ClassicModeState extends State<ClassicMode> {
   void _handleChatUpdates(Map<String, dynamic> data) {
     if (chatIsOpen == false) {
       newMessage = true;
-
+      NotificationUtilities().showNotification(
+        id: 0,
+        title: data['username'] + " " + AppLocalizations.of(context)!.tts_a_dit,
+        body: data['message'],
+      );
       setState(() {});
     }
     Provider.of<ChatModel>(context, listen: false)
         .addMessage(data['message'], data['email'], data['username']);
-    ttsUtilities.speak("${data['username']}" + AppLocalizations.of(context)!.tts_a_dit + "${data['message']}");
+    if (isBlindModeEnabled) {
+      ttsUtilities.speak(
+          "${data['username']}" + AppLocalizations.of(context)!.tts_a_dit +
+              "${data['message']}");
+    }
   }
 
   void _handleSeekerWin(Map<String, dynamic> data) {
@@ -512,51 +527,61 @@ class _ClassicModeState extends State<ClassicMode> {
       return Consumer<ChatModel>(builder: (context, chatModel, child) {
         return WillPopScope(
           onWillPop: _onWillPop,
-          child: Scaffold(
-            body: PageView(
-              controller: _pageController,
-              onPageChanged: (index) {
-                setState(() {
-                  _currentIndex = index;
-                });
-              },
-              children: [
-                Chat(
-                  email: prefs.getString('email') ?? '',
-                  gameCode: widget.gameCode,
-                  broadcastChannel: serverUtilities.chatStream,
-                ),
-                buildMapScreen(),
-                inGamePlayerlist(gameCode: widget.gameCode),
-              ],
+          child: SafeArea(
+            child: Scaffold(
+              body: PageView(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  if (index == 0) {
+                    chatIsOpen = true;
+                  } else {
+                    chatIsOpen = false;
+                  }
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                },
+                children: [
+                  Chat(
+                    email: prefs.getString('email') ?? '',
+                    gameCode: widget.gameCode,
+                    broadcastChannel: serverUtilities.chatStream,
+                  ),
+                  buildMapScreen(),
+                  inGamePlayerlist(gameCode: widget.gameCode),
+                ],
+              ),
+              bottomNavigationBar: BottomNavigationBar(
+                currentIndex: _currentIndex,
+                onTap: (index) {
+                  _pageController.jumpToPage(index);
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                  if (index == 0) {
+                    newMessage = false;
+                  };
+                },
+                items: [
+                  BottomNavigationBarItem(
+                    icon: Icon(newMessage ?  Symbols.mark_unread_chat_alt_rounded : Symbols.chat_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24,),
+                    label: AppLocalizations.of(context)!.chat,
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Symbols.map_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
+                    label: AppLocalizations.of(context)!.carte,
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Symbols.people_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
+                    label: AppLocalizations.of(context)!.joueurs,
+                  ),
+                ],
+                selectedFontSize: 20,
+                unselectedFontSize: 18,
+                iconSize: 30,
+              ),
             ),
-            bottomNavigationBar: BottomNavigationBar(
-              currentIndex: _currentIndex,
-              onTap: (index) {
-                _pageController.jumpToPage(index);
-                setState(() {
-                  _currentIndex = index;
-                });
-              },
-              items: [
-                BottomNavigationBarItem(
-                  icon: Icon(Symbols.chat_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
-                  label: AppLocalizations.of(context)!.chat,
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Symbols.map_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
-                  label: AppLocalizations.of(context)!.carte,
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Symbols.people_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
-                  label: AppLocalizations.of(context)!.joueurs,
-                ),
-              ],
-              selectedFontSize: 20,
-              unselectedFontSize: 18,
-              iconSize: 30,
-            ),
-          ),
+          )
         );
       });
     }
@@ -599,7 +624,7 @@ class _ClassicModeState extends State<ClassicMode> {
                 children: [
                   TileLayer(
                     urlTemplate:
-                    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                   ),
                   CircleLayer(circles: [
                     CircleMarker(

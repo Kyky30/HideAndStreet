@@ -30,4 +30,18 @@ class PreferencesManager {
     return value;
   }
 
+  static Future<void> setMaskedPlayers(List<String> value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('hiddenPlayers', value);
+    debugPrint('Masked players set to: $value');
+  }
+
+  static Future<List<String>> getMaskedPlayers() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> value = prefs.getStringList('hiddenPlayers') ?? [];
+    debugPrint('Masked players retrieved: $value');
+    return value;
+  }
+
+
 }

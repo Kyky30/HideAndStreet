@@ -31,14 +31,15 @@ class LocationUtilities {
             title: AppLocalizations.of(context)!.locationPermissions,
             content: AppLocalizations.of(context)!.locationPermissionsMessage,
             buttonText: AppLocalizations.of(context)!.ok,
-            onPressed: () {
+            onPressed: () async {
               Navigator.of(context).pop();
+              permission = await Geolocator.requestPermission();
+
             },
             scaleFactor: MediaQuery.of(context).textScaleFactor,
           );
         },
       );
-      permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         return Future.error('Les permissions de localisation sont refusées');
       }

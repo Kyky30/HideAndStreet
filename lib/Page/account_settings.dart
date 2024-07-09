@@ -34,7 +34,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
   String cguUrl = 'https://hideandstreet.furrball.fr/CGU.html';
   String cgvUrl = 'https://hideandstreet.furrball.fr/CGV.html';
   String privacyUrl = 'https://hideandstreet.furrball.fr/privacy.html';
-  String deleteAccountUrl = 'https://hideandstreet.furrball.fr/deleteAccount.html';
+  String deleteAccountUrl = 'https://hideandstreet.furrball.fr/delete-account.html';
 
   @override
   void initState() {
