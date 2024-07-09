@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hide_and_street/PreferencesManager.dart';
 import 'package:hide_and_street/components/alertbox.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -19,24 +20,24 @@ class ModerationUtilities {
     // Implémentation de l'envoi de message de signalement
   }
 
-  void hidePlayer(String username) {
-    List<String> hiddenPlayers = prefs.getStringList('hiddenPlayers') ?? [];
+  Future<void> hidePlayer(String username) async{
+    List<String> hiddenPlayers = await PreferencesManager.getMaskedPlayers();
     if (!hiddenPlayers.contains(username)) {
       hiddenPlayers.add(username);
-      prefs.setStringList('hiddenPlayers', hiddenPlayers);
+      await PreferencesManager.setMaskedPlayers(hiddenPlayers);
     }
   }
 
-  bool isPlayerHidden(String username) {
-    List<String> hiddenPlayers = prefs.getStringList('hiddenPlayers') ?? [];
+  Future<bool> isPlayerHidden(String username) async {
+    List<String> hiddenPlayers = await PreferencesManager.getMaskedPlayers();
     return hiddenPlayers.contains(username);
   }
 
-  void unhidePlayer(String username) {
-    List<String> hiddenPlayers = prefs.getStringList('hiddenPlayers') ?? [];
+  Future<void> unhidePlayer(String username) async{
+    List<String> hiddenPlayers = await PreferencesManager.getMaskedPlayers();
     if (hiddenPlayers.contains(username)) {
       hiddenPlayers.remove(username);
-      prefs.setStringList('hiddenPlayers', hiddenPlayers);
+      await PreferencesManager.setMaskedPlayers(hiddenPlayers);
     }
   }
 
@@ -47,10 +48,10 @@ class ModerationUtilities {
         return CustomAlertDialog2(
           title: AppLocalizations.of(context)!.titre_popup_moderation,
           content: AppLocalizations.of(context)!.texte_popup_moderation,
-          buttonText1: isPlayerHidden(nomUtilisateurMessage) ? AppLocalizations.of(context)!.bouton_demasquer : AppLocalizations.of(context)!.bouton_masquer,
+          buttonText1: isPlayerHidden(nomUtilisateurMessage).toString() == "true" ? AppLocalizations.of(context)!.bouton_demasquer : AppLocalizations.of(context)!.bouton_masquer,
           buttonText2: AppLocalizations.of(context)!.bouton_signaler,
           onPressed1: () {
-            if (isPlayerHidden(nomUtilisateurMessage)) {
+            if (isPlayerHidden(nomUtilisateurMessage).toString() == "true") {
               unhidePlayer(nomUtilisateurMessage);
             } else {
               hidePlayer(nomUtilisateurMessage);

@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -68,7 +69,7 @@ class _ChatState extends State<Chat> {
                   String email = chatModel.emails[index];
                   String username = chatModel.usernames[index];
                   String message;
-                  if (_moderationUtilities.isPlayerHidden(username)) {
+                  if (_moderationUtilities.isPlayerHidden(username).toString() == "true"){
                     message = AppLocalizations.of(context)!.message_masque;
                   } else {
                     message = chatModel.messages[index];

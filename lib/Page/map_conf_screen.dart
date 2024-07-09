@@ -70,14 +70,15 @@ class _MapConfScreenState extends State<MapConfScreen> {
             title: AppLocalizations.of(context)!.locationPermissions,
             content: AppLocalizations.of(context)!.locationPermissionsMessage,
             buttonText: AppLocalizations.of(context)!.ok,
-            onPressed: () {
+            onPressed: () async {
               Navigator.of(context).pop();
+              permission = await Geolocator.requestPermission();
+
             },
             scaleFactor: MediaQuery.of(context).textScaleFactor,
           );
         },
       );
-      permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         // Permissions are denied, request permissions again.
         return Future.error('Location permissions are denied');
