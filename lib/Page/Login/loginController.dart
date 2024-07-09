@@ -23,7 +23,7 @@ class LoginController {//
         builder: (BuildContext context) {
           return CustomAlertDialog1(
             title: AppLocalizations.of(context)!.erreur,
-            content: AppLocalizations.of(context)!.erreurconnexion,
+            content: AppLocalizations.of(context)!.identifiants_ou_mdp_incorect,
             buttonText: AppLocalizations.of(context)!.ok,
             onPressed: () {
               Navigator.of(context).pop();
