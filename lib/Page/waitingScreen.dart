@@ -81,19 +81,20 @@ class _WaitingScreenState extends State<WaitingScreen> {
           playersData = data['players'];
           List<String> players = playersData.map((player) => player.toString()).toList();
           _playerListController.add(players);
+
+          // Envoyer une commande pour obtenir le statut des Seekers après avoir mis à jour la liste des joueurs
+          WebSocketManager.sendData('"email":"$email","cmd":"getSeekerStatus", "gameCode":"${widget.gameCode}"');
         } else {
           print('Error in response: ${data['message']}');
         }
       } else if (data['cmd'] == 'partyStartInfo') {
         if (data.containsKey('data') && data['data'].containsKey('center') &&
             data['data'].containsKey('radius')) {
-          // Parse the center and radius values
           Map<String, double> centerCoordinates = Map<String, double>.from(
               data['data']['center']);
           LatLng center = LatLng(
               centerCoordinates['lat']!, centerCoordinates['lng']!);
           double radius = (data['data']['radius'] as num).toDouble();
-          print("⛷️⛷️⛷️⛷️⛷️");
           Map<String, bool> playerList = Map<String, bool>.from(
               data['data']['players']);
           Navigator.pushAndRemoveUntil(
@@ -113,12 +114,20 @@ class _WaitingScreenState extends State<WaitingScreen> {
         }
       } else if (data['cmd'] == 'playerJoined') {
         _updatePlayerList();
+        _updateSelectedPlayersToServer();
       } else if (data['cmd'] == 'seekerStatusUpdated') {
         print('Seeker status updated');
         _handleSeekerStatusUpdated(data['selectedPlayers']);
+      } else if (data['cmd'] == 'getSeekerStatus') { // Ajoutez cette ligne
+        if (data['status'] == 'success') {
+          _handleSeekerStatusUpdated(data['seekers']);
+        } else {
+          print('Error in response: ${data['message']}');
+        }
       }
     });
   }
+
 
   void _startGame() {
     if (selectedPlayers.length < 0) { //TODO : Replace by 1
@@ -196,9 +205,18 @@ class _WaitingScreenState extends State<WaitingScreen> {
     WebSocketManager.sendData('"email":"$email","cmd":"getPlayerlist", "gameCode":"${widget.gameCode}"');
     final data = await WebSocketManager.getStream().first;
     final Map<String, dynamic> decodedData = jsonDecode(data);
-    List<String> players = (decodedData['players'] as List<dynamic>).map((player) => player.toString()).toList();
-    return players;
+    if (decodedData['cmd'] == 'getPlayerlist' && decodedData['status'] == 'success') {
+      List<String> players = (decodedData['players'] as List<dynamic>).map((player) => player.toString()).toList();
+
+      // Demande le statut des Seekers après avoir reçu la liste des joueurs
+      WebSocketManager.sendData('"email":"$email","cmd":"getSeekerStatus", "gameCode":"${widget.gameCode}"');
+
+      return players;
+    } else {
+      throw Exception('Failed to load player list');
+    }
   }
+
 
   void _togglePlayerSelection(String playerName) {
     setState(() {

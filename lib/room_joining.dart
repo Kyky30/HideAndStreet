@@ -67,7 +67,7 @@ class _RoomJoiningPageState extends State<RoomJoiningPage> {
                 ),
               );
             }
-          } else {
+          } else if (data['message'] == 'Room not found'){
             _showErrorDialog(AppLocalizations.of(context)!.aucune_partie_lie_a_ce_code_trouve);
           }
         }
