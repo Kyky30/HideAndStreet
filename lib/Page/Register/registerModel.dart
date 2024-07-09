@@ -9,8 +9,9 @@ import 'dart:developer' as developer;
 
 import 'package:hide_and_street/Page/Login/loginPage.dart';
 
-class RegisterModel {
+import '../../components/alertbox.dart';
 
+class RegisterModel {
   GlobalKey<FormFieldState<String>> dateOfBirthKey = GlobalKey<FormFieldState<String>>();
 
   bool toggleValue = false;
@@ -76,38 +77,39 @@ class RegisterModel {
             );
           } else if (signupData["status"] == 'user_exists') {
             channel.sink.close();
-            AlertDialog(
-              title: Text(AppLocalizations.of(context)!.titre_popup_champ_vide),
-              content: Text(AppLocalizations.of(context)!.nom_dutilisateur_deja_utilise),
-              actions: [
-                TextButton(
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return CustomAlertDialog1(
+                  title: AppLocalizations.of(context)!.erreur,
+                  content: AppLocalizations.of(context)!.nom_dutilisateur_deja_utilise,
+                  buttonText: AppLocalizations.of(context)!.ok,
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text(AppLocalizations.of(context)!.ok),
-                ),
-              ],
+                  scaleFactor: getScaleFactor(context),
+                );
+              },
             );
-          }
-          else if (signupData["status"] == 'mail_exists') {
+          } else if (signupData["status"] == 'mail_exists') {
             channel.sink.close();
-            AlertDialog(
-              title: Text(AppLocalizations.of(context)!.erreur),
-              content: Text(AppLocalizations.of(context)!.email_deja_utilise),
-              actions: [
-                TextButton(
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return CustomAlertDialog1(
+                  title: AppLocalizations.of(context)!.erreur,
+                  content: AppLocalizations.of(context)!.email_deja_utilise,
+                  buttonText: AppLocalizations.of(context)!.ok,
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text(AppLocalizations.of(context)!.ok),
-                ),
-              ],
+                  scaleFactor: getScaleFactor(context),
+                );
+              },
             );
           }
         });
-      }
-
-      else {
+      } else {
         print("Passwords do not match");
       }
     } else {
