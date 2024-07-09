@@ -18,6 +18,7 @@ import '../GameUtilities/ServerUtilities.dart';
 import '../GameUtilities/TimerUtilities.dart';
 import '../../../Page/Chat/chat_model.dart';
 import '../../../Page/Chat/chat.dart';
+import '/PreferencesManager.dart';
 import 'package:provider/provider.dart';
 import 'package:hide_and_street/components/inGamePlayerList.dart';
 import 'package:hide_and_street/Page/Game/GameUtilities/TauntsUtilities.dart';
@@ -91,6 +92,7 @@ class _ClassicModeState extends State<ClassicMode> {
   //Musique et tts
   AudioPlayer musique = AudioPlayer();
   TtsUtilities ttsUtilities = TtsUtilities();
+  int NbExecutionTtsZone = 0;
 
   get onStart => null;
 
@@ -120,7 +122,7 @@ class _ClassicModeState extends State<ClassicMode> {
 
   Future<void> _initializePreferences() async {
     prefs = await SharedPreferences.getInstance();
-    isBlindModeEnabled = prefs.getBool('_keyBlindToggle') ?? false;
+    isBlindModeEnabled = await PreferencesManager.getBlindToggle();
     amITheSeeker = seekerList.contains(prefs.getString('userId'));
     setState(() {
       isLoading = false;
@@ -145,14 +147,33 @@ class _ClassicModeState extends State<ClassicMode> {
     );
   }
 
-  initializeMusic() {
+  void ttsZone() {
+    if (isBlindModeEnabled) {
+      if (NbExecutionTtsZone == 3) {
+        if (amIOutOfZone()) {
+          ttsUtilities.speak(AppLocalizations.of(context)!.tts_hors_zone);
+        }
+        else {
+          ttsUtilities.speak(AppLocalizations.of(context)!.tts_in_zone);
+        }
+        NbExecutionTtsZone = 0;
+      }
+      else {
+        NbExecutionTtsZone++;
+      }
+    }
+    debugPrint("🫶🫶🫶🫶🫶🫶🫶🫶🫶🫶🫶 NbExecutionTtsZone : $NbExecutionTtsZone , isBlindModeEnabled : $isBlindModeEnabled");
+  }
+
+  initializeMusic() async {
     if (amITheSeeker) {
       musique.setSourceAsset('SeekersMusic.mp3');
     } else {
       musique.setSourceAsset('HidersMusic.mp3');
     }
     musique.setReleaseMode(ReleaseMode.loop);
-    musique.play(musique.source!, volume: 0.5);
+    double volume = await PreferencesManager.getMusicVolume();
+    musique.play(musique.source!, volume: volume);
   }
 
   void startHiddingTimer() {
@@ -212,10 +233,16 @@ class _ClassicModeState extends State<ClassicMode> {
   }
 
   void gameLoop() {
-    if (!isGameActive) return; // Exit the loop if the game is not active
+    if (!isGameActive){
+      ttsZone();
+      return;
+    }
 
     Future.delayed(const Duration(seconds: 5), () async {
-      if (!isGameActive) return; // Check again if the game is still active
+      if (!isGameActive){
+        ttsZone();
+        return;
+      } // Check again if the game is still active
 
       currentPosition = await locationUtilities.updateMyPosition();
       serverUtilities.setPosition(currentPosition);
@@ -236,19 +263,12 @@ class _ClassicModeState extends State<ClassicMode> {
         debugPrint('Blind mode activated😍');
         blindUtilities.blindHaptic(widget.playerList, seekerList, LatLng(currentPosition.latitude, currentPosition.longitude));
       }
+
+      ttsZone();
+
       gameLoop();
     });
 
-    Future.delayed(const Duration(seconds: 30), () async {
-      if (isGameActive && isBlindModeEnabled) {
-        if (amIOutOfZone()) {
-          ttsUtilities.speak(AppLocalizations.of(context)!.tts_hors_zone);
-        }
-        else {
-          ttsUtilities.speak(AppLocalizations.of(context)!.tts_in_zone);
-        }
-      }
-    });
   }
 
   bool amIOutOfZone() {
@@ -259,6 +279,7 @@ class _ClassicModeState extends State<ClassicMode> {
       currentPosition.longitude,
     ) > widget.radius;
   }
+
 
 
   void displayOtherSeekerPosition() {
@@ -420,6 +441,8 @@ class _ClassicModeState extends State<ClassicMode> {
     setState(() {
       isGameActive = false; // Stop the game loop
     });
+
+    ttsUtilities.speak(AppLocalizations.of(context)!.tts_partie_terminee);
 
     // Appeler la méthode dispose pour libérer les ressources
     dispose();
@@ -602,7 +625,7 @@ class _ClassicModeState extends State<ClassicMode> {
 
   Stack afficherBoutonsFlottants() {
     debugPrint('🙊🙊🙊🙊🙊🙊🙊🙊🙊🙊🙊🙊🙊🙊 Affichage des boutons flottants');
-    if (amITheSeeker = false) {
+    if (amITheSeeker == false) {
       return Stack(
         children: [
           Positioned(

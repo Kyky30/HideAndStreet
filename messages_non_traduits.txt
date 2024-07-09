@@ -24,7 +24,10 @@
     "tts_trouve",
     "tts_debut_cachette",
     "tts_debut_chasse",
-    "tts_a_dit"
+    "tts_a_dit",
+    "tts_partie_terminee",
+    "volume_label",
+    "boutique_bientot_dispo"
   ],
 
   "de": [
@@ -51,7 +54,10 @@
     "tts_trouve",
     "tts_debut_cachette",
     "tts_debut_chasse",
-    "tts_a_dit"
+    "tts_a_dit",
+    "tts_partie_terminee",
+    "volume_label",
+    "boutique_bientot_dispo"
   ],
 
   "en": [
@@ -78,7 +84,10 @@
     "tts_trouve",
     "tts_debut_cachette",
     "tts_debut_chasse",
-    "tts_a_dit"
+    "tts_a_dit",
+    "tts_partie_terminee",
+    "volume_label",
+    "boutique_bientot_dispo"
   ],
 
   "es": [
@@ -105,7 +114,10 @@
     "tts_trouve",
     "tts_debut_cachette",
     "tts_debut_chasse",
-    "tts_a_dit"
+    "tts_a_dit",
+    "tts_partie_terminee",
+    "volume_label",
+    "boutique_bientot_dispo"
   ],
 
   "fi": [
@@ -132,7 +144,10 @@
     "tts_trouve",
     "tts_debut_cachette",
     "tts_debut_chasse",
-    "tts_a_dit"
+    "tts_a_dit",
+    "tts_partie_terminee",
+    "volume_label",
+    "boutique_bientot_dispo"
   ],
 
   "hi": [
@@ -159,7 +174,10 @@
     "tts_trouve",
     "tts_debut_cachette",
     "tts_debut_chasse",
-    "tts_a_dit"
+    "tts_a_dit",
+    "tts_partie_terminee",
+    "volume_label",
+    "boutique_bientot_dispo"
   ],
 
   "it": [
@@ -186,7 +204,10 @@
     "tts_trouve",
     "tts_debut_cachette",
     "tts_debut_chasse",
-    "tts_a_dit"
+    "tts_a_dit",
+    "tts_partie_terminee",
+    "volume_label",
+    "boutique_bientot_dispo"
   ],
 
   "ja": [
@@ -213,7 +234,10 @@
     "tts_trouve",
     "tts_debut_cachette",
     "tts_debut_chasse",
-    "tts_a_dit"
+    "tts_a_dit",
+    "tts_partie_terminee",
+    "volume_label",
+    "boutique_bientot_dispo"
   ],
 
   "ko": [
@@ -240,7 +264,10 @@
     "tts_trouve",
     "tts_debut_cachette",
     "tts_debut_chasse",
-    "tts_a_dit"
+    "tts_a_dit",
+    "tts_partie_terminee",
+    "volume_label",
+    "boutique_bientot_dispo"
   ],
 
   "pl": [
@@ -267,7 +294,10 @@
     "tts_trouve",
     "tts_debut_cachette",
     "tts_debut_chasse",
-    "tts_a_dit"
+    "tts_a_dit",
+    "tts_partie_terminee",
+    "volume_label",
+    "boutique_bientot_dispo"
   ],
 
   "pt": [
@@ -294,7 +324,10 @@
     "tts_trouve",
     "tts_debut_cachette",
     "tts_debut_chasse",
-    "tts_a_dit"
+    "tts_a_dit",
+    "tts_partie_terminee",
+    "volume_label",
+    "boutique_bientot_dispo"
   ],
 
   "ru": [
@@ -322,7 +355,10 @@
     "tts_trouve",
     "tts_debut_cachette",
     "tts_debut_chasse",
-    "tts_a_dit"
+    "tts_a_dit",
+    "tts_partie_terminee",
+    "volume_label",
+    "boutique_bientot_dispo"
   ],
 
   "sv": [
@@ -349,7 +385,10 @@
     "tts_trouve",
     "tts_debut_cachette",
     "tts_debut_chasse",
-    "tts_a_dit"
+    "tts_a_dit",
+    "tts_partie_terminee",
+    "volume_label",
+    "boutique_bientot_dispo"
   ],
 
   "vi": [
@@ -376,7 +415,10 @@
     "tts_trouve",
     "tts_debut_cachette",
     "tts_debut_chasse",
-    "tts_a_dit"
+    "tts_a_dit",
+    "tts_partie_terminee",
+    "volume_label",
+    "boutique_bientot_dispo"
   ],
 
   "zh": [
@@ -404,6 +446,9 @@
     "tts_trouve",
     "tts_debut_cachette",
     "tts_debut_chasse",
-    "tts_a_dit"
+    "tts_a_dit",
+    "tts_partie_terminee",
+    "volume_label",
+    "boutique_bientot_dispo"
   ]
 }
