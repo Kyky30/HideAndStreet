@@ -7,6 +7,7 @@ import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hide_and_street/Page/Game/GameUtilities/GlobalUtilities.dart';
 import 'package:hide_and_street/Page/Game/GameUtilities/LocationUtilities.dart';
+import 'package:hide_and_street/PreferencesManager.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -101,7 +102,6 @@ class _ClassicModeState extends State<ClassicMode> {
     initializeService();
     _initializePreferences();
 
-    // Initialiser l'index et le PageController pour commencer sur la page de la carte
     _currentIndex = 1;
     _pageController = PageController(initialPage: _currentIndex);
 
@@ -118,9 +118,10 @@ class _ClassicModeState extends State<ClassicMode> {
     startHiddingTimer();
   }
 
+
   Future<void> _initializePreferences() async {
+    isBlindModeEnabled = await PreferencesManager.getBlindToggle();
     prefs = await SharedPreferences.getInstance();
-    isBlindModeEnabled = prefs.getBool('_keyBlindToggle') ?? false;
     amITheSeeker = seekerList.contains(prefs.getString('userId'));
     setState(() {
       isLoading = false;
@@ -230,8 +231,7 @@ class _ClassicModeState extends State<ClassicMode> {
       if (amITheSeeker && seekerList.length > 1) {
         displayOtherSeekerPosition();
       }
-      debugPrint(((prefs.getBool("_keyBlindToggle"))).toString());
-      if (amITheSeeker && (prefs.getBool("_keyBlindToggle") ?? false))
+      if (amITheSeeker && isBlindModeEnabled)
       {
         debugPrint('Blind mode activated😍');
         blindUtilities.blindHaptic(widget.playerList, seekerList, LatLng(currentPosition.latitude, currentPosition.longitude));
@@ -602,7 +602,7 @@ class _ClassicModeState extends State<ClassicMode> {
 
   Stack afficherBoutonsFlottants() {
     debugPrint('🙊🙊🙊🙊🙊🙊🙊🙊🙊🙊🙊🙊🙊🙊 Affichage des boutons flottants');
-    if (amITheSeeker = false) {
+    if (amITheSeeker == false) {
       return Stack(
         children: [
           Positioned(

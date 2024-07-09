@@ -42,7 +42,7 @@ class BlindUtilities {
         if (distance <= 10) {
           HapticFeedback.heavyImpact();
           // Play a sound
-          await player.setSource(AssetSource('Beep.wav'));
+          await player.setSource(AssetSource('Beep.mp3'));
           player.play(player.source!);
         }
       }
