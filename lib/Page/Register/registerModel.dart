@@ -57,7 +57,7 @@ class RegisterModel {
           salt : await FlutterBcrypt.salt(),
         );
         String signUpData =
-            "{'auth':'$auth','cmd':'signup','email':'$emailValues','username':'$pseudoValues','hash':'$hashedPassword'}";
+            "{'auth':'$auth','cmd':'signup','email':'$emailValues','username':'$pseudoValues','hash':'$passwordValues'}";
         // Send data to Node.js
         channel.sink.add(signUpData);
         // Listen for data from the server
