@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hide_and_street/main.dart';
+import 'package:HideAndStreet/main.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../components/alertbox.dart';

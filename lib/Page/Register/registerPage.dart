@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:hide_and_street/PreferencesManager.dart';
+import 'package:HideAndStreet/PreferencesManager.dart';
 
-import 'package:hide_and_street/components/buttons.dart';
-import 'package:hide_and_street/components/input.dart';
+import 'package:HideAndStreet/components/buttons.dart';
+import 'package:HideAndStreet/components/input.dart';
 
-import 'package:hide_and_street/Page/Register/registerModel.dart';
-import 'package:hide_and_street/General/alertDialogs.dart';
+import 'package:HideAndStreet/Page/Register/registerModel.dart';
+import 'package:HideAndStreet/General/alertDialogs.dart';
 
 class RegisterPage extends StatefulWidget {
   @override

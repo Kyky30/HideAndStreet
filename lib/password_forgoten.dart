@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-import 'package:hide_and_street/components/buttons.dart';
-import 'package:hide_and_street/components/input.dart';
-import 'package:hide_and_street/components/alertbox.dart';
+import 'package:HideAndStreet/components/buttons.dart';
+import 'package:HideAndStreet/components/input.dart';
+import 'package:HideAndStreet/components/alertbox.dart';
 
 class ForgotenPassword extends StatelessWidget {
   const ForgotenPassword({Key? key});

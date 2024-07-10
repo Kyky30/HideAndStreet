@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
-import 'package:hide_and_street/monetization/PurchaseApi.dart';
-import 'package:hide_and_street/monetization/AdmobHelper.dart';
+import 'package:HideAndStreet/monetization/PurchaseApi.dart';
+import 'package:HideAndStreet/monetization/AdmobHelper.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../../components/buttons.dart';

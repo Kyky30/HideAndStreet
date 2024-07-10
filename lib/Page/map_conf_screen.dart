@@ -4,13 +4,13 @@ import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:hide_and_street/components/alertbox.dart';
+import 'package:HideAndStreet/components/alertbox.dart';
 
 
 import 'room_creation.dart';
 import '../PreferencesManager.dart';
 
-import 'package:hide_and_street/components/buttons.dart';
+import 'package:HideAndStreet/components/buttons.dart';
 
 
 class MapConfScreen extends StatefulWidget {

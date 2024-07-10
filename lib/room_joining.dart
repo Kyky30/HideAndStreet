@@ -2,12 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:hide_and_street/Page/waitingScreen.dart';
+import 'package:HideAndStreet/Page/waitingScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:figma_squircle/figma_squircle.dart';
-import 'package:hide_and_street/components/alertbox.dart';
-import 'package:hide_and_street/components/input.dart';
+import 'package:HideAndStreet/components/alertbox.dart';
+import 'package:HideAndStreet/components/input.dart';
 
 // Importez votre gestionnaire de WebSocket
 import 'WebSocketManager.dart';

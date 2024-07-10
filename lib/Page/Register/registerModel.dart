@@ -7,7 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'dart:developer' as developer;
 
-import 'package:hide_and_street/Page/Login/loginPage.dart';
+import 'package:HideAndStreet/Page/Login/loginPage.dart';
 
 import '../../components/alertbox.dart';
 

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../PreferencesManager.dart';
-import 'package:hide_and_street/monetization/AdmobHelper.dart';
+import 'package:HideAndStreet/monetization/AdmobHelper.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../monetization/PremiumStatus.dart';
@@ -12,7 +12,7 @@ import '../monetization/PremiumStatus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
-import 'package:hide_and_street/components/buttons.dart';
+import 'package:HideAndStreet/components/buttons.dart';
 
 class AccountSettingsPage extends StatefulWidget {
   const AccountSettingsPage();
@@ -34,7 +34,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
   String cguUrl = 'https://hideandstreet.furrball.fr/CGU.html';
   String cgvUrl = 'https://hideandstreet.furrball.fr/CGV.html';
   String privacyUrl = 'https://hideandstreet.furrball.fr/privacy.html';
-  String deleteAccountUrl = 'https://hideandstreet.furrball.fr/delete-account.html';
+  String deleteAccountUrl = 'https://app.hideandstreet.furrball.fr/delete-account.html';
 
   @override
   void initState() {

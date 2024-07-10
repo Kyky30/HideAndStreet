@@ -1,6 +1,6 @@
 // Classe de boîte d'alerte personnalisée
 import 'package:flutter/material.dart';
-import 'package:hide_and_street/components/buttons.dart';
+import 'package:HideAndStreet/components/buttons.dart';
 
 class CustomAlertDialog1 extends StatelessWidget {
   final String title;

@@ -1,17 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:hide_and_street/Page/Game/GameModes/ClassicMode.dart';
+import 'package:HideAndStreet/Page/Game/GameModes/ClassicMode.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:hide_and_street/components/buttons.dart';
-import 'package:hide_and_street/components/alertbox.dart';
-import 'package:hide_and_street/Page/Game/GameUtilities/ServerUtilities.dart';
-import 'package:hide_and_street/main.dart';
-import 'package:hide_and_street/monetization/AdmobHelper.dart';
+import 'package:HideAndStreet/components/buttons.dart';
+import 'package:HideAndStreet/components/alertbox.dart';
+import 'package:HideAndStreet/Page/Game/GameUtilities/ServerUtilities.dart';
+import 'package:HideAndStreet/main.dart';
+import 'package:HideAndStreet/monetization/AdmobHelper.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class inGamePlayerlist extends StatefulWidget {

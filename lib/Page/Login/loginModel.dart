@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:hide_and_street/WebSocketManager.dart';
+import 'package:HideAndStreet/WebSocketManager.dart';
 
 class LoginModel {
   Future<bool> login(String email, String password) async {

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-import 'package:hide_and_street/Page/map_conf_screen.dart';
+import 'package:HideAndStreet/Page/map_conf_screen.dart';
 
-import 'package:hide_and_street/room_joining.dart';
+import 'package:HideAndStreet/room_joining.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:hide_and_street/components/buttons.dart';
-import 'package:hide_and_street/components/alertbox.dart';
+import 'package:HideAndStreet/components/buttons.dart';
+import 'package:HideAndStreet/components/alertbox.dart';
 
 class HomePage extends StatefulWidget {
   @override

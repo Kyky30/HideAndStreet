@@ -2,18 +2,16 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
-// import 'package:hide_and_street/game_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:share/share.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../PreferencesManager.dart';
-import 'package:hide_and_street/monetization/AdmobHelper.dart';
-import 'package:hide_and_street/monetization/PremiumStatus.dart';
+import 'package:HideAndStreet/monetization/AdmobHelper.dart';
+import 'package:HideAndStreet/monetization/PremiumStatus.dart';
 import '../WebSocketManager.dart';
 import 'Game/GameModes/ClassicMode.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:hide_and_street/monetization/AdmobHelper.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class WaitingScreen extends StatefulWidget {
@@ -44,7 +42,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
   void initState() {
     super.initState();
 
-    if (PremiumStatus().isPremium) {
+    if (PremiumStatus().isPremium == false) {
       admobHelper.createInterstitialAd().then((_) {
         admobHelper.showInterstitialAd();
       });
@@ -130,7 +128,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
 
 
   void _startGame() {
-    if (selectedPlayers.length < 0) { //TODO : Replace by 1
+    if (selectedPlayers.length < 1) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -149,7 +147,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
         },
       );
       return;
-    } else if (selectedPlayers.length > (playersData.length - 0)) { //TODO: Replace by one
+    } else if (selectedPlayers.length > (playersData.length - 1)) {
       showDialog(
         context: context,
         builder: (BuildContext context) {

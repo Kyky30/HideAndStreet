@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:hide_and_street/Page/winPage.dart';
+import 'package:HideAndStreet/Page/winPage.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -19,9 +19,9 @@ import 'Page/Chat/chat.dart';
 import 'package:flutter/services.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-import 'package:hide_and_street/components/inGamePlayerList.dart';
-import 'package:hide_and_street/components/buttons.dart';
-import 'package:hide_and_street/components/alertbox.dart';
+import 'package:HideAndStreet/components/inGamePlayerList.dart';
+import 'package:HideAndStreet/components/buttons.dart';
+import 'package:HideAndStreet/components/alertbox.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class GameMap extends StatefulWidget {

@@ -1,6 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:hide_and_street/PreferencesManager.dart';
-import 'package:hide_and_street/components/alertbox.dart';
+import 'package:HideAndStreet/PreferencesManager.dart';
+import 'package:HideAndStreet/components/alertbox.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

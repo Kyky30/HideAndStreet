@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:hide_and_street/Page/map_conf_screen.dart';
-import 'package:hide_and_street/main.dart';
-import 'package:hide_and_street/room_joining.dart';
+import 'package:HideAndStreet/Page/map_conf_screen.dart';
+import 'package:HideAndStreet/main.dart';
+import 'package:HideAndStreet/room_joining.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:hide_and_street/WebSocketManager.dart';
+import 'package:HideAndStreet/WebSocketManager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 

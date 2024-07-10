@@ -5,8 +5,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../WebSocketManager.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:hide_and_street/components/input.dart';
-import 'package:hide_and_street/Page/Game/GameUtilities/ModerationUtilities.dart';
+import 'package:HideAndStreet/components/input.dart';
+import 'package:HideAndStreet/Page/Game/GameUtilities/ModerationUtilities.dart';
 
 import 'chat_model.dart';
 import 'chat_controller.dart';
