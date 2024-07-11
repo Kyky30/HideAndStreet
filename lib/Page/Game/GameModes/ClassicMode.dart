@@ -250,6 +250,7 @@ class _ClassicModeState extends State<ClassicMode> {
 
       currentPosition = await locationUtilities.updateMyPosition();
       serverUtilities.setPosition(currentPosition);
+      tauntUtilities.updatePosition(currentPosition);
       isOutsideZoneNotifier.value = amIOutOfZone();
 
 

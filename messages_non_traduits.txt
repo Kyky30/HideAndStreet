@@ -34,7 +34,11 @@
     "tts_a_dit",
     "tts_partie_terminee",
     "volume_label",
-    "boutique_bientot_dispo"
+    "boutique_bientot_dispo",
+    "titre_popup_duree_trop_courte",
+    "texte_popup_duree_trop_courte",
+    "titre_popup_duree_trop_longue",
+    "texte_popup_duree_trop_longue"
   ],
 
   "de": [
@@ -71,7 +75,11 @@
     "tts_a_dit",
     "tts_partie_terminee",
     "volume_label",
-    "boutique_bientot_dispo"
+    "boutique_bientot_dispo",
+    "titre_popup_duree_trop_courte",
+    "texte_popup_duree_trop_courte",
+    "titre_popup_duree_trop_longue",
+    "texte_popup_duree_trop_longue"
   ],
 
   "en": [
@@ -108,7 +116,11 @@
     "tts_a_dit",
     "tts_partie_terminee",
     "volume_label",
-    "boutique_bientot_dispo"
+    "boutique_bientot_dispo",
+    "titre_popup_duree_trop_courte",
+    "texte_popup_duree_trop_courte",
+    "titre_popup_duree_trop_longue",
+    "texte_popup_duree_trop_longue"
   ],
 
   "es": [
@@ -145,7 +157,11 @@
     "tts_a_dit",
     "tts_partie_terminee",
     "volume_label",
-    "boutique_bientot_dispo"
+    "boutique_bientot_dispo",
+    "titre_popup_duree_trop_courte",
+    "texte_popup_duree_trop_courte",
+    "titre_popup_duree_trop_longue",
+    "texte_popup_duree_trop_longue"
   ],
 
   "fi": [
@@ -182,7 +198,11 @@
     "tts_a_dit",
     "tts_partie_terminee",
     "volume_label",
-    "boutique_bientot_dispo"
+    "boutique_bientot_dispo",
+    "titre_popup_duree_trop_courte",
+    "texte_popup_duree_trop_courte",
+    "titre_popup_duree_trop_longue",
+    "texte_popup_duree_trop_longue"
   ],
 
   "hi": [
@@ -219,7 +239,11 @@
     "tts_a_dit",
     "tts_partie_terminee",
     "volume_label",
-    "boutique_bientot_dispo"
+    "boutique_bientot_dispo",
+    "titre_popup_duree_trop_courte",
+    "texte_popup_duree_trop_courte",
+    "titre_popup_duree_trop_longue",
+    "texte_popup_duree_trop_longue"
   ],
 
   "it": [
@@ -256,7 +280,11 @@
     "tts_a_dit",
     "tts_partie_terminee",
     "volume_label",
-    "boutique_bientot_dispo"
+    "boutique_bientot_dispo",
+    "titre_popup_duree_trop_courte",
+    "texte_popup_duree_trop_courte",
+    "titre_popup_duree_trop_longue",
+    "texte_popup_duree_trop_longue"
   ],
 
   "ja": [
@@ -293,7 +321,11 @@
     "tts_a_dit",
     "tts_partie_terminee",
     "volume_label",
-    "boutique_bientot_dispo"
+    "boutique_bientot_dispo",
+    "titre_popup_duree_trop_courte",
+    "texte_popup_duree_trop_courte",
+    "titre_popup_duree_trop_longue",
+    "texte_popup_duree_trop_longue"
   ],
 
   "ko": [
@@ -330,7 +362,11 @@
     "tts_a_dit",
     "tts_partie_terminee",
     "volume_label",
-    "boutique_bientot_dispo"
+    "boutique_bientot_dispo",
+    "titre_popup_duree_trop_courte",
+    "texte_popup_duree_trop_courte",
+    "titre_popup_duree_trop_longue",
+    "texte_popup_duree_trop_longue"
   ],
 
   "pl": [
@@ -367,7 +403,11 @@
     "tts_a_dit",
     "tts_partie_terminee",
     "volume_label",
-    "boutique_bientot_dispo"
+    "boutique_bientot_dispo",
+    "titre_popup_duree_trop_courte",
+    "texte_popup_duree_trop_courte",
+    "titre_popup_duree_trop_longue",
+    "texte_popup_duree_trop_longue"
   ],
 
   "pt": [
@@ -404,7 +444,11 @@
     "tts_a_dit",
     "tts_partie_terminee",
     "volume_label",
-    "boutique_bientot_dispo"
+    "boutique_bientot_dispo",
+    "titre_popup_duree_trop_courte",
+    "texte_popup_duree_trop_courte",
+    "titre_popup_duree_trop_longue",
+    "texte_popup_duree_trop_longue"
   ],
 
   "ru": [
@@ -442,7 +486,11 @@
     "tts_a_dit",
     "tts_partie_terminee",
     "volume_label",
-    "boutique_bientot_dispo"
+    "boutique_bientot_dispo",
+    "titre_popup_duree_trop_courte",
+    "texte_popup_duree_trop_courte",
+    "titre_popup_duree_trop_longue",
+    "texte_popup_duree_trop_longue"
   ],
 
   "sv": [
@@ -479,7 +527,11 @@
     "tts_a_dit",
     "tts_partie_terminee",
     "volume_label",
-    "boutique_bientot_dispo"
+    "boutique_bientot_dispo",
+    "titre_popup_duree_trop_courte",
+    "texte_popup_duree_trop_courte",
+    "titre_popup_duree_trop_longue",
+    "texte_popup_duree_trop_longue"
   ],
 
   "vi": [
@@ -516,7 +568,11 @@
     "tts_a_dit",
     "tts_partie_terminee",
     "volume_label",
-    "boutique_bientot_dispo"
+    "boutique_bientot_dispo",
+    "titre_popup_duree_trop_courte",
+    "texte_popup_duree_trop_courte",
+    "titre_popup_duree_trop_longue",
+    "texte_popup_duree_trop_longue"
   ],
 
   "zh": [
@@ -554,6 +610,10 @@
     "tts_a_dit",
     "tts_partie_terminee",
     "volume_label",
-    "boutique_bientot_dispo"
+    "boutique_bientot_dispo",
+    "titre_popup_duree_trop_courte",
+    "texte_popup_duree_trop_courte",
+    "titre_popup_duree_trop_longue",
+    "texte_popup_duree_trop_longue"
   ]
 }

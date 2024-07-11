@@ -88,146 +88,139 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     final scaleFactor = getScaleFactor(context);
 
     return Scaffold(
-        body: Container(
+      body: Container(
         height: MediaQuery.of(context).size.height,
-    child: Padding(
-    padding: const EdgeInsets.all(16.0),
-    child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-    SizedBox(height: 20 * scaleFactor),
-    if (PremiumStatus().isPremium == false)
-    Container(
-    child: AdWidget(
-    ad: AdmobHelper.getBannerAd()..load(),
-    key: UniqueKey(),
-    ),
-    height: 75 * scaleFactor,
-    ),
-    Card(
-    child: ListTile(
-    leading: const Icon(Symbols.account_box_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
-    title: Text(username, style: TextStyle(fontSize: 18 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
-    subtitle: Text(email, style: TextStyle(fontSize: 16 * scaleFactor, fontWeight: FontWeight.w400, fontFamily: 'Poppins')),
-    ),
-    ),
-    Card(
-    child: ListTile(
-    leading: const Icon(Symbols.calendar_today_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
-    title: Text(AppLocalizations.of(context)!.creationDateLabel, style: TextStyle(fontSize: 18 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
-    subtitle: Text(dateCreation, style: TextStyle(fontSize: 16 * scaleFactor, fontWeight: FontWeight.w400, fontFamily: 'Poppins')),
-    ),
-    ),
-    Row(
-      children: [Container(
-        width: MediaQuery.of(context).size.width * 0.45,
-        child: Card(
-          child: ListTile(
-            leading: const Icon(Symbols.sports_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
-            title: Text(AppLocalizations.of(context)!.playedGames, style: TextStyle(fontSize: 18 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
-            subtitle: Text(playedGames, style: TextStyle(fontSize: 16 * scaleFactor, fontWeight: FontWeight.w400, fontFamily: 'Poppins')),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 20 * scaleFactor),
+              if (PremiumStatus().isPremium == false)
+                Container(
+                  child: AdWidget(
+                    ad: AdmobHelper.getBannerAd()..load(),
+                    key: UniqueKey(),
+                  ),
+                  height: 75 * scaleFactor,
+                ),
+              Expanded(
+                child: ListView(
+                  children: [
+                    Card(
+                      child: ListTile(
+                        leading: const Icon(Symbols.account_box_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
+                        title: Text(username, style: TextStyle(fontSize: 18 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
+                        subtitle: Text(email, style: TextStyle(fontSize: 16 * scaleFactor, fontWeight: FontWeight.w400, fontFamily: 'Poppins')),
+                      ),
+                    ),
+                    Card(
+                      child: ListTile(
+                        leading: const Icon(Symbols.calendar_today_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
+                        title: Text(AppLocalizations.of(context)!.creationDateLabel, style: TextStyle(fontSize: 18 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
+                        subtitle: Text(dateCreation, style: TextStyle(fontSize: 16 * scaleFactor, fontWeight: FontWeight.w400, fontFamily: 'Poppins')),
+                      ),
+                    ),
+                    Card(
+                      child: ListTile(
+                        leading: const Icon(Symbols.sports_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
+                        title: Text(AppLocalizations.of(context)!.playedGames, style: TextStyle(fontSize: 18 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
+                        subtitle: Text(playedGames, style: TextStyle(fontSize: 16 * scaleFactor, fontWeight: FontWeight.w400, fontFamily: 'Poppins')),
+                      ),
+                    ),
+                    Card(
+                      child: ListTile(
+                        leading: const Icon(Symbols.trophy_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
+                        title: Text(AppLocalizations.of(context)!.wonGames, style: TextStyle(fontSize: 18 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
+                        subtitle: Text(wonGames, style: TextStyle(fontSize: 16 * scaleFactor, fontWeight: FontWeight.w400, fontFamily: 'Poppins')),
+                      ),
+                    ),
+                    Card(
+                      child: SwitchListTile(
+                        title: Text(AppLocalizations.of(context)!.blind_toggle_label, style: TextStyle(fontSize: 18 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
+                        value: isBlindModeEnabled,
+                        onChanged: (value) {
+                          setState(() {
+                            isBlindModeEnabled = value;
+                          });
+                          _saveBlindMode();
+                        },
+                      ),
+                    ),
+                    Card(
+                      child: ListTile(
+                        leading: Icon(Icons.volume_up),
+                        title: Text(AppLocalizations.of(context)!.volume_label, style: TextStyle(fontSize: 18 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
+                        subtitle: Slider(
+                          value: volume,
+                          min: 0.0,
+                          max: 1.0,
+                          onChanged: (newValue) {
+                            setState(() {
+                              volume = newValue;
+                            });
+                            PreferencesManager.setMusicVolume(volume);
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20 * scaleFactor),
+              CustomButton(
+                text: AppLocalizations.of(context)!.boutonSupprimerCompte,
+                onPressed: () {
+                  launchUrl(Uri.parse(deleteAccountUrl));
+                },
+                scaleFactor: scaleFactor,
+                height: 50,
+                backgroundColor: const Color(0xFF8C2020),
+              ),
+              SizedBox(height: 10 * scaleFactor),
+              CustomButton(
+                text: AppLocalizations.of(context)!.deconnexion,
+                onPressed: () => _logout(context),
+                height: 70,
+                scaleFactor: scaleFactor,
+              ),
+              SizedBox(height: 10 * scaleFactor),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      launchUrl(Uri.parse(cguUrl));
+                    },
+                    child: Text(
+                      AppLocalizations.of(context)!.cgu,
+                      style: TextStyle(color: Colors.black, fontSize: 13 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      launchUrl(Uri.parse(cgvUrl));
+                    },
+                    child: Text(
+                      AppLocalizations.of(context)!.cgv,
+                      style: TextStyle(color: Colors.black, fontSize: 13 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      launchUrl(Uri.parse(privacyUrl));
+                    },
+                    child: Text(
+                      AppLocalizations.of(context)!.privacy,
+                      style: TextStyle(color: Colors.black, fontSize: 13 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
-        SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-        Container(
-        width: MediaQuery.of(context).size.width * 0.45,
-        child: Card(
-          child: ListTile(
-            leading: const Icon(Symbols.trophy_rounded, fill: 1, weight: 700, grade: 200, opticalSize: 24),
-            title: Text(AppLocalizations.of(context)!.wonGames, style: TextStyle(fontSize: 18 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
-            subtitle: Text(wonGames, style: TextStyle(fontSize: 16 * scaleFactor, fontWeight: FontWeight.w400, fontFamily: 'Poppins')),
-          ),
-        ),
-      )],
-    ),
-    Card(
-    child: SwitchListTile(
-    title: Text(AppLocalizations.of(context)!.blind_toggle_label, style: TextStyle(fontSize: 18 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
-    value: isBlindModeEnabled,
-    onChanged: (value) {
-    setState(() {
-    isBlindModeEnabled = value;
-    });
-    _saveBlindMode();
-    },
-    ),
-    ),
-    Card(
-        child: ListTile(
-          leading: Icon(Icons.volume_up),
-          title: Text(AppLocalizations.of(context)!.volume_label, style: TextStyle(fontSize: 18 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins')),
-          subtitle: Slider(
-            value: volume,
-            min: 0.0,
-            max: 1.0,
-            onChanged: (newValue) {
-              setState(() {
-                volume = newValue;
-              });
-              PreferencesManager.setMusicVolume(volume);
-            },
-          ),
-        ),
-      ),
-
-    const Spacer(),
-    CustomButton(
-    text: AppLocalizations.of(context)!.boutonSupprimerCompte,
-    onPressed: () {
-    launchUrl(Uri.parse(deleteAccountUrl));
-    },
-    scaleFactor: scaleFactor,
-    height: 50,
-    backgroundColor: const Color(0xFF8C2020),
-    ),
-    SizedBox(height: 10 * scaleFactor),
-    CustomButton(
-    text: AppLocalizations.of(context)!.deconnexion,
-    onPressed: () => _logout(context),
-    height: 70,
-    scaleFactor: scaleFactor
-    ),
-    SizedBox(height: 10 * scaleFactor),
-    Row(
-    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    children: [
-    TextButton(
-    onPressed: () {
-    launchUrl(Uri.parse(cguUrl));
-    },
-    child: Text(
-    AppLocalizations.of(context)!.cgu,
-    style: TextStyle(color: Colors.black, fontSize: 13 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
-    ),
-    ),
-    TextButton(
-    onPressed: () {
-    launchUrl(Uri.parse(cgvUrl));
-    },
-    child: Text(
-    AppLocalizations.of(context)!.cgv,
-    style: TextStyle(color: Colors.black, fontSize: 13 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
-    ),
-    ),
-    TextButton(
-    onPressed: () {
-    launchUrl(Uri.parse(privacyUrl));
-    },
-    child: Text(
-    AppLocalizations.of(context)!.privacy,
-    style: TextStyle(color: Colors.black, fontSize: 13 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
-    ),
-    ),
-    ],
-    ),
-    ],
-    ),
-    ),
-    ),
     );
-
-
-
   }
 }

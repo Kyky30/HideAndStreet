@@ -67,6 +67,7 @@ dependencies:
   flutter_local_notifications: ^17.2.1
   flutter_background_service: ^5.0.6
   flutter_tts: ^4.0.2
+  permission_handler: ^11.3.1
 
 
 
@@ -92,9 +93,8 @@ flutter:
     - assets/logo.png
     - assets/logo_problem.png
     - assets/background_white.jpg
-    - assets/Patate.mp3
+    - assets/TauntHorn.mp3
     - assets/Beep.mp3
-    - assets/PatateLong.mp3
     - assets/HidersMusic.mp3
     - assets/SeekersMusic.mp3
     - assets/Waiting.mp3

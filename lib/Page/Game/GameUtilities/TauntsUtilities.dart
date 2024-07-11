@@ -10,7 +10,7 @@ class TauntsUtilities extends ChangeNotifier {
   bool _isDrawerOpen = false;
   AudioPlayer player = AudioPlayer();
   final ServerUtilities serverUtilities;
-  final Position position;
+  late Position position;
 
   bool get isDrawerOpen => _isDrawerOpen;
 
@@ -23,12 +23,12 @@ class TauntsUtilities extends ChangeNotifier {
 
   void tauntSonoreCourt() {
     HapticFeedback.heavyImpact();
-    player.setSourceAsset("Patate.mp3");
+    player.setSourceAsset("TauntHorn.mp3");
     player.play(player.source!);
   }
 
-  void updatePosition(Position position) {
-    position = position;
+  void updatePosition(Position NewPosition) {
+    position = NewPosition;
   }
 }
 
