@@ -13,6 +13,7 @@ import '../WebSocketManager.dart';
 import 'Game/GameModes/ClassicMode.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:HideAndStreet/components/alertbox.dart';
 
 class WaitingScreen extends StatefulWidget {
   final String gameCode;
@@ -132,17 +133,14 @@ class _WaitingScreenState extends State<WaitingScreen> {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(AppLocalizations.of(context)!.titre_popup_pas_assez_chercheurs),
-            content: Text(AppLocalizations.of(context)!.texte_popup_pas_assez_chercheurs),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text("OK"),
-              ),
-            ],
+          return CustomAlertDialog1(
+            title: AppLocalizations.of(context)!.titre_popup_pas_assez_chercheurs,
+            content: AppLocalizations.of(context)!.texte_popup_pas_assez_chercheurs,
+            buttonText: AppLocalizations.of(context)!.ok,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            scaleFactor: MediaQuery.of(context).textScaleFactor,
           );
         },
       );
@@ -151,17 +149,14 @@ class _WaitingScreenState extends State<WaitingScreen> {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(AppLocalizations.of(context)!.titre_popup_pas_assez_cacheurs),
-            content: Text(AppLocalizations.of(context)!.texte_popup_pas_assez_cacheurs),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text("OK"),
-              ),
-            ],
+          return CustomAlertDialog1(
+            title: AppLocalizations.of(context)!.titre_popup_pas_assez_cacheurs,
+            content: AppLocalizations.of(context)!.texte_popup_pas_assez_cacheurs,
+            buttonText: AppLocalizations.of(context)!.ok,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            scaleFactor: MediaQuery.of(context).textScaleFactor,
           );
         },
       );

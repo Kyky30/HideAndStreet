@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-
 import 'package:HideAndStreet/Page/map_conf_screen.dart';
-
 import 'package:HideAndStreet/room_joining.dart';
-
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:HideAndStreet/components/buttons.dart';
 import 'package:HideAndStreet/components/alertbox.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -20,6 +18,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _showFirstLaunchDialog();
+    _determinePermissions();
   }
 
   Future<void> _showFirstLaunchDialog() async {
@@ -46,6 +45,38 @@ class _HomePageState extends State<HomePage> {
   double getScaleFactor(BuildContext context) {
     final mediaQueryData = MediaQuery.of(context);
     return mediaQueryData.textScaleFactor;
+  }
+
+  Future<void> _determinePermissions() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Permission de localisation ------------------------------------------------
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return CustomAlertDialog1(
+            title: AppLocalizations.of(context)!.locationPermissions,
+            content: AppLocalizations.of(context)!.locationPermissionsMessage,
+            buttonText: AppLocalizations.of(context)!.ok,
+            onPressed: () async {
+              Navigator.of(context).pop();
+              permission = await Geolocator.requestPermission();
+            },
+            scaleFactor: MediaQuery.of(context).textScaleFactor,
+          );
+        },
+      );
+    }
+
+    // Permission de notification ------------------------------------------------
+    await Permission.notification.isDenied.then((value) {
+      if (value) {
+        Permission.notification.request();
+      }
+    });
   }
 
   @override
@@ -87,33 +118,30 @@ class _HomePageState extends State<HomePage> {
                 // Spacer pour remplir l'espace disponible
                 const Spacer(),
                 // Boutons pour créer et rejoindre une partie
-
                 CustomButton(
-                    text: AppLocalizations.of(context)!.creerpartie,
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const MapConfScreen(),
-                        ),
-                      );
-                    },
-                    scaleFactor: scaleFactor
+                  text: AppLocalizations.of(context)!.creerpartie,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const MapConfScreen(),
+                      ),
+                    );
+                  },
+                  scaleFactor: scaleFactor,
                 ),
-
                 SizedBox(height: 16 * scaleFactor),
-
                 CustomButton(
-                    text: AppLocalizations.of(context)!.rejoindrepartie,
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const RoomJoiningPage(),
-                        ),
-                      );
-                    },
-                    scaleFactor: scaleFactor
+                  text: AppLocalizations.of(context)!.rejoindrepartie,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const RoomJoiningPage(),
+                      ),
+                    );
+                  },
+                  scaleFactor: scaleFactor,
                 ),
               ],
             ),
