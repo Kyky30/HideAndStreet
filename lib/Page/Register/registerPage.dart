@@ -7,6 +7,7 @@ import 'package:HideAndStreet/components/input.dart';
 
 import 'package:HideAndStreet/Page/Register/registerModel.dart';
 import 'package:HideAndStreet/General/alertDialogs.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -15,7 +16,6 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   RegisterModel model = RegisterModel();
-
 
   @override
   void initState() {
@@ -41,7 +41,6 @@ class _RegisterPageState extends State<RegisterPage> {
     super.didChangeDependencies();
     model.TexteSelctionDate = AppLocalizations.of(context)?.selection_bday ?? "";
   }
-
 
   _loadBlindToggle() async {
     bool blindToggle = await PreferencesManager.getBlindToggle();
@@ -167,16 +166,16 @@ class _RegisterPageState extends State<RegisterPage> {
         itemCount: _steps(context).length,
         physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
-          return _buildStepPage(_steps(context)[index]);
+          return _buildStepPage(_steps(context)[index], index);
         },
       ),
     );
   }
 
-
-
-  Widget _buildStepPage(RegistrationStep step) {
+  Widget _buildStepPage(RegistrationStep step, int index) {
     final scaleFactor = model.getScaleFactor(context);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final buttonWidth = (screenWidth / 2) - 32; // Ajustez en fonction des marges et de l'espacement désiré
 
     return SingleChildScrollView(
       child: Stack(
@@ -237,10 +236,10 @@ class _RegisterPageState extends State<RegisterPage> {
                         },
                       )
                           : CustomTextField(
-                          obscureText: field.isPassword,
-                          hintText: field.hint ?? '',
-                          controller: field.controller ?? TextEditingController(),
-                          scaleFactor: scaleFactor
+                        obscureText: field.isPassword,
+                        hintText: field.hint ?? '',
+                        controller: field.controller ?? TextEditingController(),
+                        scaleFactor: scaleFactor,
                       ),
                     ),
                 ],
@@ -253,18 +252,41 @@ class _RegisterPageState extends State<RegisterPage> {
             right: 0,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: CustomButton(
-                text: step.buttonText,
-                onPressed: () {
-                  if (step.validate != null) {
-                    step.validate!();
-                  } else {
-                    if (step.onTap != null) {
-                      step.onTap!();
-                    }
-                  }
-                },
-                scaleFactor: MediaQuery.of(context).textScaleFactor,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CustomButtonWithSymbol(
+                    text: "",
+                    icon: Symbols.arrow_back_ios_rounded,
+                    backgroundColor: const Color(0xFF8C2020),
+                    widthMinus: (screenWidth / 4).toInt()*4, // Ajustez la largeur en fonction de l'écran
+                    onPressed: () {
+                      if (model.pageController.page?.toInt() == 0) {
+                        Navigator.of(context).pop();
+                      } else {
+                        model.pageController.previousPage(
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.easeInOut,
+                        );
+                      }
+                    },
+                    scaleFactor: MediaQuery.of(context).textScaleFactor,
+                  ),
+                  CustomButton(
+                    widthMinus: (screenWidth / 8).toInt()*3, // Ajustez la largeur en fonction de l'écran
+                    text: step.buttonText,
+                    onPressed: () {
+                      if (step.validate != null) {
+                        step.validate!();
+                      } else {
+                        if (step.onTap != null) {
+                          step.onTap!();
+                        }
+                      }
+                    },
+                    scaleFactor: MediaQuery.of(context).textScaleFactor,
+                  ),
+                ],
               ),
             ),
           ),
@@ -287,6 +309,4 @@ class _RegisterPageState extends State<RegisterPage> {
       });
     }
   }
-
 }
-

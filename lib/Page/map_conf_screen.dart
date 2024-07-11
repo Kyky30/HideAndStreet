@@ -6,12 +6,10 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:HideAndStreet/components/alertbox.dart';
 
-
 import 'room_creation.dart';
 import '../PreferencesManager.dart';
 
 import 'package:HideAndStreet/components/buttons.dart';
-
 
 class MapConfScreen extends StatefulWidget {
   const MapConfScreen({Key? key}) : super(key: key);
@@ -63,35 +61,43 @@ class _MapConfScreenState extends State<MapConfScreen> {
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return CustomAlertDialog1(
-            title: AppLocalizations.of(context)!.locationPermissions,
-            content: AppLocalizations.of(context)!.locationPermissionsMessage,
-            buttonText: AppLocalizations.of(context)!.ok,
-            onPressed: () async {
-              Navigator.of(context).pop();
-              permission = await Geolocator.requestPermission();
+      permission = await Geolocator.requestPermission();
+    }
 
-            },
-            scaleFactor: MediaQuery.of(context).textScaleFactor,
-          );
-        },
-      );
-      if (permission == LocationPermission.denied) {
-        // Permissions are denied, request permissions again.
-        return Future.error('Location permissions are denied');
-      }
+    if (permission == LocationPermission.denied) {
+      return Future.error('Location permissions are denied.');
     }
 
     if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever.
       return Future.error('Location permissions are permanently denied.');
     }
 
     // Permissions are granted, continue accessing the position of the device.
     return await Geolocator.getCurrentPosition();
+  }
+
+  void _handleLocationPermissions(BuildContext context) async {
+    await Geolocator.requestPermission().then((LocationPermission permission) {
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return CustomAlertDialog1(
+              title: AppLocalizations.of(context)!.locationPermissions,
+              content: AppLocalizations.of(context)!.locationPermissionsMessage,
+              buttonText: AppLocalizations.of(context)!.ok,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              scaleFactor: MediaQuery.of(context).textScaleFactor,
+            );
+          },
+        );
+      } else {
+        _initializeState();
+      }
+    });
   }
 
   @override
@@ -103,7 +109,14 @@ class _MapConfScreenState extends State<MapConfScreen> {
     } else {
       return Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.configmaptitle, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins',)),
+          title: Text(
+            AppLocalizations.of(context)!.configmaptitle,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              fontFamily: 'Poppins',
+            ),
+          ),
         ),
         body: Column(
           children: [
@@ -156,39 +169,45 @@ class _MapConfScreenState extends State<MapConfScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  CustomButton
-                    (
-                      text: AppLocalizations.of(context)!.moins_5m,
-                      onPressed: () {
-                        setState(() {
-                          radius -= 5;
-                        });
-                        },
-                      scaleFactor: MediaQuery.of(context).textScaleFactor,
-                      widthMinus: 300,
+                  CustomButton(
+                    text: AppLocalizations.of(context)!.moins_5m,
+                    onPressed: () {
+                      setState(() {
+                        radius -= 5;
+                      });
+                    },
+                    scaleFactor: MediaQuery.of(context).textScaleFactor,
+                    widthMinus: 300,
                   ),
                   Column(
                     children: [
                       Text(
                         AppLocalizations.of(context)!.rayon + ' : ',
-                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins',),
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'Poppins',
+                        ),
                       ),
                       Text(
                         radius.toStringAsFixed(0) + ' m',
-                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'Poppins',),
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'Poppins',
+                        ),
                       ),
                     ],
                   ),
-                  CustomButton
-                    (
-                      text: AppLocalizations.of(context)!.plus_5m,
-                      onPressed: () {
-                        setState(() {
-                          radius += 5;
-                        });
-                      },
-                      scaleFactor: MediaQuery.of(context).textScaleFactor,
-                      widthMinus: 300,
+                  CustomButton(
+                    text: AppLocalizations.of(context)!.plus_5m,
+                    onPressed: () {
+                      setState(() {
+                        radius += 5;
+                      });
+                    },
+                    scaleFactor: MediaQuery.of(context).textScaleFactor,
+                    widthMinus: 300,
                   ),
                 ],
               ),
@@ -198,8 +217,7 @@ class _MapConfScreenState extends State<MapConfScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 if (!isBlindModeEnabled) ...[
-                  CustomButton
-                    (
+                  CustomButton(
                     text: AppLocalizations.of(context)!.centrer,
                     backgroundColor: const Color(0xFF7375A8),
                     foregroundColor: const Color(0xFF64679D),
@@ -212,9 +230,7 @@ class _MapConfScreenState extends State<MapConfScreen> {
                     widthMinus: 275,
                   ),
                 ],
-
-                CustomButton
-                  (
+                CustomButton(
                   text: AppLocalizations.of(context)!.confirmer,
                   onPressed: () {
                     Navigator.push(

@@ -1,15 +1,9 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_bcrypt/flutter_bcrypt.dart';
-import 'package:web_socket_channel/io.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import 'dart:developer' as developer;
-
 import 'package:HideAndStreet/Page/Login/loginPage.dart';
-
 import '../../components/alertbox.dart';
+import 'package:HideAndStreet/WebSocketManager.dart';
 
 class RegisterModel {
   GlobalKey<FormFieldState<String>> dateOfBirthKey = GlobalKey<FormFieldState<String>>();
@@ -33,88 +27,80 @@ class RegisterModel {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
 
+  bool _isDialogVisible = false; // Variable pour suivre l'état de la boîte de dialogue
+
   void signUp(BuildContext context, String emailValues, String pseudoValues, String passwordValues, String confirmPasswordValues) async {
     // Check if email is valid.
     bool isValid = RegExp(
         r"^[a-zA-Z0-9.a-zA-Z0-9!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
         .hasMatch(emailValues);
-    String auth = "chatappauthkey231r4";
+
     // Check if email is valid
     if (isValid) {
       if (passwordValues == confirmPasswordValues) {
-        IOWebSocketChannel channel;
         try {
-          // Create connection.
-          channel = IOWebSocketChannel.connect('wss://app.hideandstreet.furrball.fr/signup$emailValues');
-          print("Connexion réussie inshallah");
+          await WebSocketManager.connect(emailValues);
+
+          // Send data to Node.js
+          await WebSocketManager.sendData("'cmd':'signup', 'email':'$emailValues', 'username':'$pseudoValues','hash':'$passwordValues'");
+
+          // Listen for data from the server
+          WebSocketManager.getStream().listen((event) async {
+            event = event.replaceAll(RegExp("'"), '"');
+            var signupData = json.decode(event);
+            debugPrint(signupData.toString());
+
+            // Check if the status is successful
+            if (signupData["status"] == 'success') {
+              // Return user to login if successful
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => LoginPage()),
+              );
+            } else if (signupData["status"] == 'user_exists') {
+              _handleError(context, AppLocalizations.of(context)!.nom_dutilisateur_deja_utilise, 1);
+            } else if (signupData["status"] == 'mail_exists') {
+              _handleError(context, AppLocalizations.of(context)!.email_deja_utilise, 2);
+            }
+          });
         } catch (e) {
           print("Error on connecting to websocket: " + e.toString());
-          return;
         }
-        // Data that will be sent to Node.js
-        String hashedPassword = await FlutterBcrypt.hashPw(
-          password : passwordValues,
-          salt : await FlutterBcrypt.salt(),
-        );
-        String signUpData =
-            "{'auth':'$auth','cmd':'signup','email':'$emailValues','username':'$pseudoValues','hash':'$passwordValues'}";
-        // Send data to Node.js
-        channel.sink.add(signUpData);
-        // Listen for data from the server
-        channel.stream.listen((event) async {
-          developer.log(signUpData);
-          event = event.replaceAll(RegExp("'"), '"');
-          var signupData = json.decode(event);
-          debugPrint(signupData.toString());
-          // Check if the status is successful
-          if (signupData["status"] == 'success') {
-            // Close connection.
-            channel.sink.close();
-            // Return user to login if successful
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => LoginPage()),
-            );
-          } else if (signupData["status"] == 'user_exists') {
-            channel.sink.close();
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return CustomAlertDialog1(
-                  title: AppLocalizations.of(context)!.erreur,
-                  content: AppLocalizations.of(context)!.nom_dutilisateur_deja_utilise,
-                  buttonText: AppLocalizations.of(context)!.ok,
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  scaleFactor: getScaleFactor(context),
-                );
-              },
-            );
-          } else if (signupData["status"] == 'mail_exists') {
-            channel.sink.close();
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return CustomAlertDialog1(
-                  title: AppLocalizations.of(context)!.erreur,
-                  content: AppLocalizations.of(context)!.email_deja_utilise,
-                  buttonText: AppLocalizations.of(context)!.ok,
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  scaleFactor: getScaleFactor(context),
-                );
-              },
-            );
-          }
-        });
       } else {
         print("Passwords do not match");
       }
     } else {
       print("Invalid email");
     }
+  }
+
+  void _handleError(BuildContext context, String content, int stepIndex) {
+    if (!_isDialogVisible) {
+      _isDialogVisible = true;
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CustomAlertDialog1(
+            title: AppLocalizations.of(context)!.erreur,
+            content: content,
+            buttonText: AppLocalizations.of(context)!.ok,
+            onPressed: () {
+              Navigator.of(context).pop();
+              _isDialogVisible = false;
+              _navigateToStep(stepIndex);
+            },
+            scaleFactor: getScaleFactor(context),
+          );
+        },
+      ).then((_) {
+        _isDialogVisible = false;
+        _navigateToStep(stepIndex);  // Ensure navigation happens after dialog is dismissed
+      });
+    }
+  }
+
+  void _navigateToStep(int stepIndex) {
+    pageController.jumpToPage(stepIndex);
   }
 
   bool isPasswordSecure(String password) {

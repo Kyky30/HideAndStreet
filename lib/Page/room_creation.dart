@@ -5,13 +5,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:HideAndStreet/Page/waitingScreen.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../WebSocketManager.dart';
 import '../components/alertbox.dart';
 import '../components/buttons.dart';
 import '../components/input.dart';
-
 
 class RoomCreationPage extends StatefulWidget {
   final LatLng initialTapPosition;
@@ -50,7 +50,6 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
     dureeCachetteController.addListener(() {
       dureeCachette = int.parse(dureeCachetteController.text);
     });
-
   }
 
   void _createGame() async {
@@ -76,7 +75,7 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => WaitingScreen(gameCode: receivedGameCode, isAdmin: true,),
+              builder: (context) => WaitingScreen(gameCode: receivedGameCode, isAdmin: true),
             ),
           );
         }
@@ -102,8 +101,6 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
       // Handle error sending data
     }
   }
-
-
 
   void getCreatorId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -144,9 +141,23 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
         if (dureePartieController.text.isEmpty) {
           _showEmptyFieldDialog(context);
         } else {
-          dureePartie = int.parse(dureePartieController.text);
-          print(dureePartie);
-          _pageController.nextPage(duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
+          try {
+            int duree = int.parse(dureePartieController.text);
+            if (duree <= 0) {
+              _showZeroFieldDialog(context);
+            } else if(duree > 120) {
+              _show2hourFieldDialog(context);
+            }
+            else {
+              dureePartie = duree;
+              print(dureePartie);
+              _pageController.nextPage(
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeInOut);
+            }
+          } catch (e) {
+            _showInvalidFieldDialog(context);
+          }
         }
       },
     ),
@@ -163,21 +174,36 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
           keyboardType: TextInputType.number, // Modifiez cette ligne
         ),
       ],
-      onTap: () {
-        if (dureeCachetteController.text.isEmpty) {
-          _showEmptyFieldDialog(context);
-        } else {
-          dureeCachette = int.parse(dureeCachetteController.text);
-          print(dureeCachette);
-          _createGame();
-          _pageController.nextPage(duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
+        onTap: () {
+          if (dureeCachetteController.text.isEmpty) {
+            _showEmptyFieldDialog(context);
+          } else {
+            try {
+              int duree = int.parse(dureeCachetteController.text);
+              if (duree < 0) {
+                _shownegFieldDialog(context);
+              } else if (duree > 120) {
+                _show2hourFieldDialog(context);
+              } else {
+                dureeCachette = duree;
+                print(dureeCachette);
+                _createGame();
+                _pageController.nextPage(
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.easeInOut);
+              }
+            } catch (e) {
+              _showInvalidFieldDialog(context);
+            }
+          }
         }
-      },
+
     ),
   ];
 
   Widget build(BuildContext context) {
     final scaleFactor = getScaleFactor(context);
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       body: PageView.builder(
@@ -185,13 +211,13 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
         itemCount: _steps(context).length,
         physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
-          return _buildStepPage(_steps(context)[index], scaleFactor);
+          return _buildStepPage(_steps(context)[index], scaleFactor, screenWidth);
         },
       ),
     );
   }
 
-  Widget _buildStepPage(RoomCreationStep step, double scaleFactor) {
+  Widget _buildStepPage(RoomCreationStep step, double scaleFactor, double screenWidth) {
     return SingleChildScrollView(
       child: Stack(
         children: [
@@ -239,8 +265,8 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
                         keyboardType: field.keyboardType,
                         hintText: field.hint,
                         scaleFactor: scaleFactor,
-                        ),
                       ),
+                    ),
                 ],
               ),
             ),
@@ -251,17 +277,37 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
             right: 0,
             child: Padding(
               padding: EdgeInsets.all(16.0 * scaleFactor),
-              child:
-
-              CustomButton
-                (
-                  text: step.buttonText,
-                  onPressed: () {
-                    if (step.onTap != null) {
-                      step.onTap!();
-                    }
-                  },
-                  scaleFactor: MediaQuery.of(context).textScaleFactor,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CustomButtonWithSymbol(
+                    text: "",
+                    icon: Symbols.arrow_back_ios_rounded,
+                    backgroundColor: const Color(0xFF8C2020),
+                    widthMinus: (screenWidth / 4).toInt()*4, // Ajustez la largeur en fonction de l'écran
+                    onPressed: () {
+                      if (_pageController.page?.toInt() == 0) {
+                        Navigator.of(context).pop();
+                      } else {
+                        _pageController.previousPage(
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.easeInOut,
+                        );
+                      }
+                    },
+                    scaleFactor: MediaQuery.of(context).textScaleFactor,
+                  ),
+                  CustomButton(
+                    widthMinus: (screenWidth / 8).toInt()*3, // Ajustez la largeur en fonction de l'écran
+                    text: step.buttonText,
+                    onPressed: () {
+                      if (step.onTap != null) {
+                        step.onTap!();
+                      }
+                    },
+                    scaleFactor: MediaQuery.of(context).textScaleFactor,
+                  ),
+                ],
               ),
             ),
           ),
@@ -276,13 +322,85 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
       context: context,
       builder: (BuildContext context) {
         return CustomAlertDialog1(
-            title: AppLocalizations.of(context)!.titre_popup_champ_vide,
-            content: AppLocalizations.of(context)!.texte_popup_champ_vide,
-            buttonText: AppLocalizations.of(context)!.ok,
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            scaleFactor: MediaQuery.of(context).textScaleFactor,
+          title: AppLocalizations.of(context)!.titre_popup_champ_vide,
+          content: AppLocalizations.of(context)!.texte_popup_champ_vide,
+          buttonText: AppLocalizations.of(context)!.ok,
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          scaleFactor: MediaQuery.of(context).textScaleFactor,
+        );
+      },
+    );
+  }
+
+  void _showZeroFieldDialog(BuildContext context) {
+    print("🚫 Champ égal à zéro ou négatif");
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CustomAlertDialog1(
+          title: AppLocalizations.of(context)!.erreur,
+          content: AppLocalizations.of(context)!.temps_de_recherche_ne_peut_etre_nul,
+          buttonText: AppLocalizations.of(context)!.ok,
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          scaleFactor: MediaQuery.of(context).textScaleFactor,
+        );
+      },
+    );
+  }
+
+  void _shownegFieldDialog(BuildContext context) {
+    print("🚫 Champ non valide");
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CustomAlertDialog1(
+          title: AppLocalizations.of(context)!.erreur,
+          content: AppLocalizations.of(context)!.le_temps_de_recherche_ne_peut_pas_etre_negatif,
+          buttonText: AppLocalizations.of(context)!.ok,
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          scaleFactor: MediaQuery.of(context).textScaleFactor,
+        );
+      },
+    );
+  }
+
+  void _show2hourFieldDialog(BuildContext context) {
+    print("🚫 Champ non valide");
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CustomAlertDialog1(
+          title: AppLocalizations.of(context)!.erreur,
+          content: AppLocalizations.of(context)!.la_duree_maximale_est_de_2_heures,
+          buttonText: AppLocalizations.of(context)!.ok,
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          scaleFactor: MediaQuery.of(context).textScaleFactor,
+        );
+      },
+    );
+  }
+
+  void _showInvalidFieldDialog(BuildContext context) {
+    print("🚫 Champ non valide");
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CustomAlertDialog1(
+          title: AppLocalizations.of(context)!.erreur,
+          content: AppLocalizations.of(context)!.la_duree_doit_etre_un_entier,
+          buttonText: AppLocalizations.of(context)!.ok,
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          scaleFactor: MediaQuery.of(context).textScaleFactor,
         );
       },
     );
@@ -320,6 +438,3 @@ class RoomCreationField {
     this.keyboardType = TextInputType.text,
   });
 }
-
-
-

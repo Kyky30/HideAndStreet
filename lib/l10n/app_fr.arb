@@ -497,6 +497,22 @@
     "@ok": {
         "description": "Bouton de ok"
     },
+    "temps_de_recherche_ne_peut_etre_nul": "Le temps de recherche ne peut pas être nul ou négatif",
+    "@temps_de_recherche_ne_peut_etre_nul": {
+        "description": "Le temps de recherche ne peut pas être nul"
+    },
+    "la_duree_doit_etre_un_entier": "La durée doit être un entier",
+    "@la_duree_doit_etre_un_entier": {
+        "description": "La durée doit être un entier"
+    },
+    "la_duree_maximale_est_de_2_heures": "La durée maximale est de 2 heures",
+    "@la_duree_maximale_est_de_2_heures": {
+        "description": "La durée maximale est de 2 heures"
+    },
+    "le_temps_de_recherche_ne_peut_pas_etre_negatif": "Le temps de recherche ne peut pas être négatif",
+    "@le_temps_de_recherche_ne_peut_pas_etre_negatif": {
+        "description": "Le temps de recherche ne peut pas être négatif"
+    },
     "erreurconnexion": "Erreur lors de la connexion vérifiez vôtre connection et redémarrez l'application",
     "@erreurconnexion": {
         "description": "Message d'erreur de connexion"
