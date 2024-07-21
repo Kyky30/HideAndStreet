@@ -1,5 +1,3 @@
-//import 'dart:nativewrappers/_internal/vm/lib/core_patch.dart';
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -164,59 +162,60 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                         ),
                       ),
                     ),
+                    SizedBox(height: 20 * scaleFactor),
+                    CustomButton(
+                      text: AppLocalizations.of(context)!.boutonSupprimerCompte,
+                      onPressed: () {
+                        launchUrl(Uri.parse(deleteAccountUrl));
+                      },
+                      scaleFactor: scaleFactor,
+                      height: 50,
+                      backgroundColor: const Color(0xFF8C2020),
+                    ),
+                    SizedBox(height: 10 * scaleFactor),
+                    CustomButton(
+                      text: AppLocalizations.of(context)!.deconnexion,
+                      onPressed: () => _logout(context),
+                      height: 70,
+                      scaleFactor: scaleFactor,
+                    ),
+                    SizedBox(height: 10 * scaleFactor),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            launchUrl(Uri.parse(cguUrl));
+                          },
+                          child: Text(
+                            AppLocalizations.of(context)!.cgu,
+                            style: TextStyle(color: Colors.black, fontSize: 13 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            launchUrl(Uri.parse(cgvUrl));
+                          },
+                          child: Text(
+                            AppLocalizations.of(context)!.cgv,
+                            style: TextStyle(color: Colors.black, fontSize: 13 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            launchUrl(Uri.parse(privacyUrl));
+                          },
+                          child: Text(
+                            AppLocalizations.of(context)!.privacy,
+                            style: TextStyle(color: Colors.black, fontSize: 13 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
-              SizedBox(height: 20 * scaleFactor),
-              CustomButton(
-                text: AppLocalizations.of(context)!.boutonSupprimerCompte,
-                onPressed: () {
-                  launchUrl(Uri.parse(deleteAccountUrl));
-                },
-                scaleFactor: scaleFactor,
-                height: 50,
-                backgroundColor: const Color(0xFF8C2020),
-              ),
-              SizedBox(height: 10 * scaleFactor),
-              CustomButton(
-                text: AppLocalizations.of(context)!.deconnexion,
-                onPressed: () => _logout(context),
-                height: 70,
-                scaleFactor: scaleFactor,
-              ),
-              SizedBox(height: 10 * scaleFactor),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      launchUrl(Uri.parse(cguUrl));
-                    },
-                    child: Text(
-                      AppLocalizations.of(context)!.cgu,
-                      style: TextStyle(color: Colors.black, fontSize: 13 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      launchUrl(Uri.parse(cgvUrl));
-                    },
-                    child: Text(
-                      AppLocalizations.of(context)!.cgv,
-                      style: TextStyle(color: Colors.black, fontSize: 13 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      launchUrl(Uri.parse(privacyUrl));
-                    },
-                    child: Text(
-                      AppLocalizations.of(context)!.privacy,
-                      style: TextStyle(color: Colors.black, fontSize: 13 * scaleFactor, fontWeight: FontWeight.w600, fontFamily: 'Poppins', backgroundColor: Colors.white),
-                    ),
-                  ),
-                ],
-              ),
+
             ],
           ),
         ),

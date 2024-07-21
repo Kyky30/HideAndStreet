@@ -413,11 +413,11 @@
     "@hint_send_message": {
         "description": "Hint de envoyer un message"
     },
-    "timer_cachette": "Temps pour se cacher : ",
+    "timer_cachette": "Cachette : ",
     "@timer_cachette": {
         "description": "Timer de cachette"
     },
-    "timer_chasse": "Temps de recherche : ",
+    "timer_chasse": "Chasse : ",
     "@timer_chasse": {
         "description": "Timer de chasse"
     },
@@ -581,7 +581,7 @@
     "@LocationPermissions": {
         "description": "Permissions de localisation"
     },
-    "locationPermissionsMessage" : "Cette application collecte des données de localisation pour activer les fonctionnalités de jeu. Rassurez-vous, elles sont suppimées après chaque partie.",
+    "locationPermissionsMessage" : "Hide & Street collecte des données de localisation lorsque l'application est utilisée mais aussi en arrière plan, dans l'écran de jeu pour le système de sortie de la zone. Rassurez-vous, ces données ne sont pas transférés à des sociétés tiers et sont effacées après chaque partie.",
     "@LocationPermissionsMessage": {
         "description": "Message de permissions de localisation"
     },
@@ -624,6 +624,10 @@
     "boutique_bientot_dispo": "Boutique bientôt disponible",
     "@boutique_bientot_dispo": {
         "description": "Boutique bientôt disponible"
+    },
+    "timer_base": "Timer : ",
+    "@timer_base": {
+        "description": "Timer de base"
     }
 
 }

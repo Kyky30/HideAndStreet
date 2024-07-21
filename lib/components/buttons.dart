@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+
 
 class CustomButton extends StatelessWidget {
   final String text;
@@ -36,19 +38,23 @@ class CustomButton extends StatelessWidget {
             cornerSmoothing: 1,
           ),
         ),
-        minimumSize: Size(MediaQuery.of(context).size.width - widthMinus, height * scaleFactor),
+        minimumSize: Size(MediaQuery.of(context).size.width - widthMinus, 75),
         backgroundColor: backgroundColor,
         foregroundColor: foregroundColor,
       ),
-      child: Text(
+      child: AutoSizeText(
         text,
+        minFontSize: 10,
+        maxFontSize: 18,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
         style: TextStyle(
           fontSize: fontSize * scaleFactor, // Adapter la taille de la police en fonction du facteur de zoom
           fontWeight: FontWeight.w600,
           fontFamily: 'Poppins',
           color: Colors.white,
         ),
-      ),
+      )
     );
   }
 }
@@ -89,7 +95,7 @@ class CustomButtonWithSymbol extends StatelessWidget {
             cornerSmoothing: 1,
           ),
         ),
-        minimumSize: Size(MediaQuery.of(context).size.width - widthMinus, height * scaleFactor),
+        minimumSize: Size(MediaQuery.of(context).size.width - widthMinus, 75),
         backgroundColor: backgroundColor,
         foregroundColor: foregroundColor,
       ),
@@ -103,15 +109,18 @@ class CustomButtonWithSymbol extends StatelessWidget {
             opticalSize: 24, // Icone du timer (horloge
             color: Colors.white,
             size: 24,),
-          Text(
+          AutoSizeText(
             text,
+            minFontSize: 10,
+            maxFontSize: 18,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              fontSize: fontSize * scaleFactor, // Adapter la taille de la police en fonction du facteur de zoom
               fontWeight: FontWeight.w600,
               fontFamily: 'Poppins',
               color: Colors.white,
             ),
-          ),
+          )
         ],
       ),
     );

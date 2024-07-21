@@ -19,33 +19,39 @@ class CustomAlertDialog1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(
-        title,
-        style: TextStyle(
-          fontSize: 20 * scaleFactor,
-          fontWeight: FontWeight.w600,
-          fontFamily: 'Poppins',
-          color: const Color(0xFF212348),
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      child: AlertDialog(
+        title: Text(
+          title,
+          style: TextStyle(
+            fontSize: 20 * scaleFactor,
+            fontWeight: FontWeight.w600,
+            fontFamily: 'Poppins',
+            color: const Color(0xFF212348),
+          ),
+        ),
+        content: Text(
+          content,
+          style: TextStyle(
+            fontSize: 16 * scaleFactor,
+            fontWeight: FontWeight.w400,
+            fontFamily: 'Poppins',
+            color: const Color(0xFF212348),
+          ),
+        ),
+        actions: <Widget>[
+          CustomButton(
+            text: buttonText,
+            onPressed: () => onPressed(),
+            backgroundColor: const Color(0xFF373967),
+            scaleFactor: scaleFactor,
+          ),
+        ],
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
         ),
       ),
-      content: Text(
-        content,
-        style: TextStyle(
-          fontSize: 16 * scaleFactor,
-          fontWeight: FontWeight.w400,
-          fontFamily: 'Poppins',
-          color: const Color(0xFF212348),
-        ),
-      ),
-      actions: <Widget>[
-        CustomButton(
-          text: buttonText,
-          onPressed: () => onPressed(),
-          backgroundColor: const Color(0xFF373967),
-          scaleFactor: scaleFactor,
-        ),
-      ],
     );
   }
 }
@@ -72,40 +78,43 @@ class CustomAlertDialog2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(
-        title,
-        style: TextStyle(
-          fontSize: 20 * scaleFactor,
-          fontWeight: FontWeight.w600,
-          fontFamily: 'Poppins',
-          color: const Color(0xFF212348),
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      child: AlertDialog(
+        title: Text(
+          title,
+          style: TextStyle(
+            fontSize: 20 * scaleFactor,
+            fontWeight: FontWeight.w600,
+            fontFamily: 'Poppins',
+            color: const Color(0xFF212348),
+          ),
         ),
+        content: Text(
+          content,
+          style: TextStyle(
+            fontSize: 16 * scaleFactor,
+            fontWeight: FontWeight.w400,
+            fontFamily: 'Poppins',
+            color: const Color(0xFF212348),
+          ),
+        ),
+        actions: <Widget>[
+          CustomButton(
+            text: buttonText1,
+            onPressed: () => onPressed1(),
+            backgroundColor: const Color(0xFF373967),
+            scaleFactor: scaleFactor,
+          ),
+          SizedBox(height: 10 * scaleFactor),
+          CustomButton(
+            text: buttonText2,
+            onPressed: () => onPressed2(),
+            backgroundColor: const Color(0xFF373967),
+            scaleFactor: scaleFactor,
+          ),
+        ],
       ),
-      content: Text(
-        content,
-        style: TextStyle(
-          fontSize: 16 * scaleFactor,
-          fontWeight: FontWeight.w400,
-          fontFamily: 'Poppins',
-          color: const Color(0xFF212348),
-        ),
-      ),
-      actions: <Widget>[
-        CustomButton(
-          text: buttonText1,
-          onPressed: () => onPressed1(),
-          backgroundColor: const Color(0xFF373967),
-          scaleFactor: scaleFactor,
-        ),
-        SizedBox(height: 10 * scaleFactor),
-        CustomButton(
-          text: buttonText2,
-          onPressed: () => onPressed2(),
-          backgroundColor: const Color(0xFF373967),
-          scaleFactor: scaleFactor,
-        ),
-      ],
     );
   }
 }

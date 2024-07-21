@@ -61,7 +61,7 @@ class _WinPageState extends State<winPage> {
             widget.isSeekerWin ? AppLocalizations.of(context)!.victoire_chercheur : AppLocalizations.of(context)!.victoire_cacheur,
             style: const TextStyle(fontSize: 25, fontWeight: FontWeight.w500, fontFamily: 'Poppins', color: Colors.blue),
           ),
-          SizedBox(height: 300 * MediaQuery.of(context).textScaleFactor),
+          SizedBox(height: 250 * MediaQuery.of(context).textScaleFactor),
           Center(
             child: Column(
               children: [

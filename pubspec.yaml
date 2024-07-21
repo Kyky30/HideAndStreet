@@ -68,6 +68,8 @@ dependencies:
   flutter_background_service: ^5.0.6
   flutter_tts: ^4.0.2
   permission_handler: ^11.3.1
+  auto_size_text: ^3.0.0
+  auto_size_text_field: ^2.2.3
 
 
 

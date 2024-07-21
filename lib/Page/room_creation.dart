@@ -7,6 +7,7 @@ import 'package:HideAndStreet/Page/waitingScreen.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 import '../WebSocketManager.dart';
 import '../components/alertbox.dart';
@@ -250,13 +251,13 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.all(16.0 * scaleFactor),
-                    child: Text(
+                  AutoSizeText(
                       step.title,
-                      style: TextStyle(fontSize: 24.0 * scaleFactor, fontWeight: FontWeight.bold),
+                      minFontSize: 20,
+                      maxFontSize: 24,
+                      maxLines: 1,
+                      style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
                     ),
-                  ),
                   for (var field in step.fields)
                     Padding(
                       padding: EdgeInsets.all(16.0 * scaleFactor),
@@ -265,6 +266,7 @@ class _RoomCreationPageState extends State<RoomCreationPage> {
                         keyboardType: field.keyboardType,
                         hintText: field.hint,
                         scaleFactor: scaleFactor,
+                        maxLength: 3,
                       ),
                     ),
                 ],

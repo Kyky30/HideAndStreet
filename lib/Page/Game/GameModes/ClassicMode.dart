@@ -102,6 +102,7 @@ class _ClassicModeState extends State<ClassicMode> {
   void initState() {
     super.initState();
     initializeService();
+
     _initializePreferences();
 
     NotificationUtilities().initNotification();
@@ -120,9 +121,13 @@ class _ClassicModeState extends State<ClassicMode> {
     serverUtilities.chatStream.listen(_handleChatUpdates);
     serverUtilities.seekerWinStream.listen(_handleSeekerWin);
     serverUtilities.leavegameStream.listen(_handleLeaveGame);
-    startHiddingTimer();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    startHiddingTimer();
+  }
 
   Future<void> _initializePreferences() async {
     prefs = await SharedPreferences.getInstance();
@@ -189,7 +194,7 @@ class _ClassicModeState extends State<ClassicMode> {
       onEnd: startGame,
       startTime: DateTime.fromMillisecondsSinceEpoch(widget.timeStamGameStart),
       icon: Symbols.run_circle,
-      timerName: 'Hiding phase : ',
+      timerName: AppLocalizations.of(context)!.timer_cachette,
     );
     initializeMusic();
 
@@ -208,7 +213,7 @@ class _ClassicModeState extends State<ClassicMode> {
       onEnd: onEndGame,
       startTime: DateTime.now(),
       icon: Symbols.location_on_rounded,
-      timerName: 'Game phase : ',
+      timerName: AppLocalizations.of(context)!.timer_chasse,
     );
 
     tauntUtilities = TauntsUtilities(
@@ -402,7 +407,7 @@ class _ClassicModeState extends State<ClassicMode> {
         ),
       );
 
-      print('Adding marker: $marker');
+      debugPrint('Adding marker: $marker');
       setState(() {
         markers.add(marker);
       });

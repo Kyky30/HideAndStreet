@@ -106,7 +106,7 @@ class ForgotenPassword extends StatelessWidget {
                         (
                           title: AppLocalizations.of(context)!.titre_popup_mail_envoye,
                           content: AppLocalizations.of(context)!.texte_popup_mail_envoye,
-                          buttonText: "OK",
+                          buttonText: AppLocalizations.of(context)!.ok,
                           onPressed: ()
                           {
                             Navigator.of(context).pop();

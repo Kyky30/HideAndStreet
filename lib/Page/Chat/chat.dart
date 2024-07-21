@@ -139,13 +139,14 @@ class _ChatState extends State<Chat> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: CustomTextField(
                     controller: _controller,
                     scaleFactor: MediaQuery.of(context).textScaleFactor,
-                    hintText: 'Send a message',
-                    fontSize: 15,
+                    hintText: AppLocalizations.of(context)!.hint_send_message,
+                    maxFontSize: 20,
                   ),
                 ),
                 SizedBox(width: 10,),
