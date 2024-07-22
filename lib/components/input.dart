@@ -41,6 +41,7 @@ class CustomTextField extends StatelessWidget {
       minFontSize: minFontSize,
       maxFontSize: maxFontSize,
       maxLength: maxLength,
+
       style: TextStyle(
         fontWeight: FontWeight.w600,
         fontFamily: 'Poppins',
@@ -52,6 +53,7 @@ class CustomTextField extends StatelessWidget {
           fontWeight: FontWeight.w600,
           fontFamily: 'Poppins',
           color: Colors.grey,
+          fontSize: 20 * scaleFactor,
         ),
         contentPadding: EdgeInsets.symmetric(
           horizontal: 20,

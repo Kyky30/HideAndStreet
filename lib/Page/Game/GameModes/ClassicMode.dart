@@ -11,6 +11,7 @@ import 'package:HideAndStreet/Page/Game/GameUtilities/NotificationUtilities.dart
 import 'package:HideAndStreet/PreferencesManager.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:HideAndStreet/Page/winPage.dart';
 import 'package:HideAndStreet/components/alertbox.dart';
@@ -26,6 +27,7 @@ import 'package:HideAndStreet/Page/Game/GameUtilities/TauntsUtilities.dart';
 import 'package:HideAndStreet/Page/Game/GameUtilities/TtsUtilities.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 
 
 class ClassicMode extends StatefulWidget {
@@ -104,6 +106,8 @@ class _ClassicModeState extends State<ClassicMode> {
     initializeService();
 
     _initializePreferences();
+
+    AskPermission();
 
     NotificationUtilities().initNotification();
 
@@ -198,6 +202,75 @@ class _ClassicModeState extends State<ClassicMode> {
     );
     initializeMusic();
 
+  }
+
+  Future<void> AskPermission() async {
+    LocationPermission permission;
+
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return CustomAlertDialog1(
+            title: AppLocalizations.of(context)!.locationPermissions,
+            content: AppLocalizations.of(context)!.locationPermissionsMessage,
+            buttonText: AppLocalizations.of(context)!.ok,
+            onPressed: () async {
+              Navigator.of(context).pop();
+              permission = await Geolocator.requestPermission();
+            },
+            scaleFactor: MediaQuery.of(context).textScaleFactor,
+          );
+        },
+      );
+    }
+
+    if (permission == LocationPermission.denied) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return CustomAlertDialog1(
+            title: AppLocalizations.of(context)!.locationPermissions,
+            content: AppLocalizations.of(context)!.locationPermissionsMessage,
+            buttonText: AppLocalizations.of(context)!.ok,
+            onPressed: () async {
+              Navigator.of(context).pop();
+              permission = await Geolocator.requestPermission();
+            },
+            scaleFactor: MediaQuery.of(context).textScaleFactor,
+          );
+        },
+      );
+      return Future.error('Location permissions are denied.');
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return CustomAlertDialog1(
+            title: AppLocalizations.of(context)!.locationPermissions,
+            content: AppLocalizations.of(context)!.locationPermissionsMessage,
+            buttonText: AppLocalizations.of(context)!.ok,
+            onPressed: () async {
+              Navigator.of(context).pop();
+              permission = await Geolocator.requestPermission();
+            },
+            scaleFactor: MediaQuery.of(context).textScaleFactor,
+          );
+        },
+      );
+      return Future.error('Location permissions are permanently denied.');
+    }
+
+    // Permission de notification ------------------------------------------------
+    await Permission.notification.isDenied.then((value) {
+      if (value) {
+        Permission.notification.request();
+      }
+    });
   }
 
   void startGame() {

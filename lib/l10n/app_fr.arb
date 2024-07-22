@@ -628,6 +628,14 @@
     "timer_base": "Timer : ",
     "@timer_base": {
         "description": "Timer de base"
+    },
+    "titre_popup_confirmation_signalement": "Confirmation de signalement",
+    "@titre_popup_confimation_signalement": {
+        "description": "Titre de popup de signalement"
+    },
+    "texte_popup_confirmation_signalement": "Le chat de partie a bien été signalé à l'équipe de modération, qui va prendre les mesures nécessaires.",
+    "@texte_popup_confimation_signalement": {
+        "description": "Texte de popup de signalement"
     }
 
 }

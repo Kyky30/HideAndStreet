@@ -14,6 +14,8 @@ import 'Game/GameModes/ClassicMode.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:HideAndStreet/components/alertbox.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:geolocator/geolocator.dart';
 
 class WaitingScreen extends StatefulWidget {
   final String gameCode;
@@ -57,6 +59,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
     _initWebSocket();
 
     initializeMusic();
+    AskPermission();
   }
 
   initializeMusic() async {
@@ -69,6 +72,75 @@ class _WaitingScreenState extends State<WaitingScreen> {
   Future<void> initWebSocketConnection() async {
     debugPrint("websocket manager init");
     await WebSocketManager.connect(email);
+  }
+
+  Future<void> AskPermission() async {
+    LocationPermission permission;
+
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return CustomAlertDialog1(
+            title: AppLocalizations.of(context)!.locationPermissions,
+            content: AppLocalizations.of(context)!.locationPermissionsMessage,
+            buttonText: AppLocalizations.of(context)!.ok,
+            onPressed: () async {
+              Navigator.of(context).pop();
+              permission = await Geolocator.requestPermission();
+            },
+            scaleFactor: MediaQuery.of(context).textScaleFactor,
+          );
+        },
+      );
+    }
+
+    if (permission == LocationPermission.denied) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return CustomAlertDialog1(
+            title: AppLocalizations.of(context)!.locationPermissions,
+            content: AppLocalizations.of(context)!.locationPermissionsMessage,
+            buttonText: AppLocalizations.of(context)!.ok,
+            onPressed: () async {
+              Navigator.of(context).pop();
+              permission = await Geolocator.requestPermission();
+            },
+            scaleFactor: MediaQuery.of(context).textScaleFactor,
+          );
+        },
+      );
+      return Future.error('Location permissions are denied.');
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return CustomAlertDialog1(
+            title: AppLocalizations.of(context)!.locationPermissions,
+            content: AppLocalizations.of(context)!.locationPermissionsMessage,
+            buttonText: AppLocalizations.of(context)!.ok,
+            onPressed: () async {
+              Navigator.of(context).pop();
+              permission = await Geolocator.requestPermission();
+            },
+            scaleFactor: MediaQuery.of(context).textScaleFactor,
+          );
+        },
+      );
+      return Future.error('Location permissions are permanently denied.');
+    }
+
+    // Permission de notification ------------------------------------------------
+    await Permission.notification.isDenied.then((value) {
+      if (value) {
+        Permission.notification.request();
+      }
+    });
   }
 
   void _initWebSocket() {

@@ -158,6 +158,9 @@
   "tts_partie_terminee": "Game over",
   "volume_label": "Music volume:",
   "boutique_bientot_dispo": "Shop coming soon",
-  "timer_base": "Timer:"
+  "timer_base": "Timer:",
+  "titre_popup_confirmation_signalement": "Report confirmation",
+  "texte_popup_confirmation_signalement": "The game chat has been reported to the moderation team who will take care of it as soon as possible."
+
 
 }

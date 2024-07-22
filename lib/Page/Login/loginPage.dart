@@ -51,7 +51,7 @@ class LoginPage extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                         child: Container(
-                          height: 0.08 * MediaQuery.of(context).size.height,
+                          height: 0.2 * MediaQuery.of(context).size.height,
                           width: 0.9 * MediaQuery.of(context).size.width,
                           child: CustomTextField(
                             hintText: AppLocalizations.of(context)!.mail,
@@ -60,7 +60,6 @@ class LoginPage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(height: 0.02 * MediaQuery.of(context).size.height),
                       Text(
                         AppLocalizations.of(context)!.mdp,
                         style: TextStyle(fontSize: 0.05 * MediaQuery.of(context).size.width, fontWeight: FontWeight.bold),
@@ -68,7 +67,7 @@ class LoginPage extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                         child: Container(
-                          height: 0.08 * MediaQuery.of(context).size.height,
+                          height: 0.1 * MediaQuery.of(context).size.height,
                           width: 0.9 * MediaQuery.of(context).size.width,
                           child: CustomTextField(
                             hintText: AppLocalizations.of(context)!.mdp,
@@ -78,7 +77,7 @@ class LoginPage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(height: 0.2 * MediaQuery.of(context).size.height),
+                      SizedBox(height: 0.1 * MediaQuery.of(context).size.height),
                       buildLoginButton(context),
                     ],
                   ),

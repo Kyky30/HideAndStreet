@@ -1,4 +1,19 @@
 {
+  "ar": [
+    "titre_popup_confirmation_signalement",
+    "texte_popup_confirmation_signalement"
+  ],
+
+  "de": [
+    "titre_popup_confirmation_signalement",
+    "texte_popup_confirmation_signalement"
+  ],
+
+  "es": [
+    "titre_popup_confirmation_signalement",
+    "texte_popup_confirmation_signalement"
+  ],
+
   "fi": [
     "identifiants_ou_mdp_incorect",
     "veuillez_entrer_un_code",
@@ -38,7 +53,9 @@
     "tts_partie_terminee",
     "volume_label",
     "boutique_bientot_dispo",
-    "timer_base"
+    "timer_base",
+    "titre_popup_confirmation_signalement",
+    "texte_popup_confirmation_signalement"
   ],
 
   "hi": [
@@ -80,7 +97,9 @@
     "tts_partie_terminee",
     "volume_label",
     "boutique_bientot_dispo",
-    "timer_base"
+    "timer_base",
+    "titre_popup_confirmation_signalement",
+    "texte_popup_confirmation_signalement"
   ],
 
   "it": [
@@ -122,7 +141,9 @@
     "tts_partie_terminee",
     "volume_label",
     "boutique_bientot_dispo",
-    "timer_base"
+    "timer_base",
+    "titre_popup_confirmation_signalement",
+    "texte_popup_confirmation_signalement"
   ],
 
   "ja": [
@@ -164,7 +185,9 @@
     "tts_partie_terminee",
     "volume_label",
     "boutique_bientot_dispo",
-    "timer_base"
+    "timer_base",
+    "titre_popup_confirmation_signalement",
+    "texte_popup_confirmation_signalement"
   ],
 
   "ko": [
@@ -206,7 +229,9 @@
     "tts_partie_terminee",
     "volume_label",
     "boutique_bientot_dispo",
-    "timer_base"
+    "timer_base",
+    "titre_popup_confirmation_signalement",
+    "texte_popup_confirmation_signalement"
   ],
 
   "pl": [
@@ -248,7 +273,9 @@
     "tts_partie_terminee",
     "volume_label",
     "boutique_bientot_dispo",
-    "timer_base"
+    "timer_base",
+    "titre_popup_confirmation_signalement",
+    "texte_popup_confirmation_signalement"
   ],
 
   "pt": [
@@ -290,7 +317,9 @@
     "tts_partie_terminee",
     "volume_label",
     "boutique_bientot_dispo",
-    "timer_base"
+    "timer_base",
+    "titre_popup_confirmation_signalement",
+    "texte_popup_confirmation_signalement"
   ],
 
   "ru": [
@@ -333,7 +362,9 @@
     "tts_partie_terminee",
     "volume_label",
     "boutique_bientot_dispo",
-    "timer_base"
+    "timer_base",
+    "titre_popup_confirmation_signalement",
+    "texte_popup_confirmation_signalement"
   ],
 
   "sv": [
@@ -375,7 +406,9 @@
     "tts_partie_terminee",
     "volume_label",
     "boutique_bientot_dispo",
-    "timer_base"
+    "timer_base",
+    "titre_popup_confirmation_signalement",
+    "texte_popup_confirmation_signalement"
   ],
 
   "vi": [
@@ -417,7 +450,9 @@
     "tts_partie_terminee",
     "volume_label",
     "boutique_bientot_dispo",
-    "timer_base"
+    "timer_base",
+    "titre_popup_confirmation_signalement",
+    "texte_popup_confirmation_signalement"
   ],
 
   "zh": [
@@ -460,6 +495,8 @@
     "tts_partie_terminee",
     "volume_label",
     "boutique_bientot_dispo",
-    "timer_base"
+    "timer_base",
+    "titre_popup_confirmation_signalement",
+    "texte_popup_confirmation_signalement"
   ]
 }

@@ -61,43 +61,63 @@ class _MapConfScreenState extends State<MapConfScreen> {
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
+      showDialog(
+        context: context,
+        builder: (context) {
+          return CustomAlertDialog1(
+            title: AppLocalizations.of(context)!.locationPermissions,
+            content: AppLocalizations.of(context)!.locationPermissionsMessage,
+            buttonText: AppLocalizations.of(context)!.ok,
+            onPressed: () async {
+              Navigator.of(context).pop();
+              permission = await Geolocator.requestPermission();
+            },
+            scaleFactor: MediaQuery.of(context).textScaleFactor,
+          );
+        },
+      );
     }
 
     if (permission == LocationPermission.denied) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return CustomAlertDialog1(
+            title: AppLocalizations.of(context)!.locationPermissions,
+            content: AppLocalizations.of(context)!.locationPermissionsMessage,
+            buttonText: AppLocalizations.of(context)!.ok,
+            onPressed: () async {
+              Navigator.of(context).pop();
+              permission = await Geolocator.requestPermission();
+            },
+            scaleFactor: MediaQuery.of(context).textScaleFactor,
+          );
+        },
+      );
       return Future.error('Location permissions are denied.');
     }
 
     if (permission == LocationPermission.deniedForever) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return CustomAlertDialog1(
+            title: AppLocalizations.of(context)!.locationPermissions,
+            content: AppLocalizations.of(context)!.locationPermissionsMessage,
+            buttonText: AppLocalizations.of(context)!.ok,
+            onPressed: () async {
+              Navigator.of(context).pop();
+              permission = await Geolocator.requestPermission();
+            },
+            scaleFactor: MediaQuery.of(context).textScaleFactor,
+          );
+        },
+      );
       return Future.error('Location permissions are permanently denied.');
     }
 
     // Permissions are granted, continue accessing the position of the device.
     return await Geolocator.getCurrentPosition();
-  }
-
-  void _handleLocationPermissions(BuildContext context) async {
-    await Geolocator.requestPermission().then((LocationPermission permission) {
-      if (permission == LocationPermission.denied ||
-          permission == LocationPermission.deniedForever) {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return CustomAlertDialog1(
-              title: AppLocalizations.of(context)!.locationPermissions,
-              content: AppLocalizations.of(context)!.locationPermissionsMessage,
-              buttonText: AppLocalizations.of(context)!.ok,
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              scaleFactor: MediaQuery.of(context).textScaleFactor,
-            );
-          },
-        );
-      } else {
-        _initializeState();
-      }
-    });
   }
 
   @override
