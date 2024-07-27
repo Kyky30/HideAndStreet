@@ -581,7 +581,7 @@
     "@LocationPermissions": {
         "description": "Permissions de localisation"
     },
-    "locationPermissionsMessage" : "Hide & Street collecte des données de localisation lorsque l'application est utilisée mais aussi en arrière plan, dans l'écran de jeu pour le système de sortie de la zone. Rassurez-vous, ces données ne sont pas transférés à des sociétés tiers et sont effacées après chaque partie.",
+    "locationPermissionsMessage" : "Hide & Street recueille des données de localisation pour permettre la vérification de la localisation des joueurs dans la zone de jeu, même en arrière-plan. Rassurez-vous, ces données ne sont pas transférés à des sociétés tiers et sont effacées après chaque partie.",
     "@LocationPermissionsMessage": {
         "description": "Message de permissions de localisation"
     },
@@ -636,6 +636,22 @@
     "texte_popup_confirmation_signalement": "Le chat de partie a bien été signalé à l'équipe de modération, qui va prendre les mesures nécessaires.",
     "@texte_popup_confimation_signalement": {
         "description": "Texte de popup de signalement"
+    },
+    "bouton_autoriser": "Autoriser",
+    "@bouton_autoriser": {
+        "description": "Bouton d'autoriser"
+    },
+    "bouton_refuser": "Refuser",
+    "@bouton_refuser": {
+        "description": "Bouton de refuser"
+    },
+    "avertissement_localisation": "Avertissement de localisation",
+    "@avertissement_localisation": {
+        "description": "Avertissement de localisation"
+    },
+    "texte_avertissement_localisation": "Hide & Street a besoin de votre localisation pour fonctionner correctement. Veuillez autoriser l'accès à votre localisation pour accéder au reste de l'application.",
+    "@texte_avertissement_localisation": {
+        "description": "Texte d'avertissement de localisation"
     }
 
 }

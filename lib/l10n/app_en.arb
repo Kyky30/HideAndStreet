@@ -119,7 +119,7 @@
   "emailLabel": "Email",
   "codePartie": "Game code",
   "exempleCodePartie": "example: ABCDEF",
-  "locationPermissionsMessage": "Hide & Street collects location data when the application is in use, but also in the background, in the game screen for the zone exit system. Rest assured, these data are not transferred to third-party companies and are deleted after each game.",
+  "locationPermissionsMessage": "Hide & Street collects location data to enable player in game zone location verification even in background.",
   "locationPermissions": "Location permissions",
 
   "identifiants_ou_mdp_incorect": "Incorrect credentials or password",
@@ -160,7 +160,10 @@
   "boutique_bientot_dispo": "Shop coming soon",
   "timer_base": "Timer:",
   "titre_popup_confirmation_signalement": "Report confirmation",
-  "texte_popup_confirmation_signalement": "The game chat has been reported to the moderation team who will take care of it as soon as possible."
-
+  "texte_popup_confirmation_signalement": "The game chat has been reported to the moderation team who will take care of it as soon as possible.",
+  "avertissement_localisation": "Location warning",
+  "texte_avertissement_localisation": "Hide & Street needs your location to work properly. Please activate the location permissions to acces the rest of the app.",
+  "bouton_autoriser": "Allow",
+  "bouton_refuser": "Deny"
 
 }

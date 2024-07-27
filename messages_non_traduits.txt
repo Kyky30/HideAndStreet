@@ -1,17 +1,29 @@
 {
   "ar": [
     "titre_popup_confirmation_signalement",
-    "texte_popup_confirmation_signalement"
+    "texte_popup_confirmation_signalement",
+    "bouton_autoriser",
+    "bouton_refuser",
+    "avertissement_localisation",
+    "texte_avertissement_localisation"
   ],
 
   "de": [
     "titre_popup_confirmation_signalement",
-    "texte_popup_confirmation_signalement"
+    "texte_popup_confirmation_signalement",
+    "bouton_autoriser",
+    "bouton_refuser",
+    "avertissement_localisation",
+    "texte_avertissement_localisation"
   ],
 
   "es": [
     "titre_popup_confirmation_signalement",
-    "texte_popup_confirmation_signalement"
+    "texte_popup_confirmation_signalement",
+    "bouton_autoriser",
+    "bouton_refuser",
+    "avertissement_localisation",
+    "texte_avertissement_localisation"
   ],
 
   "fi": [
@@ -55,7 +67,11 @@
     "boutique_bientot_dispo",
     "timer_base",
     "titre_popup_confirmation_signalement",
-    "texte_popup_confirmation_signalement"
+    "texte_popup_confirmation_signalement",
+    "bouton_autoriser",
+    "bouton_refuser",
+    "avertissement_localisation",
+    "texte_avertissement_localisation"
   ],
 
   "hi": [
@@ -99,7 +115,11 @@
     "boutique_bientot_dispo",
     "timer_base",
     "titre_popup_confirmation_signalement",
-    "texte_popup_confirmation_signalement"
+    "texte_popup_confirmation_signalement",
+    "bouton_autoriser",
+    "bouton_refuser",
+    "avertissement_localisation",
+    "texte_avertissement_localisation"
   ],
 
   "it": [
@@ -143,7 +163,11 @@
     "boutique_bientot_dispo",
     "timer_base",
     "titre_popup_confirmation_signalement",
-    "texte_popup_confirmation_signalement"
+    "texte_popup_confirmation_signalement",
+    "bouton_autoriser",
+    "bouton_refuser",
+    "avertissement_localisation",
+    "texte_avertissement_localisation"
   ],
 
   "ja": [
@@ -187,7 +211,11 @@
     "boutique_bientot_dispo",
     "timer_base",
     "titre_popup_confirmation_signalement",
-    "texte_popup_confirmation_signalement"
+    "texte_popup_confirmation_signalement",
+    "bouton_autoriser",
+    "bouton_refuser",
+    "avertissement_localisation",
+    "texte_avertissement_localisation"
   ],
 
   "ko": [
@@ -231,7 +259,11 @@
     "boutique_bientot_dispo",
     "timer_base",
     "titre_popup_confirmation_signalement",
-    "texte_popup_confirmation_signalement"
+    "texte_popup_confirmation_signalement",
+    "bouton_autoriser",
+    "bouton_refuser",
+    "avertissement_localisation",
+    "texte_avertissement_localisation"
   ],
 
   "pl": [
@@ -275,7 +307,11 @@
     "boutique_bientot_dispo",
     "timer_base",
     "titre_popup_confirmation_signalement",
-    "texte_popup_confirmation_signalement"
+    "texte_popup_confirmation_signalement",
+    "bouton_autoriser",
+    "bouton_refuser",
+    "avertissement_localisation",
+    "texte_avertissement_localisation"
   ],
 
   "pt": [
@@ -319,7 +355,11 @@
     "boutique_bientot_dispo",
     "timer_base",
     "titre_popup_confirmation_signalement",
-    "texte_popup_confirmation_signalement"
+    "texte_popup_confirmation_signalement",
+    "bouton_autoriser",
+    "bouton_refuser",
+    "avertissement_localisation",
+    "texte_avertissement_localisation"
   ],
 
   "ru": [
@@ -364,7 +404,11 @@
     "boutique_bientot_dispo",
     "timer_base",
     "titre_popup_confirmation_signalement",
-    "texte_popup_confirmation_signalement"
+    "texte_popup_confirmation_signalement",
+    "bouton_autoriser",
+    "bouton_refuser",
+    "avertissement_localisation",
+    "texte_avertissement_localisation"
   ],
 
   "sv": [
@@ -408,7 +452,11 @@
     "boutique_bientot_dispo",
     "timer_base",
     "titre_popup_confirmation_signalement",
-    "texte_popup_confirmation_signalement"
+    "texte_popup_confirmation_signalement",
+    "bouton_autoriser",
+    "bouton_refuser",
+    "avertissement_localisation",
+    "texte_avertissement_localisation"
   ],
 
   "vi": [
@@ -452,7 +500,11 @@
     "boutique_bientot_dispo",
     "timer_base",
     "titre_popup_confirmation_signalement",
-    "texte_popup_confirmation_signalement"
+    "texte_popup_confirmation_signalement",
+    "bouton_autoriser",
+    "bouton_refuser",
+    "avertissement_localisation",
+    "texte_avertissement_localisation"
   ],
 
   "zh": [
@@ -497,6 +549,10 @@
     "boutique_bientot_dispo",
     "timer_base",
     "titre_popup_confirmation_signalement",
-    "texte_popup_confirmation_signalement"
+    "texte_popup_confirmation_signalement",
+    "bouton_autoriser",
+    "bouton_refuser",
+    "avertissement_localisation",
+    "texte_avertissement_localisation"
   ]
 }

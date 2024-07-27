@@ -14,6 +14,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late LocationPermission permission;
+
+
   @override
   void initState() {
     super.initState();
@@ -57,13 +60,17 @@ class _HomePageState extends State<HomePage> {
       showDialog(
         context: context,
         builder: (context) {
-          return CustomAlertDialog1(
+          return CustomAlertDialog2(
             title: AppLocalizations.of(context)!.locationPermissions,
             content: AppLocalizations.of(context)!.locationPermissionsMessage,
-            buttonText: AppLocalizations.of(context)!.ok,
-            onPressed: () async {
+            buttonText1: AppLocalizations.of(context)!.bouton_autoriser,
+            buttonText2: AppLocalizations.of(context)!.bouton_refuser,
+            onPressed1: () async {
               Navigator.of(context).pop();
               permission = await Geolocator.requestPermission();
+            },
+            onPressed2: () {
+              Navigator.of(context).pop();
             },
             scaleFactor: MediaQuery.of(context).textScaleFactor,
           );
@@ -120,26 +127,106 @@ class _HomePageState extends State<HomePage> {
                 // Boutons pour créer et rejoindre une partie
                 CustomButton(
                   text: AppLocalizations.of(context)!.creerpartie,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const MapConfScreen(),
-                      ),
-                    );
+                  onPressed: () async {
+
+                    permission = await Geolocator.checkPermission();
+                    if (permission == LocationPermission.denied) {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return CustomAlertDialog2(
+                            title: AppLocalizations.of(context)!.locationPermissions,
+                            content: AppLocalizations.of(context)!.locationPermissionsMessage,
+                            buttonText1: AppLocalizations.of(context)!.bouton_autoriser,
+                            buttonText2: AppLocalizations.of(context)!.bouton_refuser,
+                            onPressed1: () async {
+                              Navigator.of(context).pop();
+                              permission = await Geolocator.requestPermission();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const MapConfScreen(),
+                                ),
+                              );
+                            },
+                            onPressed2: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return CustomAlertDialog1(
+                                    title: AppLocalizations.of(context)!.avertissement_localisation,
+                                    content: AppLocalizations.of(context)!.texte_avertissement_localisation,
+                                    buttonText: AppLocalizations.of(context)!.ok,
+                                    onPressed: () async {
+                                      Navigator.of(context).pop();
+                                    },
+                                    scaleFactor: MediaQuery.of(context).textScaleFactor,
+                                  );
+                                },
+                              );
+                              },
+                            scaleFactor: MediaQuery.of(context).textScaleFactor,
+                          );
+                        },
+                      );
+                    }
+
+
+
                   },
                   scaleFactor: scaleFactor,
                 ),
                 SizedBox(height: 16 * scaleFactor),
                 CustomButton(
                   text: AppLocalizations.of(context)!.rejoindrepartie,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const RoomJoiningPage(),
-                      ),
-                    );
+                  onPressed: () async {
+
+
+                    permission = await Geolocator.checkPermission();
+                    if (permission == LocationPermission.denied) {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return CustomAlertDialog2(
+                            title: AppLocalizations.of(context)!.locationPermissions,
+                            content: AppLocalizations.of(context)!.locationPermissionsMessage,
+                            buttonText1: AppLocalizations.of(context)!.bouton_autoriser,
+                            buttonText2: AppLocalizations.of(context)!.bouton_refuser,
+                            onPressed1: () async {
+                              Navigator.of(context).pop();
+                              permission = await Geolocator.requestPermission();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const RoomJoiningPage(),
+                                ),
+                              );
+                            },
+                            onPressed2: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return CustomAlertDialog1(
+                                    title: AppLocalizations.of(context)!.avertissement_localisation,
+                                    content: AppLocalizations.of(context)!.texte_avertissement_localisation,
+                                    buttonText: AppLocalizations.of(context)!.ok,
+                                    onPressed: () async {
+                                      Navigator.of(context).pop();
+                                    },
+                                    scaleFactor: MediaQuery.of(context).textScaleFactor,
+                                  );
+                                },
+                              );
+                            },
+                            scaleFactor: MediaQuery.of(context).textScaleFactor,
+                          );
+                        },
+                      );
+                    }
+
+
+
+
                   },
                   scaleFactor: scaleFactor,
                 ),

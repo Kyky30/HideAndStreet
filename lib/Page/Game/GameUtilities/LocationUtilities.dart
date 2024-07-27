@@ -27,14 +27,17 @@ class LocationUtilities {
       showDialog(
         context: context,
         builder: (context) {
-          return CustomAlertDialog1(
+          return CustomAlertDialog2(
             title: AppLocalizations.of(context)!.locationPermissions,
             content: AppLocalizations.of(context)!.locationPermissionsMessage,
-            buttonText: AppLocalizations.of(context)!.ok,
-            onPressed: () async {
+            buttonText1: AppLocalizations.of(context)!.bouton_autoriser,
+            buttonText2: AppLocalizations.of(context)!.bouton_refuser,
+            onPressed1: () async {
               Navigator.of(context).pop();
               permission = await Geolocator.requestPermission();
-
+            },
+            onPressed2: () {
+              Navigator.of(context).pop();
             },
             scaleFactor: MediaQuery.of(context).textScaleFactor,
           );
