@@ -150,21 +150,8 @@ class _HomePageState extends State<HomePage> {
                               );
                             },
                             onPressed2: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return CustomAlertDialog1(
-                                    title: AppLocalizations.of(context)!.avertissement_localisation,
-                                    content: AppLocalizations.of(context)!.texte_avertissement_localisation,
-                                    buttonText: AppLocalizations.of(context)!.ok,
-                                    onPressed: () async {
-                                      Navigator.of(context).pop();
-                                    },
-                                    scaleFactor: MediaQuery.of(context).textScaleFactor,
-                                  );
-                                },
-                              );
-                              },
+                              Navigator.of(context).pop();
+                            },
                             scaleFactor: MediaQuery.of(context).textScaleFactor,
                           );
                         },
@@ -203,20 +190,7 @@ class _HomePageState extends State<HomePage> {
                               );
                             },
                             onPressed2: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return CustomAlertDialog1(
-                                    title: AppLocalizations.of(context)!.avertissement_localisation,
-                                    content: AppLocalizations.of(context)!.texte_avertissement_localisation,
-                                    buttonText: AppLocalizations.of(context)!.ok,
-                                    onPressed: () async {
-                                      Navigator.of(context).pop();
-                                    },
-                                    scaleFactor: MediaQuery.of(context).textScaleFactor,
-                                  );
-                                },
-                              );
+                              Navigator.of(context).pop();
                             },
                             scaleFactor: MediaQuery.of(context).textScaleFactor,
                           );

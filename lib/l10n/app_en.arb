@@ -119,7 +119,7 @@
   "emailLabel": "Email",
   "codePartie": "Game code",
   "exempleCodePartie": "example: ABCDEF",
-  "locationPermissionsMessage": "Hide & Street collects location data to enable player in game zone location verification even in background.",
+  "locationPermissionsMessage": "Hide & Street collects location data to enable player game zone verification even when the app is closed or not in use.",
   "locationPermissions": "Location permissions",
 
   "identifiants_ou_mdp_incorect": "Incorrect credentials or password",
