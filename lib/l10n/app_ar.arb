@@ -156,5 +156,12 @@
   "tts_partie_terminee": "انتهت اللعبة",
   "volume_label": "مستوى الصوت:",
   "boutique_bientot_dispo": "المتجر سيكون متاحًا قريبًا",
-  "timer_base": "المؤقت:"
+  "timer_base": "المؤقت:",
+  "titre_popup_confirmation_signalement": "تأكيد البلاغ",
+  "texte_popup_confirmation_signalement": "تم الإبلاغ عن دردشة اللعبة بنجاح إلى فريق الإشراف، الذي سيتخذ الإجراءات اللازمة.",
+  "bouton_autoriser": "السماح",
+  "bouton_refuser": "رفض",
+  "avertissement_localisation": "تحذير الموقع",
+  "texte_avertissement_localisation": "يحتاج تطبيق Hide & Street إلى موقعك ليعمل بشكل صحيح. يُرجى السماح بالوصول إلى موقعك للوصول إلى باقي التطبيق."
+
 }

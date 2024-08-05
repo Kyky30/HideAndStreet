@@ -8,7 +8,6 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../../components/buttons.dart';
 
-
 void presentPaywallIfNeeded() async {
   await initPlatformState();
   final paywallResult = await RevenueCatUI.presentPaywallIfNeeded("default");
@@ -28,30 +27,56 @@ class ShopPage extends StatelessWidget {
     final scaleFactor = getScaleFactor(context);
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.boutique, style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w600, fontFamily: 'Poppins',)),
-        ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Container(
-              child: AdWidget(
-                ad: AdmobHelper.getBannerAd()..load(),
-                key: UniqueKey(),
-              ),
-              height: 75 * scaleFactor,
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.boutique,
+            style: const TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.w600,
+              fontFamily: 'Poppins',
+            )),
+      ),
+      body: Stack(
+        children: [
+          // Image de fond
+          Positioned.fill(
+            child: Image.asset(
+              'assets/Boutique.jpg', // Remplacez par le chemin de votre image de fond
+              fit: BoxFit.cover,
             ),
-            const SizedBox(height: 16),
-            CustomButton(
-                text: AppLocalizations.of(context)!.acheterpremium,
-                onPressed: presentPaywallIfNeeded,
-                scaleFactor: scaleFactor
+          ),
+          // Contenu de la page
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Container(
+                  child: AdWidget(
+                    ad: AdmobHelper.getBannerAd()..load(),
+                    key: UniqueKey(),
+                  ),
+                  height: 75 * scaleFactor,
+                ),
+                const SizedBox(height: 16),
+                CustomButton(
+                  text: AppLocalizations.of(context)!.acheterpremium,
+                  onPressed: presentPaywallIfNeeded,
+                  scaleFactor: scaleFactor,
+                  backgroundColor: Color(0x6E000000),
+                ),
+                const SizedBox(height: 128),
+                Text(
+                  AppLocalizations.of(context)!.boutique_bientot_dispo,
+                  style: TextStyle(
+                      fontSize: 32 * scaleFactor,
+                      fontFamily: "Poppins",
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
-            const SizedBox(height: 128),
-            Text(AppLocalizations.of(context)!.boutique_bientot_dispo, style: TextStyle(fontSize: 32 * scaleFactor, fontFamily: "Poppins", fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

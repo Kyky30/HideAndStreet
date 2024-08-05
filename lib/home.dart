@@ -157,6 +157,14 @@ class _HomePageState extends State<HomePage> {
                         },
                       );
                     }
+                    else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MapConfScreen(),
+                        ),
+                      );
+                    }
 
 
 
@@ -195,6 +203,14 @@ class _HomePageState extends State<HomePage> {
                             scaleFactor: MediaQuery.of(context).textScaleFactor,
                           );
                         },
+                      );
+                    }
+                    else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const RoomJoiningPage(),
+                        ),
                       );
                     }
 

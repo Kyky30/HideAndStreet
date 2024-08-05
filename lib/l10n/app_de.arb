@@ -154,5 +154,11 @@
   "tts_partie_terminee": "Spiel beendet",
   "volume_label": "Musiklautstärke:",
   "boutique_bientot_dispo": "Shop bald verfügbar",
-  "timer_base": "Timer:"
+  "timer_base": "Timer:",
+  "titre_popup_confirmation_signalement": "Meldungsbestätigung",
+  "texte_popup_confirmation_signalement": "Der Spielchat wurde erfolgreich an das Moderationsteam gemeldet, das die notwendigen Maßnahmen ergreifen wird.",
+  "bouton_autoriser": "Zulassen",
+  "bouton_refuser": "Ablehnen",
+  "avertissement_localisation": "Standortwarnung",
+  "texte_avertissement_localisation": "Hide & Street benötigt Ihren Standort, um ordnungsgemäß zu funktionieren. Bitte erlauben Sie den Zugriff auf Ihren Standort, um auf den Rest der Anwendung zuzugreifen."
 }

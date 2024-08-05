@@ -156,5 +156,12 @@
   "tts_partie_terminee": "Partida terminada",
   "volume_label": "Volumen de la música:",
   "boutique_bientot_dispo": "La tienda estará disponible pronto",
-  "timer_base": "Temporizador:"
+  "timer_base": "Temporizador:",
+  "titre_popup_confirmation_signalement": "Confirmación de reporte",
+  "texte_popup_confirmation_signalement": "El chat del juego ha sido reportado con éxito al equipo de moderación, que tomará las medidas necesarias.",
+  "bouton_autoriser": "Permitir",
+  "bouton_refuser": "Rechazar",
+  "avertissement_localisation": "Advertencia de ubicación",
+  "texte_avertissement_localisation": "Hide & Street necesita su ubicación para funcionar correctamente. Por favor, permita el acceso a su ubicación para acceder al resto de la aplicación."
+
 }
